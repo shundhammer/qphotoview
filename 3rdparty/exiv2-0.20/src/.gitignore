@@ -1,0 +1,16 @@
+*.bak
+*.auto
+*.o
+*.lo
+*.la
+.deps
+.libs
+Makefile
+Makefile.in
+exiv2
+metacopy
+path-test
+doxygen.hpp
+exv_conf.h
+lib
+taglist
