@@ -4,13 +4,16 @@
 #include <QLabel>
 #include <QStringList>
 
+class PrefetchCache;
+
+
 class SimpleView: public QLabel
 {
     Q_OBJECT
 public:
 
     SimpleView( const QString & photoPath, const QStringList & photoList );
-    virtual ~SimpleView() {}
+    virtual ~SimpleView();
 
     void showPhoto( int index, bool force = false );
 
@@ -23,6 +26,7 @@ private:
     QString	m_photoPath;
     QStringList m_photoList;
     int		m_current;
+    PrefetchCache * m_prefetchCache;
 };
 
 #endif // _SIMPLE_VIEW_H_

@@ -4,7 +4,6 @@
 #include <QResizeEvent>
 
 #include "SimpleView.h"
-#include "PrefetchCache.h"
 
 
 SimpleView::SimpleView( const QString & photoPath, const QStringList & photoList )
@@ -17,15 +16,6 @@ SimpleView::SimpleView( const QString & photoPath, const QStringList & photoList
     setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
     setPalette( Qt::black );
     resize( 600, 400 );
-
-    m_prefetchCache = new PrefetchCache( 1024 );
-    m_prefetchCache->prefetch( photoPath, photoList );
-}
-
-
-SimpleView::~SimpleView()
-{
-    delete m_prefetchCache;
 }
 
 
@@ -40,11 +30,10 @@ void SimpleView::showPhoto( int index, bool force )
     // qDebug() << "Showing" << photoPath;
     clear();
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+    QPixmap photo( photoPath );
     setWindowTitle( photoPath );
-
-    QPixmap photo = m_prefetchCache->pixmap( photoPath, size() );
-    setPixmap( photo );
-    
+    setPixmap( photo.scaled( this->size(), Qt::KeepAspectRatio, Qt::FastTransformation ) );
+    // setPixmap( photo.scaled( this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
     QApplication::restoreOverrideCursor();
     m_current = index;
 }
