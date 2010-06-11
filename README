@@ -59,7 +59,7 @@ comparing them, it still leaves much to be desired. Its metadata display is,
 just like ALL other viewers, just horrible. I really don't give a shit about
 the JPEG compression algorithm used or other useless crap the EXIF data
 contain. But I do need the exposure time, the aperture, ISO speed, focal
-length, and maybe what lens what used. Is there any way to display this in
+length, and maybe what lens was used. Is there any way to display this in
 Gwenview (and not all that other stuff)? I don't think so. If it's there, it is
 very well hidden. Also, deleting the current image is an operation that is (at
 least in the default configuration) unreasonably difficult. Hell, when I
