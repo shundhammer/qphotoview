@@ -1,5 +1,6 @@
 Updated:  2010-06-11
 
+
 What is it?
 ===========
 
@@ -19,18 +20,24 @@ another image viewer?).
 License
 =======
 
-This software is licensed under the GPL (the GNU Public License) -- see also
-file COPYING.
+This software is licensed under the GPL (the GNU Public License) version 2 --
+see also file COPYING.
 
 
-Contributing
+How to build
 ============
 
-Patches are welcome. But everybody who wishes to contribute please keep the
-above design goals in mind: This is meant as a tool for photographers. It is
-not a generic viewer for everything. It is not an image manipulation
-program. It is not, does not want to be and will never be a substitute for Gimp
-or for PhotoShop.
+    qmake
+    make
+    make install           (as root)
+
+You neeed a working C++ compiler environment and Qt 4.5 or later. On most Linux
+distributions, you will have to install the -devel (openSUSE) or -dev
+(Debian/Ubuntu) packages for Qt which include the header files and development
+tools like "qmake" and "moc".
+
+Please make sure you can compile and run simple "Hello, world" type Qt programs
+before contacting us because of build problems.
 
 
 
@@ -39,7 +46,7 @@ Why yet another image viewer?
 
 Short version: Because the other ones (at least the ones that are available on
 Linux / X11) all suck. They all suck in different ways, but they definitely all
-suck. 
+suck.
 
 The only one that sucked a lot less (kuickshow) than all the others went out of
 active development a long time ago, and it will go out of maintenance in the
@@ -89,8 +96,36 @@ ratio. This was insane even back in the 1990s, but even more insane is the fact
 that this was kept like this during all that time.
 
 
+Contributing
+============
 
-Authors
-=======
+Patches are welcome. But everybody who wishes to contribute please keep the
+above design goals in mind: This is meant as a tool for photographers. It is
+not a generic viewer for everything. It is not an image manipulation
+program. It is not, does not want to be and will never be a substitute for Gimp
+or for PhotoShop.
+
+Please stick to the coding conventions used in the rest of the code, in
+particular braces (new line for opening brace, not added to the previous line),
+indentation (4 blanks) and tab width (1 tab is 8 blanks). If in doubt, look at
+how existing code in the project does it.
+
+Life is too short to fix somebody else's broken coding style; I've done way too
+much of that in my life already.
+
+Please DO NOT copy and paste the complete GPL or other confusing legalese blurb
+into the header of each file. One or two lines stating that it's GPL'ed and a
+reference to the COPYING file is plenty, and it does not distract others from
+the real code.
+
+On the other hand, please DO write one or two lines near the top of the file
+explaining what the declarations (in the case of header files) or the code
+does. This helps tremendously for getting one's bearings while browsing through
+the code.
+
+
+
+Author
+======
 
 Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
