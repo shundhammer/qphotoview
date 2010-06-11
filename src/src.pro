@@ -1,12 +1,17 @@
 TEMPLATE = app
 TARGET   = qphotoview
 
+
 SOURCES =               \
     main.cpp            \
-    PhotoViewer.cpp
+    PhotoView.cpp       \
+    Fraction.cpp
+
 
 HEADERS =               \
-    PhotoViewer.h
+    PhotoView.h         \
+    Fraction.h
+
 
 MOC_DIR     = .moc
 OBJECTS_DIR = .obj

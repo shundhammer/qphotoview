@@ -7,12 +7,12 @@
  */
 
 #include <QApplication>
-#include "PhotoViewer.h"
+#include "PhotoView.h"
 
 int main ( int argc, char *argv[] )
 {
     QApplication app( argc, argv );
-    PhotoViewer viewer;
+    PhotoView viewer;
     
     viewer.show();
     app.exec();

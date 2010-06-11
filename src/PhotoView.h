@@ -6,20 +6,20 @@
  * Author:  Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
  */
 
-#ifndef PhotoViewer_h
-#define PhotoViewer_h
+#ifndef PhotoView_h
+#define PhotoView_h
 
-#include <QLabel>
+#include <QGraphicsView>
 
 
-class PhotoViewer: public QLabel
+class PhotoView: public QGraphicsView
 {
     Q_OBJECT
     
 public:
-    PhotoViewer();
-    
+    PhotoView();
+    virtual ~PhotoView();
 };
 
 
-#endif // PhotoViewer_h
+#endif // PhotoView_h
