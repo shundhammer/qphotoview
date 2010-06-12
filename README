@@ -1,4 +1,4 @@
-Updated:  2010-06-11
+Updated:  2010-06-12
 
 
 What is it?
@@ -67,18 +67,18 @@ just imported images from my camera and I see one that is out of focus, I want
 to get rid of it quickly -- hit [Delete] or [D] (or whatever) and good-bye.
 
 
-KDE's KPhotoAlbum is an attempt of a one-tool-does-everything program. It
-insists on managing all images in its (MySQL or whatever) data base which is
-not what I want: I have FILES. I want to be able to rsync them to my USB hard
-drive, to my home NAS, to some other machine. I do not want to depend on
-somebody else's idea of what an image data base should look like. I also don't
-want its gazillion of image processing plug-ins. Maybe they are what some
-people want, but I want to stick with my favourite image processing software
-(Gimp for want of something better on the Linux / X11 platform). It is
-overloaded with features I don't want, but it lacks most of the features I do
-want -- like rapidly displaying all files of a given directory in sequence,
-deleting individual ones, or displaying the meta data that are relevant (!) for
-photography.
+KDE's digiKam is an attempt of a one-tool-does-everything program. It insists
+on managing all images in its (MySQL or whatever) data base which is not what I
+want: I have FILES. I want to be able to rsync them to my USB hard drive, to my
+home NAS, to some other machine. I do not want to depend on somebody else's
+idea of what an image data base should look like. I also don't want its
+gazillion of image processing plug-ins for red eye correction and whatever.
+Maybe they are what some people want, but I want to stick with my favourite
+image processing software (Gimp for want of something better on the Linux / X11
+platform). It is overloaded with features I don't want, but it lacks most of
+the features I do want -- like rapidly displaying all files of a given
+directory in sequence, deleting individual ones, or displaying the meta data
+that are relevant (!) for photography.
 
 
 GNOME's F-Spot is a Mono-driven program. Too bad it wants to taint my machine
