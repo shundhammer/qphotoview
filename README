@@ -17,6 +17,15 @@ each of them fails misearably at it in one way or the other (see below: Why yet
 another image viewer?).
 
 
+Design documentation
+====================
+
+doc/design/qphotoview-design.odp
+
+(OpenOffice presentation)
+
+
+
 License
 =======
 
@@ -110,8 +119,8 @@ particular braces (new line for opening brace, not added to the previous line),
 indentation (4 blanks) and tab width (1 tab is 8 blanks). If in doubt, look at
 how existing code in the project does it.
 
-Life is too short to fix somebody else's broken coding style; I've done way too
-much of that in my life already.
+Life is too short for wasting time with fixing somebody else's broken coding
+style; I've done way too much of that in my life already.
 
 Please DO NOT copy and paste the complete GPL or other confusing legalese blurb
 into the header of each file. One or two lines stating that it's GPL'ed and a

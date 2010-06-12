@@ -36,6 +36,7 @@ PhotoView::PhotoView( const QString & imageFileName )
 
     setVerticalScrollBarPolicy  ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setDragMode( QGraphicsView::ScrollHandDrag );
 
     // Some styles (e.g. Plastique) have an undesired two pixel wide focus rect
     // around QGraphicsView widgets. This is not what we want here, so let's
@@ -68,6 +69,7 @@ bool PhotoView::loadImage( const QString & imageFileName )
         QPixmap pixmap = m_origPixmap.scaled( size(), Qt::KeepAspectRatio,
                                               Qt::SmoothTransformation );
         m_canvas->setPixmap( pixmap );
+        scene()->setSceneRect( QRectF( QPointF( 0, 0 ), pixmap.size() ) );
         setWindowTitle( "QPhotoView  " + imageFileName );
     }
     else
@@ -94,9 +96,11 @@ void PhotoView::resizeEvent ( QResizeEvent * event )
 {
     if ( event->size() != event->oldSize() && ! m_origPixmap.isNull() )
     {
+#if 0
         QPixmap pixmap = m_origPixmap.scaled( size(), Qt::KeepAspectRatio,
                                             Qt::SmoothTransformation );
         m_canvas->setPixmap( pixmap );
+#endif
     }
 
     QGraphicsView::resizeEvent( event );
