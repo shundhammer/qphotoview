@@ -4,6 +4,8 @@ TARGET   = qphotoview
 
 SOURCES =               \
     main.cpp            \
+    Exception.cpp       \
+    Logger.cpp          \
     PhotoView.cpp       \
     PhotoDir.cpp        \
     Photo.cpp           \
@@ -11,6 +13,8 @@ SOURCES =               \
 
 
 HEADERS =               \
+    Exception.h         \
+    Logger.h            \
     PhotoView.h         \
     PhotoDir.h          \
     Photo.h             \
