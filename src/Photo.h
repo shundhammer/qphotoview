@@ -11,7 +11,9 @@
 
 #include <QString>
 #include <QPixmap>
-#include "PhotoMetaData"
+// #include "PhotoMetaData"
+
+class PhotoDir;
 
 
 /**
@@ -21,9 +23,10 @@ class Photo
 {
 public:
     /**
-     * Constructor.
+     * Constructor. If 'parentDir' is non-null, 'fileName' is relative to
+     * 'parentDir'.
      */
-    Photo( const QString & filename );
+    Photo( const QString & fileName, PhotoDir *parentDir = 0 );
 
     /**
      * Destructor.
@@ -51,24 +54,48 @@ public:
      */
     QSize size();
 
+#if 0
     /**
      * Return the meta data for this photo.
      * If they are not loaded yet, load them first.
      * Notice that this is independent of loading the pixmap.
      */ 
     PhotoMetaData metaData();
+#endif
 
     /**
-     * Return the filename of this photo.
+     * Return the file name (without path) of this photo.
      */
-    QString filename() const;
+    QString fileName() const { return m_fileName; }
 
-#if 0
-    PhotoDir * photoDir() const;
-#endif
+    /**
+     * Return the path name (without file name) of this photo.
+     */
+    QString path() const;
+
+    /**
+     * Return the full path and file name of this photo.
+     */
+    QString fullPath() const;
+
+    /**
+     * Return the parent PhotoDir or 0 if there is none.
+     */
+    PhotoDir * photoDir() const { return m_photoDir; }
+
+    /**
+     * Reparent this photo to the specified PhotoDir.
+     * If 'parentDir' is 0 (i.e., this photo gets orphaned), the path is taken
+     * from there and stored in m_photoDir.
+     */
+    void reparent( PhotoDir * parentDir );
 
 private:
     Q_DISABLE_COPY( Photo );
+
+    PhotoDir *  m_photoDir;
+    QString     m_fileName;
+    QString     m_path;
 };
 
 

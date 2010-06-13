@@ -13,18 +13,21 @@
 #include <QDebug>
 
 #include "PhotoView.h"
+#include "PhotoDir.h"
+#include "Photo.h"
 #include "Fraction.h"
 
 
-PhotoView::PhotoView( const QString & imageFileName )
+PhotoView::PhotoView( PhotoDir * photoDir )
     : QGraphicsView()
-    , m_imageFileName( imageFileName )
+    , m_photoDir( photoDir )
 {
+    Q_CHECK_PTR( photoDir );
     setScene( new QGraphicsScene );
     m_canvas = scene()->addPixmap( QPixmap() );
 
-    if ( ! imageFileName.isEmpty() )
-        loadImage( imageFileName );
+    if ( ! m_photoDir->isEmpty() )
+        loadImage();
 
     //
     // Visual tweaks
@@ -44,6 +47,17 @@ PhotoView::PhotoView( const QString & imageFileName )
     // existing or future child widgets. And since scroll bars are turned off,
     // there is no other visual effect anyway.
     setStyle( new QWindowsStyle() );
+
+#if 1
+    qDebug() << "PhotoDir path:" << m_photoDir->path();
+
+    for ( int i=0; i < m_photoDir->size(); ++i )
+    {
+        qDebug() << "\t" << i << ":" << m_photoDir->photo( i )->fileName();
+    }
+
+    qDebug() << "Current:" << m_photoDir->currentIndex();
+#endif
 }
 
 
@@ -54,15 +68,21 @@ PhotoView::~PhotoView()
         // Delete the style we explicitly created just for this widget
         delete style();
     }
-    
+
     delete scene();
 }
 
 
-bool PhotoView::loadImage( const QString & imageFileName )
+bool PhotoView::loadImage()
 {
-    m_imageFileName = imageFileName;
-    bool success = m_origPixmap.load( m_imageFileName );
+    Photo * photo = m_photoDir->current();
+
+    if ( ! photo )
+        return false;
+
+    QString imageFileName = photo->fullPath();
+
+    bool success = m_origPixmap.load( imageFileName );
 
     if ( success )
     {
@@ -85,7 +105,6 @@ bool PhotoView::loadImage( const QString & imageFileName )
 
 void PhotoView::clear()
 {
-    m_imageFileName.clear();
     m_origPixmap = QPixmap();
     m_canvas->setPixmap( m_origPixmap );
     setWindowTitle( "QPhotoView" );

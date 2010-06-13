@@ -13,6 +13,7 @@
 
 class QGraphicsPixmapItem;
 class QResizeEvent;
+class PhotoDir;
 
 
 /**
@@ -24,10 +25,9 @@ class PhotoView: public QGraphicsView
 
 public:
     /**
-     * Constructor. Takes an optional initial image file name. If this is
-     * empty, an empty widget will be displayed.
+     * Constructor.
      */
-    PhotoView( const QString & imageFileName = QString() );
+    PhotoView( PhotoDir * photoDir );
 
     /**
      * Destructor.
@@ -35,9 +35,10 @@ public:
     virtual ~PhotoView();
 
     /**
-     * Load the specified image. Returns 'true' on success, 'false' on failure.
+     * Load the current photo of the PhotoDir.
+     * Returns 'true' on success, 'false' on failure.
      */
-    bool loadImage( const QString & imageFileName );
+    bool loadImage();
 
     /**
      * Clear the currently displayed image.
@@ -45,10 +46,10 @@ public:
     void clear();
 
     /**
-     * Return the current image file name.
+     * Return the current photo directory.
      **/
-    QString imageFileName() const { return m_imageFileName; }
-
+    PhotoDir * photoDir() const { return m_photoDir; }
+    
 protected:
 
     /**
@@ -58,7 +59,7 @@ protected:
     
 private:
 
-    QString                     m_imageFileName;
+    PhotoDir *                  m_photoDir;
     QGraphicsPixmapItem *       m_canvas;
     QPixmap                     m_origPixmap;
 };
