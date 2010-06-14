@@ -13,6 +13,7 @@
 
 class QGraphicsPixmapItem;
 class QResizeEvent;
+class QKeyEvent;
 class PhotoDir;
 
 
@@ -56,6 +57,11 @@ protected:
      * Reimplemented from QGraphicsView/QWidget
      */
     virtual void resizeEvent ( QResizeEvent * event );
+
+    /**
+     * Reimplemented from QGraphicsView
+     */
+    virtual void keyPressEvent( QKeyEvent * event );
     
 private:
 

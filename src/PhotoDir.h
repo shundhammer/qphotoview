@@ -64,12 +64,6 @@ public:
     Photo * photo( int index ) const;
 
     /**
-     * Alias for photo( int index ): Return the photo with the specifed index
-     * or 0 if there is no photo with that index.
-     */
-    Photo * operator[](int index ) const { return photo( index ); }
-
-    /**
      * Return the current Photo.
      */
     Photo * current() const;
@@ -120,30 +114,14 @@ public:
     Photo * toLast();
 
     /**
-     * Make the next photo the current one and return it
-     * (or 0 if there is no next one).
+     * Make the next photo the current one and return it.
      */
     Photo * toNext();
     
     /**
-     * Make the previous photo the current one and return it
-     * (or 0 if there is no previous one).
+     * Make the previous photo the current one and return it.
      */
     Photo * toPrevious();
-
-    /**
-     * Prefix ++ operator: Alias for toNext():
-     * Make the next photo the current one and return it
-     * (or 0 if there is no next one).
-     */
-    Photo * operator++() { return toNext(); }
-
-    /**
-     * Prefix -- operator: Alias for toPrevious():
-     * Make the previous photo the current one and return it
-     * (or 0 if there is no previous one).
-     */
-    Photo * operator--() { return toPrevious(); }
 
     /**
      * Begin prefetching photos.

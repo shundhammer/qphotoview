@@ -10,6 +10,7 @@
 #include <QGraphicsPixmapItem>
 #include <QWindowsStyle>
 #include <QResizeEvent>
+#include <QKeyEvent>
 #include <QDebug>
 
 #include "PhotoView.h"
@@ -36,10 +37,13 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     QPalette pal = palette();
     pal.setColor( QPalette::Base, Qt::black );
     setPalette( pal );
+    setFrameStyle( QFrame::NoFrame );
 
+#if 1
     setVerticalScrollBarPolicy  ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setDragMode( QGraphicsView::ScrollHandDrag );
+#endif
 
     // Some styles (e.g. Plastique) have an undesired two pixel wide focus rect
     // around QGraphicsView widgets. This is not what we want here, so let's
@@ -47,17 +51,6 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     // existing or future child widgets. And since scroll bars are turned off,
     // there is no other visual effect anyway.
     setStyle( new QWindowsStyle() );
-
-#if 1
-    qDebug() << "PhotoDir path:" << m_photoDir->path();
-
-    for ( int i=0; i < m_photoDir->size(); ++i )
-    {
-        qDebug() << "\t" << i << ":" << m_photoDir->photo( i )->fileName();
-    }
-
-    qDebug() << "Current:" << m_photoDir->currentIndex();
-#endif
 }
 
 
@@ -80,26 +73,35 @@ bool PhotoView::loadImage()
     if ( ! photo )
         return false;
 
-    QString imageFileName = photo->fullPath();
+    m_origPixmap = photo->pixmap();
+    qDebug() << photo->fileName() << "Size:" << m_origPixmap.size();
 
-    bool success = m_origPixmap.load( imageFileName );
-
-    if ( success )
+    if ( ! m_origPixmap.isNull() )
     {
-        QPixmap pixmap = m_origPixmap.scaled( size(), Qt::KeepAspectRatio,
+        QPixmap pixmap = m_origPixmap.scaled( size(),
+                                              Qt::KeepAspectRatio,
                                               Qt::SmoothTransformation );
         m_canvas->setPixmap( pixmap );
-        scene()->setSceneRect( QRectF( QPointF( 0, 0 ), pixmap.size() ) );
-        setWindowTitle( "QPhotoView  " + imageFileName );
+        setWindowTitle( "QPhotoView  " + photo->fileName() );
+        
+        //
+        // Center m_canvas
+        //
+        
+        qreal x = ( size().width()  - pixmap.width()  ) / 2.0;
+        qreal y = ( size().height() - pixmap.height() ) / 2.0;
+        m_canvas->setPos( x, y );
+        
+        setSceneRect( 0, 0, size().width(), size().height() );
     }
     else
     {
-        qWarning() << "Error: Can't display image" << imageFileName;
+        qWarning() << "Error: Can't display image" << photo->fullPath();
         clear();
         setWindowTitle( "QPhotoView -- ERROR" );
     }
 
-    return success;
+    return ! m_origPixmap.isNull();
 }
 
 
@@ -115,12 +117,68 @@ void PhotoView::resizeEvent ( QResizeEvent * event )
 {
     if ( event->size() != event->oldSize() && ! m_origPixmap.isNull() )
     {
-#if 0
-        QPixmap pixmap = m_origPixmap.scaled( size(), Qt::KeepAspectRatio,
-                                            Qt::SmoothTransformation );
+        //
+        // Resize pixmap
+        //
+        
+        QPixmap pixmap = m_origPixmap.scaled( event->size(),
+                                              Qt::KeepAspectRatio,
+                                              Qt::SmoothTransformation );
         m_canvas->setPixmap( pixmap );
-#endif
-    }
 
-    QGraphicsView::resizeEvent( event );
+        //
+        // Center m_canvas
+        //
+        
+        qreal x = ( event->size().width()  - pixmap.width()  ) / 2.0;
+        qreal y = ( event->size().height() - pixmap.height() ) / 2.0;
+        m_canvas->setPos( x, y );
+        
+        setSceneRect( 0, 0, event->size().width(), event->size().height() );
+    }
+}
+
+
+void PhotoView::keyPressEvent( QKeyEvent * event )
+{
+    if ( ! event )
+	return;
+
+    switch ( event->key() )
+    {
+	case Qt::Key_PageDown:
+	case Qt::Key_Space:
+            m_photoDir->toNext();
+            loadImage();
+	    break;
+
+	case Qt::Key_PageUp:
+	case Qt::Key_Backspace:
+            
+            m_photoDir->toPrevious();
+            loadImage();
+	    break;
+
+	case Qt::Key_Home:
+            m_photoDir->toFirst();
+            loadImage();
+	    break;
+
+	case Qt::Key_End:
+            m_photoDir->toLast();
+            loadImage();
+	    break;
+
+	case Qt::Key_Q:
+	case Qt::Key_Escape:
+	    qApp->quit();
+	    break;
+
+	case Qt::Key_Return:
+	    setWindowState( windowState() ^ Qt::WindowFullScreen );
+	    break;
+	    
+	default:
+	    QGraphicsView::keyPressEvent( event );
+    }
 }

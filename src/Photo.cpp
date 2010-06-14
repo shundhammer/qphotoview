@@ -41,7 +41,7 @@ Photo::~Photo()
 
 QPixmap Photo::pixmap()
 {
-    QPixmap px;
+    QPixmap px( fullPath() );
     
     return px;
 }
@@ -49,7 +49,7 @@ QPixmap Photo::pixmap()
 
 QPixmap Photo::pixmap( const QSize & size )
 {
-    QPixmap px( size );
+    QPixmap px;
     
     return px;
 }
