@@ -19,7 +19,7 @@ QString Fraction::toString() const
 {
     if ( m_denominator == 0 )
         return "0";
-    
+
     QString result;
 
     if ( isInt() )

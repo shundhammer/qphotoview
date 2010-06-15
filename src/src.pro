@@ -9,6 +9,7 @@ SOURCES =               \
     PhotoView.cpp       \
     PhotoDir.cpp        \
     Photo.cpp           \
+    PrefetchCache.cpp   \
     Fraction.cpp
 
 
@@ -18,6 +19,7 @@ HEADERS =               \
     PhotoView.h         \
     PhotoDir.h          \
     Photo.h             \
+    PrefetchCache.h     \
     Fraction.h
 
 

@@ -54,6 +54,12 @@ public:
 protected:
 
     /**
+     * Reload the current photo in the specified size.
+     * Return 'true' on success, 'false' on error.
+     */
+    bool reloadCurrent( const QSize & size );
+
+    /**
      * Reimplemented from QGraphicsView/QWidget
      */
     virtual void resizeEvent ( QResizeEvent * event );
@@ -67,7 +73,6 @@ private:
 
     PhotoDir *                  m_photoDir;
     QGraphicsPixmapItem *       m_canvas;
-    QPixmap                     m_origPixmap;
 };
 
 

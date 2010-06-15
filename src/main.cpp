@@ -27,12 +27,12 @@ int main ( int argc, char *argv[] )
 
     if ( argc > 1 )
         path = argv[1];
-    
+
     PhotoDir dir( path );
     PhotoView viewer( &dir );
-    
+
     viewer.show();
     app.exec();
-    
+
     return 0;
 }

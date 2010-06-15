@@ -35,28 +35,23 @@ public:
     virtual ~Photo();
 
     /**
-     * Return the full size pixmap of the photo.
-     * If the photo is not loaded yet, it will be loaded first.
+     * Return the full size pixmap of this photo.
      */
-    QPixmap pixmap();
+    QPixmap fullSizePixmap();
 
     /**
-     * Return the pixmap of the photo resized to the specified size.
-     * If the photo is not loaded yet, it will be loaded first.
-     * Notice that this may be more efficient than fetching the full size
-     * pixmap with pixmap() and scaling it down since a pixmap of this size
-     * might be available in a cache.
+     * Return the pixmap of this photo resized to the specified size.
+     * This might use a cached pixmap that gets scaled down.
      */
     QPixmap pixmap( const QSize & size );
 
     /**
      * Clear any cached pixmaps for this photo.
      */
-    void clearCachedPixmap();
+    void dropCache();
 
     /**
      * Return the original pixel size of the photo.
-     * If the photo is not loaded yet, it will be loaded first.
      */
     QSize size();
 
@@ -119,7 +114,7 @@ public:
      * the pixmap of another photo. This is meant for cache optimization
      * purposes.
      */
-    long lastPixmapAccess() { return m_lastPixmapAccess; }
+    long lastCachedPixmapAccess() { return m_lastPixmapAccess; }
 
     /**
      * Return a timestamp when the thumbnail for this photo was last

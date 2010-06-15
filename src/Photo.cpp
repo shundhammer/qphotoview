@@ -12,6 +12,7 @@
 
 #include "Photo.h"
 #include "PhotoDir.h"
+#include "PrefetchCache.h"
 
 long  Photo::m_pixmapAccessCount      = 0;
 long  Photo::m_thumbnailAccessCount   = 0;
@@ -48,31 +49,50 @@ Photo::~Photo()
 }
 
 
-QPixmap Photo::pixmap()
+QPixmap Photo::fullSizePixmap()
 {
-    QPixmap px( fullPath() );
-    m_lastPixmapAccess = ++m_pixmapAccessCount;
-    // In theory, here should be a Check for integer overflow.
-    // In the real world, this won't ever be relevant.
+    QPixmap pixmap( fullPath() );
+    m_size = pixmap.size();
 
-    return px;
+    return pixmap;
 }
 
 
 QPixmap Photo::pixmap( const QSize & size )
 {
-    QPixmap px;
+    QPixmap scaledPixmap;
+
+    if ( m_pixmap.isNull() )
+    {
+        if ( m_photoDir && m_photoDir->prefetchCache() )
+        {
+            m_pixmap = m_photoDir->prefetchCache()->pixmap( m_fileName );
+            m_size   = m_photoDir->prefetchCache()->pixelSize( m_fileName );
+        }
+    }
+
+    qreal scaleFac = scaleFactor( m_pixmap.size(), size );
+
+    if ( scaleFac <= 1.0 ) // not larger than cached pixmap
+    {
+        scaledPixmap = scale( m_pixmap, scaleFac );
+    }
+    else // larger than cached pixmap
+    {
+        scaledPixmap = fullSizePixmap();
+        scaleFac     = scaleFactor( scaledPixmap.size(), size );
+        scaledPixmap = scale( scaledPixmap, scaleFac );
+    }
+
     m_lastPixmapAccess = ++m_pixmapAccessCount;
-    // In theory, here should be a Check for integer overflow.
-    // In the real world, this won't ever be relevant.
+    // In theory, here should be a check for integer overflow.
+    // In the real world, this won't ever be relevant, so we don't bother.
 
-    Q_UNUSED( size );
-
-    return px;
+    return scaledPixmap;
 }
 
 
-void Photo::clearCachedPixmap()
+void Photo::dropCache()
 {
     m_pixmap = QPixmap();
 }
@@ -81,8 +101,8 @@ void Photo::clearCachedPixmap()
 QPixmap Photo::thumbnail()
 {
     m_lastThumbnailAccess = ++m_thumbnailAccessCount;
-    // In theory, here should be a Check for integer overflow.
-    // In the real world, this won't ever be relevant.
+    // In theory, here should be a check for integer overflow.
+    // In the real world, this won't ever be relevant, so we don't bother.
 
     QPixmap thumb;
 

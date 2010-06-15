@@ -13,6 +13,7 @@
 
 #include "PhotoDir.h"
 #include "Photo.h"
+#include "PrefetchCache.h"
 
 
 PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
@@ -29,6 +30,20 @@ PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
         startPhotoName = fileInfo.fileName();
     }
 
+    m_prefetchCache = new PrefetchCache( m_path );
+    read( m_path, startPhotoName );
+}
+
+
+PhotoDir::~PhotoDir()
+{
+    qDeleteAll( m_photos );
+    delete m_prefetchCache;
+}
+
+
+void PhotoDir::read( const QString & dirPath, const QString & startPhotoName )
+{
     QStringList nameFilters;
     nameFilters << "*.jpg" << "*.jpeg" << "*.JPG" << "*.JPEG";
 
@@ -45,7 +60,7 @@ PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
                     << "*.pbm"  << "*.PBM";
     }
 
-    QDir dir ( m_path );
+    QDir dir ( dirPath );
     m_path = dir.absolutePath();
     QStringList imageFileNames = dir.entryList( nameFilters,
                                                 QDir::Files,  // wanted type
@@ -62,12 +77,6 @@ PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
 
     if ( ! m_photos.isEmpty() && m_current < 0 )
         m_current = 0;
-}
-
-
-PhotoDir::~PhotoDir()
-{
-    qDeleteAll( m_photos );
 }
 
 
@@ -177,17 +186,43 @@ Photo * PhotoDir::toPrevious()
 
 void PhotoDir::prefetch()
 {
-    // TO DO
-    // TO DO
-    // TO DO
+    if ( m_photos.isEmpty() )
+        return;
+
+    QStringList jobs;
+    int last = m_photos.size()-1;
+
+    if ( m_current >= 0   )     addJob( jobs, m_current   );
+    if ( m_current < last )     addJob( jobs, m_current+1 );
+    if ( m_current > 0    )     addJob( jobs, m_current-1 );
+
+    if ( m_current > 1      )   addJob( jobs, 0 );
+    if ( last > m_current+1 )   addJob( jobs, last );
+
+    for ( int i = m_current+2; i < last; ++i )
+        addJob( jobs, i );
+
+    for ( int i = m_current-2; i > 0; --i )
+        addJob( jobs,  i );
+
+    m_prefetchCache->prefetch( jobs );
 }
 
 
-void PhotoDir::obsoletePrefetchedPhotos()
+void PhotoDir::addJob( QStringList & jobs, int index )
 {
-    // TO DO
-    // TO DO
-    // TO DO
+    jobs.append( m_photos.at( index )->fileName() );
+}
+
+
+void PhotoDir::dropCache()
+{
+    m_prefetchCache->clear();
+
+    foreach ( Photo * photo, m_photos )
+    {
+        photo->dropCache();
+    }
 }
 
 

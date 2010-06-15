@@ -28,9 +28,6 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     setScene( new QGraphicsScene );
     m_canvas = scene()->addPixmap( QPixmap() );
 
-    if ( ! m_photoDir->isEmpty() )
-        loadImage();
-
     //
     // Visual tweaks
     //
@@ -52,6 +49,16 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     // existing or future child widgets. And since scroll bars are turned off,
     // there is no other visual effect anyway.
     setStyle( new QWindowsStyle() );
+
+
+    //
+    // Load images
+    //
+
+    m_photoDir->prefetch();
+
+    if ( ! m_photoDir->isEmpty() )
+        loadImage();
 }
 
 
@@ -69,72 +76,76 @@ PhotoView::~PhotoView()
 
 bool PhotoView::loadImage()
 {
-    Photo * photo = m_photoDir->current();
+    bool success = reloadCurrent( size() );
 
-    if ( ! photo )
-        return false;
-
-    m_origPixmap = photo->pixmap();
-    // qDebug() << "Loading" << photo->fileName() << "Size:" << m_origPixmap.size();
-
-    if ( ! m_origPixmap.isNull() )
+    if ( success )
     {
-        qreal scaleFactor = Photo::scaleFactor( m_origPixmap.size(), size() );
-        QPixmap pixmap = Photo::scale( m_origPixmap, scaleFactor );
-        m_canvas->setPixmap( pixmap );
-        setWindowTitle( "QPhotoView  " + photo->fileName() );
+        Photo * photo = m_photoDir->current();
 
-        //
-        // Center m_canvas
-        //
+        if ( success && photo )
+        {
+            QString title( "QPhotoView  " + photo->fileName() );
 
-        qreal x = ( size().width()  - pixmap.width()  ) / 2.0;
-        qreal y = ( size().height() - pixmap.height() ) / 2.0;
-        m_canvas->setPos( x, y );
+            if ( photo->size().isValid() )
+            {
+                title += QString( "  %1 x %2" )
+                    .arg( photo->size().width() )
+                    .arg( photo->size().height() );
+            }
 
-        setSceneRect( 0, 0, size().width(), size().height() );
+            setWindowTitle( title );
+        }
     }
-    else
+    else // ! success
     {
-        qWarning() << "Error: Can't display image" << photo->fullPath();
         clear();
         setWindowTitle( "QPhotoView -- ERROR" );
     }
 
-    return ! m_origPixmap.isNull();
+    return success;
 }
 
 
 void PhotoView::clear()
 {
-    m_origPixmap = QPixmap();
-    m_canvas->setPixmap( m_origPixmap );
+    m_canvas->setPixmap( QPixmap() );
     setWindowTitle( "QPhotoView" );
 }
 
 
 void PhotoView::resizeEvent ( QResizeEvent * event )
 {
-    if ( event->size() != event->oldSize() && ! m_origPixmap.isNull() )
+    if ( event->size() != event->oldSize() )
     {
-        //
-        // Resize pixmap
-        //
-
-        qreal scaleFactor = Photo::scaleFactor( m_origPixmap.size(), event->size() );
-        QPixmap pixmap = Photo::scale( m_origPixmap, scaleFactor );
-        m_canvas->setPixmap( pixmap );
-
-        //
-        // Center m_canvas
-        //
-
-        qreal x = ( event->size().width()  - pixmap.width()  ) / 2.0;
-        qreal y = ( event->size().height() - pixmap.height() ) / 2.0;
-        m_canvas->setPos( x, y );
-
-        setSceneRect( 0, 0, event->size().width(), event->size().height() );
+        reloadCurrent( event->size() );
     }
+}
+
+
+bool PhotoView::reloadCurrent( const QSize & size )
+{
+    Photo * photo = m_photoDir->current();
+
+    if ( ! photo )
+        return false;
+
+    QPixmap pixmap = photo->pixmap( size );
+    m_canvas->setPixmap( pixmap );
+
+    if ( pixmap.isNull() )
+        return false;
+
+    //
+    // Center m_canvas
+    //
+
+    qreal x = ( size.width()  - pixmap.width()  ) / 2.0;
+    qreal y = ( size.height() - pixmap.height() ) / 2.0;
+    m_canvas->setPos( x, y );
+
+    setSceneRect( 0, 0, size.width(), size.height() );
+
+    return true;
 }
 
 
@@ -179,17 +190,19 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 
         case Qt::Key_B:
             {
+                const int max=10;
                 qDebug() << "*** Benchmark start";
                 QTime time;
                 time.start();
 
-                for ( int i=0; i < 10; ++i )
+                for ( int i=0; i < max; ++i )
                 {
                     m_photoDir->toNext();
                     loadImage();
                 }
                 qDebug() << "*** Benchmark end; time:"
-                         << time.elapsed() / 1000.0 << "sec";
+                         << time.elapsed() / 1000.0 << "sec /"
+                         << max << "images";
             }
 
 	default:

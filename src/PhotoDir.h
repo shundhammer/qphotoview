@@ -11,8 +11,10 @@
 
 #include <QString>
 #include <QList>
+#include <QSize>
 
 class Photo;
+class PrefetchCache;
 
 
 /**
@@ -129,10 +131,9 @@ public:
     void prefetch();
 
     /**
-     * Declare all prefetched photos obsolete, i.e. they may be removed from
-     * the prefetch cache if free cache size runs low.
+     * Drop (expensive) cached values like pixmaps.
      */
-    void obsoletePrefetchedPhotos();
+    void dropCache();
 
     /**
      * Take the specified photo out of this collection. Ownership is
@@ -147,6 +148,25 @@ public:
      */
     bool jpgOnly() const { return m_jpgOnly; }
 
+    /**
+     * Return the prefetch cache for this directory.
+     */
+    PrefetchCache * prefetchCache() const { return m_prefetchCache; }
+
+
+protected:
+
+    /**
+     * Read the disk directory 'dirPath', create a Photo object for each image
+     * file, and set m_current to the directory entry 'startPhotoName'.
+     */
+    void read( const QString & dirPath, const QString & startPhotoName );
+
+    /**
+     * Add a prefetch job for the photo with the specified index to 'jobs'.
+     */
+    void addJob( QStringList & jobs, int index );
+
 
 private:
 
@@ -154,6 +174,7 @@ private:
     QList<Photo *>      m_photos;
     int                 m_current;
     bool                m_jpgOnly;
+    PrefetchCache *     m_prefetchCache;
 };
 
 #endif // PhotoDir_h
