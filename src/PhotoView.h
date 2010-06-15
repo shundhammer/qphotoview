@@ -50,7 +50,7 @@ public:
      * Return the current photo directory.
      **/
     PhotoDir * photoDir() const { return m_photoDir; }
-    
+
 protected:
 
     /**
@@ -62,7 +62,7 @@ protected:
      * Reimplemented from QGraphicsView
      */
     virtual void keyPressEvent( QKeyEvent * event );
-    
+
 private:
 
     PhotoDir *                  m_photoDir;

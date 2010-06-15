@@ -46,7 +46,7 @@ public:
      * if a relative path or an image file was passed in the constructor.
      */
     QString path() const { return m_path; }
-    
+
     /**
      * Return the number of photos in this PhotoDir.
      */
@@ -117,7 +117,7 @@ public:
      * Make the next photo the current one and return it.
      */
     Photo * toNext();
-    
+
     /**
      * Make the previous photo the current one and return it.
      */

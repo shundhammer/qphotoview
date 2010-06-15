@@ -8,14 +8,23 @@
 
 #include <QFileInfo>
 #include <QDir>
+#include <QDebug>
 
 #include "Photo.h"
 #include "PhotoDir.h"
 
+long  Photo::m_pixmapAccessCount      = 0;
+long  Photo::m_thumbnailAccessCount   = 0;
+QSize Photo::m_thumbnailSize          = QSize( 120, 80 );
+
 
 Photo::Photo( const QString & fileName, PhotoDir *parentDir )
     : m_photoDir( parentDir )
+    , m_lastPixmapAccess( 0 )
+    , m_lastThumbnailAccess( 0 )
 {
+    // qDebug() << __PRETTY_FUNCTION__ << fileName << parentDir;
+
     if ( m_photoDir )
     {
         m_fileName = fileName;
@@ -42,7 +51,10 @@ Photo::~Photo()
 QPixmap Photo::pixmap()
 {
     QPixmap px( fullPath() );
-    
+    m_lastPixmapAccess = ++m_pixmapAccessCount;
+    // In theory, here should be a Check for integer overflow.
+    // In the real world, this won't ever be relevant.
+
     return px;
 }
 
@@ -50,16 +62,48 @@ QPixmap Photo::pixmap()
 QPixmap Photo::pixmap( const QSize & size )
 {
     QPixmap px;
-    
+    m_lastPixmapAccess = ++m_pixmapAccessCount;
+    // In theory, here should be a Check for integer overflow.
+    // In the real world, this won't ever be relevant.
+
+    Q_UNUSED( size );
+
     return px;
+}
+
+
+void Photo::clearCachedPixmap()
+{
+    m_pixmap = QPixmap();
+}
+
+
+QPixmap Photo::thumbnail()
+{
+    m_lastThumbnailAccess = ++m_thumbnailAccessCount;
+    // In theory, here should be a Check for integer overflow.
+    // In the real world, this won't ever be relevant.
+
+    QPixmap thumb;
+
+    return thumb;
+}
+
+
+void Photo::clearCachedThumbnail()
+{
+    m_thumbnail = QPixmap();
 }
 
 
 QSize Photo::size()
 {
-    QSize sz;
+    if ( ! m_size.isValid() )
+    {
+        // TO DO: Get original size
+    }
 
-    return sz;
+    return m_size;
 }
 
 
@@ -83,12 +127,12 @@ QString Photo::path() const
 QString Photo::fullPath() const
 {
     QString result = path();
-    
+
     if ( ! result.endsWith( QDir::separator() ) )
         result += QDir::separator();
 
     result += m_fileName;
-    
+
     return result;
 }
 
@@ -103,3 +147,74 @@ void Photo::reparent( PhotoDir * newParentDir )
 
     m_photoDir = newParentDir;
 }
+
+
+QSize Photo::scale( const QSize & origSize, const QSize & boundingSize )
+{
+    return origSize * scaleFactor( origSize, boundingSize );
+}
+
+
+qreal Photo::scaleFactor( const QSize & origSize, const QSize & boundingSize )
+{
+    if ( origSize.width() == 0 || origSize.height() == 0 )
+        return 0.0;
+
+    qreal scaleFactorX = boundingSize.width()  / ( (qreal) origSize.width()  );
+    qreal scaleFactorY = boundingSize.height() / ( (qreal) origSize.height() );
+
+    return qMin( scaleFactorX, scaleFactorY );
+}
+
+
+QPixmap Photo::scale( const QPixmap & origPixmap, qreal scaleFactor )
+{
+    if ( qFuzzyCompare( scaleFactor, 1.0 ) )
+        return origPixmap;
+
+    if ( origPixmap.isNull() )
+        return origPixmap;
+
+    QPixmap pixmap( origPixmap );
+
+#if 0
+    // This turned out to be counterproductive: Qt optimizes far better than we
+    // can. Benchmarks show that Qt::FastTransformation is only about 10%
+    // faster than Qt::SmoothTransformation. Calling QPixmap::scaled() twice,
+    // however, is more costly than that small benefit, so the idea of doing a
+    // two-step scaling (one with Qt::FastTransformation to get near the
+    // desired size and one with Qt::SmoothScale for optimum results)
+    // backfires: It is actually more expensive than scaling with
+    // Qt::SmoothScale immediately.
+
+    if ( scaleFactor < 1.0 )
+    {
+        qreal tmpScaleFactor = scaleFactor * 1.1;
+
+        if ( tmpScaleFactor < 0.9 )
+        {
+            // Optimization: Fast but crude approximation to the real result:
+            // Use fast transformation in a first step to drastically reduce
+            // the number of (original) pixels to be considered in the smooth
+            // (but exact) transformation.
+
+            pixmap = pixmap.scaled( tmpScaleFactor * origPixmap.size(),
+                                    Qt::KeepAspectRatio,
+                                    Qt::FastTransformation );
+        }
+    }
+    else if ( scaleFactor > 1.2 )
+    {
+        pixmap = pixmap.scaled( (scaleFactor - 0.1 ) * origPixmap.size(),
+                                Qt::KeepAspectRatio,
+                                Qt::FastTransformation );
+    }
+#endif
+
+    pixmap = pixmap.scaled( scaleFactor * origPixmap.size(),
+                            Qt::KeepAspectRatio,
+                            Qt::SmoothTransformation );
+
+    return pixmap;
+}
+

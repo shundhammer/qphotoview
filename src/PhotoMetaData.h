@@ -54,13 +54,13 @@ class PhotoMetaData
     /**
      * Return the true focal length. For most digital cameras (except full
      * frame cameras like the Nikon D700/D3 or the Canon 5D) this is not the
-     * same as the 35 mm equivalent focal length. 
+     * same as the 35 mm equivalent focal length.
      */
     int focalLength() const;
 
     /**
      * Return the focal length in 35 mm (full frame) equivalent
-     * or 0 if unknown.  
+     * or 0 if unknown.
      */
     int focalLength35mmEquiv() const;
 

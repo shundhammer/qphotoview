@@ -11,6 +11,7 @@
 #include <QWindowsStyle>
 #include <QResizeEvent>
 #include <QKeyEvent>
+#include <QTime>
 #include <QDebug>
 
 #include "PhotoView.h"
@@ -74,24 +75,23 @@ bool PhotoView::loadImage()
         return false;
 
     m_origPixmap = photo->pixmap();
-    qDebug() << photo->fileName() << "Size:" << m_origPixmap.size();
+    // qDebug() << "Loading" << photo->fileName() << "Size:" << m_origPixmap.size();
 
     if ( ! m_origPixmap.isNull() )
     {
-        QPixmap pixmap = m_origPixmap.scaled( size(),
-                                              Qt::KeepAspectRatio,
-                                              Qt::SmoothTransformation );
+        qreal scaleFactor = Photo::scaleFactor( m_origPixmap.size(), size() );
+        QPixmap pixmap = Photo::scale( m_origPixmap, scaleFactor );
         m_canvas->setPixmap( pixmap );
         setWindowTitle( "QPhotoView  " + photo->fileName() );
-        
+
         //
         // Center m_canvas
         //
-        
+
         qreal x = ( size().width()  - pixmap.width()  ) / 2.0;
         qreal y = ( size().height() - pixmap.height() ) / 2.0;
         m_canvas->setPos( x, y );
-        
+
         setSceneRect( 0, 0, size().width(), size().height() );
     }
     else
@@ -120,20 +120,19 @@ void PhotoView::resizeEvent ( QResizeEvent * event )
         //
         // Resize pixmap
         //
-        
-        QPixmap pixmap = m_origPixmap.scaled( event->size(),
-                                              Qt::KeepAspectRatio,
-                                              Qt::SmoothTransformation );
+
+        qreal scaleFactor = Photo::scaleFactor( m_origPixmap.size(), event->size() );
+        QPixmap pixmap = Photo::scale( m_origPixmap, scaleFactor );
         m_canvas->setPixmap( pixmap );
 
         //
         // Center m_canvas
         //
-        
+
         qreal x = ( event->size().width()  - pixmap.width()  ) / 2.0;
         qreal y = ( event->size().height() - pixmap.height() ) / 2.0;
         m_canvas->setPos( x, y );
-        
+
         setSceneRect( 0, 0, event->size().width(), event->size().height() );
     }
 }
@@ -154,7 +153,7 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 
 	case Qt::Key_PageUp:
 	case Qt::Key_Backspace:
-            
+
             m_photoDir->toPrevious();
             loadImage();
 	    break;
@@ -177,7 +176,22 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	case Qt::Key_Return:
 	    setWindowState( windowState() ^ Qt::WindowFullScreen );
 	    break;
-	    
+
+        case Qt::Key_B:
+            {
+                qDebug() << "*** Benchmark start";
+                QTime time;
+                time.start();
+
+                for ( int i=0; i < 10; ++i )
+                {
+                    m_photoDir->toNext();
+                    loadImage();
+                }
+                qDebug() << "*** Benchmark end; time:"
+                         << time.elapsed() / 1000.0 << "sec";
+            }
+
 	default:
 	    QGraphicsView::keyPressEvent( event );
     }
