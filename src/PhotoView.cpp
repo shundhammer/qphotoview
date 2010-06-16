@@ -23,6 +23,9 @@
 PhotoView::PhotoView( PhotoDir * photoDir )
     : QGraphicsView()
     , m_photoDir( photoDir )
+    , m_zoomMode( ZoomFitImage )
+    , m_zoomFactor( 0.0  )
+    , m_zoomIncrement( 1.2 )
 {
     Q_CHECK_PTR( photoDir );
     setScene( new QGraphicsScene );
@@ -78,6 +81,7 @@ PhotoView::~PhotoView()
 
 bool PhotoView::loadImage()
 {
+    m_zoomMode = ZoomFitImage;
     bool success = reloadCurrent( size() );
 
     if ( success )
@@ -131,7 +135,64 @@ bool PhotoView::reloadCurrent( const QSize & size )
     if ( ! photo )
         return false;
 
-    QPixmap pixmap = photo->pixmap( size );
+    QPixmap pixmap;
+    QSize origSize = photo->size();
+
+    switch ( m_zoomMode )
+    {
+        case NoZoom:
+            pixmap = photo->fullSizePixmap();
+            m_zoomFactor = 1.0;
+            break;
+
+
+        case ZoomFitImage:
+            pixmap = photo->pixmap( size );
+
+            if ( origSize.width() != 0 )
+                m_zoomFactor = pixmap.width() / (qreal) origSize.width();
+            break;
+
+
+        case ZoomFitWidth:
+
+            if ( origSize.width() != 0 )
+            {
+                m_zoomFactor = size.width() / (qreal) origSize.width();
+                pixmap = photo->pixmap( m_zoomFactor * origSize );
+            }
+            break;
+
+
+        case ZoomFitHeight:
+
+            if ( origSize.height() != 0 )
+            {
+                m_zoomFactor = size.height() / (qreal) origSize.height();
+                pixmap = photo->pixmap( m_zoomFactor * origSize );
+            }
+            break;
+
+
+        case ZoomFitBest:
+
+            if ( origSize.width() != 0 && origSize.height() != 0 )
+            {
+                qreal zoomFactorX = size.width()  / (qreal) origSize.width();
+                qreal zoomFactorY = size.height() / (qreal) origSize.height();
+                m_zoomFactor = qMax( zoomFactorX, zoomFactorY );
+                pixmap = photo->pixmap( m_zoomFactor * origSize );
+            }
+            break;
+
+        case UseZoomFactor:
+            pixmap = photo->pixmap( m_zoomFactor * origSize );
+            break;
+
+            // Deliberately omitting 'default' branch so the compiler will warn
+            // about unhandled enum values
+    };
+
     m_canvas->setPixmap( pixmap );
 
     if ( pixmap.isNull() )
@@ -143,7 +204,9 @@ bool PhotoView::reloadCurrent( const QSize & size )
 
     qreal x = ( size.width()  - pixmap.width()  ) / 2.0;
     qreal y = ( size.height() - pixmap.height() ) / 2.0;
-    m_canvas->setPos( x, y );
+
+    if ( x > 0.0 && y > 0.0 )
+        m_canvas->setPos( x, y );
 
     setSceneRect( 0, 0, size.width(), size.height() );
 
@@ -151,46 +214,130 @@ bool PhotoView::reloadCurrent( const QSize & size )
 }
 
 
+void PhotoView::setZoomMode( ZoomMode mode )
+{
+    m_zoomMode = mode;
+    reloadCurrent( size() );
+}
+
+
+void PhotoView::setZoomFactor( qreal factor )
+{
+    m_zoomFactor = factor;
+
+    if ( qFuzzyCompare( m_zoomFactor, 1.0 ) )
+        setZoomMode( NoZoom );
+    else
+        setZoomMode( UseZoomFactor );
+}
+
+
+void PhotoView::zoomIn()
+{
+    if ( ! qFuzzyCompare( m_zoomIncrement, 0.0 ) )
+        setZoomFactor( m_zoomFactor * m_zoomIncrement );
+}
+
+
+void PhotoView::zoomOut()
+{
+    if ( ! qFuzzyCompare( m_zoomIncrement, 0.0 ) )
+        setZoomFactor( m_zoomFactor / m_zoomIncrement );
+}
+
+
 void PhotoView::keyPressEvent( QKeyEvent * event )
 {
     if ( ! event )
-	return;
+        return;
 
     switch ( event->key() )
     {
-	case Qt::Key_PageDown:
-	case Qt::Key_Space:
+        case Qt::Key_PageDown:
+        case Qt::Key_Space:
             m_photoDir->toNext();
             loadImage();
-	    break;
+            break;
 
-	case Qt::Key_PageUp:
-	case Qt::Key_Backspace:
+        case Qt::Key_PageUp:
+        case Qt::Key_Backspace:
 
             m_photoDir->toPrevious();
             loadImage();
-	    break;
+            break;
 
-	case Qt::Key_Home:
+        case Qt::Key_Home:
             m_photoDir->toFirst();
             loadImage();
-	    break;
+            break;
 
-	case Qt::Key_End:
+        case Qt::Key_End:
             m_photoDir->toLast();
             loadImage();
-	    break;
+            break;
 
-	case Qt::Key_Q:
-	case Qt::Key_Escape:
-	    qApp->quit();
-	    break;
+        case Qt::Key_F5: // Force reload
+            {
+                Photo * photo = m_photoDir->current();
 
-	case Qt::Key_Return:
-	    setWindowState( windowState() ^ Qt::WindowFullScreen );
-	    break;
+                if ( photo )
+                {
+                    photo->dropCache();
+                    loadImage();
+                }
+            }
+            break;
+
+        case Qt::Key_Plus:
+            zoomIn();
+            break;
+
+        case Qt::Key_Minus:
+            zoomOut();
+            break;
+
+        case Qt::Key_1:
+            setZoomMode( NoZoom );
+            break;
+
+        case Qt::Key_2:
+            setZoomFactor( 1/2.0 );
+            break;
+
+        case Qt::Key_4:
+            setZoomFactor( 1/4.0 );
+            break;
+
+        case Qt::Key_8:
+            setZoomFactor( 1/8.0 );
+            break;
+
+        case Qt::Key_M:
+            setZoomMode( ZoomFitImage );
+            break;
 
         case Qt::Key_B:
+            setZoomMode( ZoomFitBest );
+            break;
+
+        case Qt::Key_W:
+            setZoomMode( ZoomFitWidth );
+            break;
+
+        case Qt::Key_H:
+            setZoomMode( ZoomFitHeight );
+            break;
+
+        case Qt::Key_Q:
+        case Qt::Key_Escape:
+            qApp->quit();
+            break;
+
+        case Qt::Key_Return:
+            setWindowState( windowState() ^ Qt::WindowFullScreen );
+            break;
+
+        case Qt::Key_Y:
             {
                 const int max=10;
                 qDebug() << "*** Benchmark start";
@@ -207,7 +354,7 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
                          << max << "images";
             }
 
-	default:
-	    QGraphicsView::keyPressEvent( event );
+        default:
+            QGraphicsView::keyPressEvent( event );
     }
 }

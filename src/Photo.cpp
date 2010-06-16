@@ -121,7 +121,8 @@ QSize Photo::size()
 {
     if ( ! m_size.isValid() )
     {
-        // TO DO: Get original size
+        if ( m_photoDir && m_photoDir->prefetchCache() )
+            m_size = m_photoDir->prefetchCache()->pixelSize( m_fileName );
     }
 
     return m_size;
