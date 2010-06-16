@@ -10,6 +10,7 @@ SOURCES =               \
     PhotoDir.cpp        \
     Photo.cpp           \
     PrefetchCache.cpp   \
+    Panner.cpp          \
     Fraction.cpp
 
 
@@ -20,6 +21,7 @@ HEADERS =               \
     PhotoDir.h          \
     Photo.h             \
     PrefetchCache.h     \
+    Panner.h            \
     Fraction.h
 
 

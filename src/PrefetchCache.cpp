@@ -101,7 +101,7 @@ QSize PrefetchCache::pixelSize( const QString & imageFileName )
     if ( m_sizes.contains( imageFileName ) )
         return m_sizes.value( imageFileName );
     else
-        return QSize();
+        return pixmap( imageFileName ).size();
 }
 
 

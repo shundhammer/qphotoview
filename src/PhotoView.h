@@ -15,6 +15,8 @@ class QGraphicsPixmapItem;
 class QResizeEvent;
 class QKeyEvent;
 class PhotoDir;
+class Photo;
+class Panner;
 
 
 /**
@@ -131,6 +133,8 @@ private:
 
     PhotoDir *                  m_photoDir;
     QGraphicsPixmapItem *       m_canvas;
+    Photo *                     m_lastPhoto;
+    Panner *                    m_panner;
     ZoomMode                    m_zoomMode;
     qreal                       m_zoomFactor;
     qreal                       m_zoomIncrement;
