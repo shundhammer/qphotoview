@@ -27,6 +27,8 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     Q_CHECK_PTR( photoDir );
     setScene( new QGraphicsScene );
     m_canvas = scene()->addPixmap( QPixmap() );
+    m_canvas->setCursor( Qt::ArrowCursor );
+
 
     //
     // Visual tweaks

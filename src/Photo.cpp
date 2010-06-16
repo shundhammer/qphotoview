@@ -66,8 +66,9 @@ QPixmap Photo::pixmap( const QSize & size )
     {
         if ( m_photoDir && m_photoDir->prefetchCache() )
         {
-            m_pixmap = m_photoDir->prefetchCache()->pixmap( m_fileName );
             m_size   = m_photoDir->prefetchCache()->pixelSize( m_fileName );
+            m_pixmap = m_photoDir->prefetchCache()->pixmap( m_fileName,
+                                                            true ); // take
         }
     }
 

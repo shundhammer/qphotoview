@@ -76,8 +76,10 @@ public:
     /**
      * Get the pixmap for the specified file in full screen size, either from
      * the cache or directly from the disk file.
+     * If 'take' is true, the pixmap is taken out of the cache, i.e., the
+     * corresponding cached object is deleted.
      */
-    QPixmap pixmap( const QString & imageFileName );
+    QPixmap pixmap( const QString & imageFileName, bool take = false );
 
     /**
      * Return the original pixel size of the specified image.
@@ -94,28 +96,6 @@ public:
      */
     QString fullPath( const QString & imageFileName );
 
-    /**
-     * Statistics: Get the final (the expected) image count, i.e. the number of
-     * cached images plus the number of jobs in the job queue.
-     */
-    int finalImageCount();
-
-    /**
-     * Statistics: Get the count of current images in the cache.
-     */
-    int imageCount();
-
-    /**
-     * Return the number of cache hits when accessing pixmap().
-     */
-    int cacheHits()   const { return m_cacheHits;   }
-
-    /**
-     * Return the number of cache misses when accessing pixmap(), i.e. the
-     * number of times an image had to be loaded directly from file rather than
-     * from the cache.
-     */
-    int cacheMisses() const { return m_cacheMisses; }
 
     friend class PrefetchCacheWorkerThread;
 
@@ -128,8 +108,6 @@ private:
     QMutex	m_cacheMutex; // protects m_cache, m_sizes, m_jobQueue
     QSize	m_fullScreenSize;
     PrefetchCacheWorkerThread m_workerThread;
-    int		m_cacheHits;
-    int		m_cacheMisses;
 };
 
 

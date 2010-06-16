@@ -18,22 +18,18 @@ PrefetchCache::PrefetchCache( const QString & path )
     : m_path( path )
     , m_workerThread( this )
 {
-    m_cacheMisses = 0;
-    m_cacheHits   = 0;
-
     m_fullScreenSize = qApp->desktop()->screenGeometry().size();
 }
 
 
 PrefetchCache::~PrefetchCache()
 {
+    qDebug() << "Unused images in prefetch cache:" << m_cache.size()
+             << "(" << 100*m_cache.size() / m_sizes.size() << "%)";
     clear();
 
     if ( m_workerThread.isRunning() )
 	m_workerThread.wait();
-
-    qDebug() << "Prefetch cache hits:" << m_cacheHits
-	     << "cache misses:" << m_cacheMisses;
 }
 
 
@@ -53,7 +49,7 @@ void PrefetchCache::prefetch( const QStringList & fileNames )
 }
 
 
-QPixmap PrefetchCache::pixmap( const QString & imageFileName )
+QPixmap PrefetchCache::pixmap( const QString & imageFileName, bool take )
 {
     QImage image;
     bool cacheMiss = true;
@@ -63,8 +59,11 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName )
 
 	if ( m_cache.contains( imageFileName ) )
 	{
-	    image = m_cache.value( imageFileName );
-            ++m_cacheHits;
+            
+	    image = take ?
+                m_cache.take ( imageFileName ) :
+                m_cache.value( imageFileName );
+            
             cacheMiss = false;
             // qDebug() << "Prefetch cache hit:" << imageFileName;
 	}
@@ -72,8 +71,7 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName )
 
     if ( cacheMiss )
     {
-	++m_cacheMisses;
-	qDebug() << "Prefetch cache miss:" << imageFileName;
+	// qDebug() << "Prefetch cache miss:" << imageFileName;
 	image.load( fullPath( imageFileName ) );
         QSize size = image.size();
         qreal scaleFactor = Photo::scaleFactor( size, m_fullScreenSize );
@@ -86,7 +84,8 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName )
         }
 
 	QMutexLocker locker( &m_cacheMutex );
-	m_cache.insert( imageFileName, image );
+        if ( take )
+            m_cache.insert( imageFileName, image );
         m_sizes.insert( imageFileName, size  );
 
 	if ( m_jobQueue.contains( imageFileName ) )
@@ -128,20 +127,6 @@ QString PrefetchCache::fullPath( const QString & imageFileName )
 }
 
 
-int PrefetchCache::finalImageCount()
-{
-    QMutexLocker locker( &m_cacheMutex );
-    return m_cache.size() + m_jobQueue.size();
-}
-
-
-int PrefetchCache::imageCount()
-{
-    QMutexLocker locker( &m_cacheMutex );
-    return m_cache.size();
-}
-
-
 
 PrefetchCacheWorkerThread::PrefetchCacheWorkerThread( PrefetchCache * prefetchCache )
     : m_prefetchCache( prefetchCache )
@@ -161,9 +146,11 @@ void PrefetchCacheWorkerThread::run()
 
 	    if ( m_prefetchCache->m_jobQueue.isEmpty() )
 	    {
+#if 0
 		qDebug() << "Prefetch jobs done - terminating worker thread;"
 			 << "images in cache:"
                          << m_prefetchCache->m_cache.size();
+#endif
 		return;
 	    }
 
