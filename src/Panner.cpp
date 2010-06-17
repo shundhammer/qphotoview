@@ -22,11 +22,11 @@ static const int FrameThickness   = 4;
 static const int PanRectThickness = 3;
 
 
-Panner::Panner( const QSize & pannerMaxSize )
+Panner::Panner( const QSizeF & pannerMaxSize )
     : QGraphicsItem()
     , m_pannerMaxSize( pannerMaxSize )
 {
-    m_pannerMaxSize -= QSize( 2*FrameThickness, 2*FrameThickness );
+    m_pannerMaxSize -= QSizeF( 2*FrameThickness, 2*FrameThickness );
     m_size = m_pannerMaxSize;
 
     m_pixmapItem = new QGraphicsPixmapItem( this );
@@ -76,7 +76,7 @@ void Panner::setPixmap( const QPixmap & pixmap )
 
     m_size = pixmap.size();
     m_size.scale( m_pannerMaxSize, Qt::KeepAspectRatio );
-    m_size += QSize( 2*FrameThickness, 2*FrameThickness );
+    m_size += QSizeF( 2*FrameThickness, 2*FrameThickness );
 }
 
 
@@ -85,11 +85,12 @@ void Panner::lazyScalePixmap()
     if ( m_pixmap.isNull() )
         return;
 
-    QSize pannerPixmapSize = m_pixmap.size();
+    QSizeF pannerPixmapSize = m_pixmap.size();
     pannerPixmapSize.scale( m_pannerMaxSize, Qt::KeepAspectRatio );
 
     // This is expensive
-    QPixmap scaledPixmap = m_pixmap.scaled( pannerPixmapSize,
+    QPixmap scaledPixmap = m_pixmap.scaled( qRound( pannerPixmapSize.width() ),
+                                            qRound( pannerPixmapSize.height() ),
                                             Qt::KeepAspectRatio,
                                             Qt::SmoothTransformation );
     m_pixmapItem->setPixmap( scaledPixmap );
@@ -97,8 +98,8 @@ void Panner::lazyScalePixmap()
 }
 
 
-void Panner::updatePanRect( const QRect & visibleRect,
-                            const QSize & origSize )
+void Panner::updatePanRect( const QRectF & visibleRect,
+                            const QSizeF & origSize )
 {
     if ( ! visibleRect.isValid() )
     {
@@ -106,11 +107,12 @@ void Panner::updatePanRect( const QRect & visibleRect,
         return;
     }
 
-    if ( visibleRect.x() < 1 &&
-         visibleRect.y() < 1 &&
-         visibleRect.width()  >= origSize.width() &&
-         visibleRect.height() >= origSize.height()  )
+    qreal scaleX = visibleRect.width()  / origSize.width();
+    qreal scaleY = visibleRect.height() / origSize.height();
+
+    if ( scaleX > 0.99 && scaleY > 0.99 ) // Take rounding problems into account
     {
+        // qDebug() << "Complete image visible";
         hide();
         return;
     }

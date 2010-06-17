@@ -58,6 +58,13 @@ QPixmap Photo::fullSizePixmap()
 }
 
 
+QPixmap Photo::pixmap( const QSizeF & size )
+{
+    return pixmap( QSize( qRound( size.width()  ),
+                          qRound( size.height() ) ) );
+}
+
+
 QPixmap Photo::pixmap( const QSize & size )
 {
     QPixmap scaledPixmap;

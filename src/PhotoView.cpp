@@ -18,8 +18,8 @@
 #include "PhotoView.h"
 #include "PhotoDir.h"
 #include "Photo.h"
+#include "Canvas.h"
 #include "Panner.h"
-#include "Fraction.h"
 
 
 PhotoView::PhotoView( PhotoDir * photoDir )
@@ -27,13 +27,14 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     , m_photoDir( photoDir )
     , m_lastPhoto( 0 )
     , m_zoomMode( ZoomFitImage )
-    , m_zoomFactor( 0.0	 )
+    , m_zoomFactor( 1.0	 )
     , m_zoomIncrement( 1.2 )
 {
     Q_CHECK_PTR( photoDir );
     setScene( new QGraphicsScene );
-    m_canvas = scene()->addPixmap( QPixmap() );
-    m_canvas->setCursor( Qt::ArrowCursor );
+
+    m_canvas = new Canvas( this );
+    scene()->addItem( m_canvas );
 
     QSize pannerMaxSize( qApp->desktop()->screenGeometry().size() / 6 );
     m_panner = new Panner( pannerMaxSize );
@@ -119,7 +120,7 @@ bool PhotoView::loadImage()
 
 void PhotoView::clear()
 {
-    m_canvas->setPixmap( QPixmap() );
+    m_canvas->clear();
     setWindowTitle( "QPhotoView" );
 }
 
@@ -142,7 +143,7 @@ bool PhotoView::reloadCurrent( const QSize & size )
 	return false;
 
     QPixmap pixmap;
-    QSize origSize = photo->size();
+    QSizeF origSize = photo->size();
 
     switch ( m_zoomMode )
     {
@@ -156,7 +157,7 @@ bool PhotoView::reloadCurrent( const QSize & size )
 	    pixmap = photo->pixmap( size );
 
 	    if ( origSize.width() != 0 )
-		m_zoomFactor = pixmap.width() / (qreal) origSize.width();
+		m_zoomFactor = pixmap.width() / origSize.width();
 	    break;
 
 
@@ -164,7 +165,7 @@ bool PhotoView::reloadCurrent( const QSize & size )
 
 	    if ( origSize.width() != 0 )
 	    {
-		m_zoomFactor = size.width() / (qreal) origSize.width();
+		m_zoomFactor = size.width() / origSize.width();
 		pixmap = photo->pixmap( m_zoomFactor * origSize );
 	    }
 	    break;
@@ -174,7 +175,7 @@ bool PhotoView::reloadCurrent( const QSize & size )
 
 	    if ( origSize.height() != 0 )
 	    {
-		m_zoomFactor = size.height() / (qreal) origSize.height();
+		m_zoomFactor = size.height() / origSize.height();
 		pixmap = photo->pixmap( m_zoomFactor * origSize );
 	    }
 	    break;
@@ -184,8 +185,8 @@ bool PhotoView::reloadCurrent( const QSize & size )
 
 	    if ( origSize.width() != 0 && origSize.height() != 0 )
 	    {
-		qreal zoomFactorX = size.width()  / (qreal) origSize.width();
-		qreal zoomFactorY = size.height() / (qreal) origSize.height();
+		qreal zoomFactorX = size.width()  / origSize.width();
+		qreal zoomFactorY = size.height() / origSize.height();
 		m_zoomFactor = qMax( zoomFactorX, zoomFactorY );
 
 		pixmap = photo->pixmap( m_zoomFactor * origSize );
@@ -205,64 +206,66 @@ bool PhotoView::reloadCurrent( const QSize & size )
 
     if ( success )
     {
-	//
-	// Center m_canvas if it doesn't fill all available space
-	//
+        m_canvas->center( size );
 
-	qreal x = m_canvas->pos().x();
-	qreal y = m_canvas->pos().y();
-
-	if ( pixmap.width() < size.width() )
-	    x = ( size.width()	- pixmap.width()  ) / 2.0;
-	else if ( x > 0.0 )
-	    x = 0.0;
-
-	if ( pixmap.height() < size.height() )
-	    y = ( size.height() - pixmap.height() ) / 2.0;
-	else if ( y > 0.0 )
-	    y = 0.0;
-
-	m_canvas->setPos( x, y );
-
-
-	//
-	// Update panner
-	//
-
-        if ( size.width()  < m_panner->size().width()  * 2  ||
-             size.height() < m_panner->size().height() * 2  )
+        if ( photo != m_lastPhoto )
         {
-            // If the panner would take up more than half the available space
-            // in any direction, don't show it.
-
-            m_panner->hide();
+            m_panner->setPixmap( pixmap );
+            m_lastPhoto = photo;
         }
-        else
-        {
-            if ( photo != m_lastPhoto )
-            {
-                m_panner->setPixmap( pixmap );
-                m_lastPhoto = photo;
-            }
 
-            m_panner->setPos( qMax( x, 0.0 ),
-                              qMin( (qreal) size.height(), y + pixmap.height() )
-                              - m_panner->size().height() );
-
-            QPoint visiblePos( qMax( -x, 0.0 ),
-                               qMax( -y, 0.0 ) );
-            QSize visibleSize( qMin( size.width(),  pixmap.width()  ),
-                               qMin( size.height(), pixmap.height() ) );
-            QRect visibleRect( visiblePos  / m_zoomFactor,
-                               visibleSize / m_zoomFactor );
-
-            m_panner->updatePanRect( visibleRect, origSize );
-        }
+        updatePanner( size );
     }
 
     setSceneRect( 0, 0, size.width(), size.height() );
 
     return success;
+}
+
+
+void PhotoView::updatePanner( const QSizeF & viewportSize )
+{
+    if ( viewportSize.width()  < m_panner->size().width()  * 2  ||
+         viewportSize.height() < m_panner->size().height() * 2  )
+    {
+        // If the panner would take up more than half the available space
+        // in any direction, don't show it.
+
+        m_panner->hide();
+    }
+    else
+    {
+        Photo * photo = m_photoDir->current();
+
+        if ( ! photo )
+        {
+            m_panner->hide();
+        }
+        else
+        {
+            QSizeF  origSize   = photo->size();
+            QPointF canvasPos  = m_canvas->pos();
+            QSizeF  canvasSize = m_canvas->size();
+
+            m_panner->setPos( qMax( canvasPos.x(), 0.0 ),
+                              qMin( (qreal) viewportSize.height(),
+                                    canvasPos.y() + canvasSize.height() )
+                              - m_panner->size().height() );
+
+            QPointF visiblePos( qMax( -canvasPos.x(), 0.0 ),
+                                qMax( -canvasPos.y(), 0.0 ) );
+
+            QSizeF visibleSize( qMin( viewportSize.width(),
+                                      canvasSize.width()  ),
+                                qMin( viewportSize.height(),
+                                      canvasSize.height() ) );
+
+            QRectF visibleRect( visiblePos  / m_zoomFactor,
+                                visibleSize / m_zoomFactor );
+
+            m_panner->updatePanRect( visibleRect, origSize );
+        }
+    }
 }
 
 
@@ -351,7 +354,7 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	case Qt::Key_1:
             setZoomMode( NoZoom );
             break;
-            
+
 	case Qt::Key_2:	       setZoomFactor( 1/2.0 );	break;
 	case Qt::Key_3:	       setZoomFactor( 1/3.0 );	break;
 	case Qt::Key_4:	       setZoomFactor( 1/4.0 );	break;

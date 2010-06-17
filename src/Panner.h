@@ -31,7 +31,7 @@ public:
     /**
      * Constructor. Create a panner that is at most 'pannerMaxSize' big.
      */
-    Panner( const QSize & pannerMaxSize );
+    Panner( const QSizeF & pannerMaxSize );
 
     /**
      * Destructor.
@@ -54,7 +54,7 @@ public:
      * 'visibleRect' is the rectangle that is currently being displayed.
      * 'origSize' is the original full size of the image.
      */
-    void updatePanRect( const QRect & visibleRect, const QSize & origSize );
+    void updatePanRect( const QRectF & visibleRect, const QSizeF & origSize );
 
     /**
      * Reimplemented from QGraphicsItem: Paint the panner shape.
@@ -84,9 +84,7 @@ private:
 
     QGraphicsPixmapItem *       m_pixmapItem;
     QGraphicsRectItem *         m_panRect;
-    QRect                       m_visibleRect;
-    QSize                       m_pixmapSize;
-    QSize                       m_pannerMaxSize;
+    QSizeF                      m_pannerMaxSize;
     QPixmap                     m_pixmap;
     qreal                       m_scale;
     QSizeF                      m_size;

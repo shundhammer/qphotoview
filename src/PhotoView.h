@@ -16,6 +16,7 @@ class QResizeEvent;
 class QKeyEvent;
 class PhotoDir;
 class Photo;
+class Canvas;
 class Panner;
 
 
@@ -30,12 +31,12 @@ public:
 
     typedef enum
     {
-        NoZoom = 0,     // 1:1 (1 original pixel is one screen pixel)
-        ZoomFitImage,   // Fit complete image into window to avoid all scrolling
-        ZoomFitWidth,   // Fit width  into window, scroll only up and down
-        ZoomFitHeight,  // Fit height into window, scroll only left and right
-        ZoomFitBest,    // Fit width or height, whichever is better
-        UseZoomFactor   // Use arbitrary zoom factor
+	NoZoom = 0,	// 1:1 (1 original pixel is one screen pixel)
+	ZoomFitImage,	// Fit complete image into window to avoid all scrolling
+	ZoomFitWidth,	// Fit width  into window, scroll only up and down
+	ZoomFitHeight,	// Fit height into window, scroll only left and right
+	ZoomFitBest,	// Fit width or height, whichever is better
+	UseZoomFactor	// Use arbitrary zoom factor
     } ZoomMode;
 
 
@@ -120,6 +121,11 @@ protected:
     bool reloadCurrent( const QSize & size );
 
     /**
+     * Update the panner based on the specified viewport size.
+     */
+    void updatePanner( const QSizeF & viewportSize );
+
+    /**
      * Reimplemented from QGraphicsView/QWidget
      */
     virtual void resizeEvent ( QResizeEvent * event );
@@ -131,13 +137,13 @@ protected:
 
 private:
 
-    PhotoDir *                  m_photoDir;
-    QGraphicsPixmapItem *       m_canvas;
-    Photo *                     m_lastPhoto;
-    Panner *                    m_panner;
-    ZoomMode                    m_zoomMode;
-    qreal                       m_zoomFactor;
-    qreal                       m_zoomIncrement;
+    PhotoDir *	m_photoDir;
+    Canvas *	m_canvas;
+    Panner *	m_panner;
+    Photo *	m_lastPhoto;
+    ZoomMode	m_zoomMode;
+    qreal	m_zoomFactor;
+    qreal	m_zoomIncrement;
 };
 
 

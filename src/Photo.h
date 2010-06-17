@@ -43,7 +43,8 @@ public:
      * Return the pixmap of this photo resized to the specified size.
      * This might use a cached pixmap that gets scaled down.
      */
-    QPixmap pixmap( const QSize & size );
+    QPixmap pixmap( const QSize  & size );
+    QPixmap pixmap( const QSizeF & size );
 
     /**
      * Clear any cached pixmaps for this photo.
