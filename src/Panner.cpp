@@ -17,14 +17,17 @@
 #include <QDebug>
 
 #include "Panner.h"
+#include "PhotoView.h"
+#include "Canvas.h"
 
 static const int FrameThickness   = 4;
 static const int PanRectThickness = 3;
 
 
-Panner::Panner( const QSizeF & pannerMaxSize )
+Panner::Panner( const QSizeF & pannerMaxSize, PhotoView * photoView )
     : QGraphicsItem()
     , m_pannerMaxSize( pannerMaxSize )
+    , m_photoView( photoView )
 {
     m_pannerMaxSize -= QSizeF( 2*FrameThickness, 2*FrameThickness );
     m_size = m_pannerMaxSize;
@@ -107,14 +110,19 @@ void Panner::updatePanRect( const QRectF & visibleRect,
         return;
     }
 
-    qreal scaleX = visibleRect.width()  / origSize.width();
-    qreal scaleY = visibleRect.height() / origSize.height();
-
-    if ( scaleX > 0.99 && scaleY > 0.99 ) // Take rounding problems into account
+    if ( ! ( m_photoView &&
+             m_photoView->canvas() &&
+             m_photoView->canvas()->panning() ) )
     {
-        // qDebug() << "Complete image visible";
-        hide();
-        return;
+        qreal scaleX = visibleRect.width()  / origSize.width();
+        qreal scaleY = visibleRect.height() / origSize.height();
+
+        if ( scaleX > 0.99 && scaleY > 0.99 ) // Beware of rounding problems!
+        {
+            // qDebug() << "Complete image visible";
+            hide();
+            return;
+        }
     }
 
     lazyScalePixmap();

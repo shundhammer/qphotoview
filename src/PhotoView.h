@@ -10,6 +10,7 @@
 #define PhotoView_h
 
 #include <QGraphicsView>
+#include <QSizeF>
 
 class QGraphicsPixmapItem;
 class QResizeEvent;
@@ -112,6 +113,22 @@ public:
      **/
     PhotoDir * photoDir() const { return m_photoDir; }
 
+    /**
+     * Update the panner based on the specified viewport size.
+     * If not specified, the current size of the PhotoView widget is used.
+     */
+    void updatePanner( const QSizeF & viewportSize = QSizeF() );
+
+    /**
+     * Return the internal canvas graphics item that displays the image.
+     */
+    Canvas * canvas() const { return m_canvas; }
+
+    /**
+     * Return the internal panner graphics item that displays the scroll status.
+     */
+    Panner * panner() const { return m_panner; }
+
 protected:
 
     /**
@@ -119,11 +136,6 @@ protected:
      * Return 'true' on success, 'false' on error.
      */
     bool reloadCurrent( const QSize & size );
-
-    /**
-     * Update the panner based on the specified viewport size.
-     */
-    void updatePanner( const QSizeF & viewportSize );
 
     /**
      * Reimplemented from QGraphicsView/QWidget

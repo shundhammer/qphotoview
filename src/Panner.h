@@ -16,6 +16,7 @@
 
 class QGraphicsPixmapItem;
 class QGraphicsRectItem;
+class PhotoView;
 
 /**
  * Panner for PhotoView: A graphics item that shows a small preview of the
@@ -31,7 +32,7 @@ public:
     /**
      * Constructor. Create a panner that is at most 'pannerMaxSize' big.
      */
-    Panner( const QSizeF & pannerMaxSize );
+    Panner( const QSizeF & pannerMaxSize, PhotoView * parent );
 
     /**
      * Destructor.
@@ -73,6 +74,11 @@ public:
      */
     QSizeF size() const { return m_size; }
 
+    /**
+     * Return the parent PhotoView.
+     */
+    PhotoView * photoView() const { return m_photoView; }
+
 protected:
 
     /**
@@ -88,6 +94,7 @@ private:
     QPixmap                     m_pixmap;
     qreal                       m_scale;
     QSizeF                      m_size;
+    PhotoView *                 m_photoView;
 };
 
 #endif // Panner_h

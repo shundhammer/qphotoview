@@ -37,7 +37,7 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     scene()->addItem( m_canvas );
 
     QSize pannerMaxSize( qApp->desktop()->screenGeometry().size() / 6 );
-    m_panner = new Panner( pannerMaxSize );
+    m_panner = new Panner( pannerMaxSize, this );
     scene()->addItem( m_panner );
 
     //
@@ -223,8 +223,13 @@ bool PhotoView::reloadCurrent( const QSize & size )
 }
 
 
-void PhotoView::updatePanner( const QSizeF & viewportSize )
+void PhotoView::updatePanner( const QSizeF & vpSize )
 {
+    QSizeF viewportSize = vpSize;
+    
+    if ( ! viewportSize.isValid() )
+        viewportSize = size();
+        
     if ( viewportSize.width()  < m_panner->size().width()  * 2  ||
          viewportSize.height() < m_panner->size().height() * 2  )
     {
@@ -252,8 +257,7 @@ void PhotoView::updatePanner( const QSizeF & viewportSize )
                                     canvasPos.y() + canvasSize.height() )
                               - m_panner->size().height() );
 
-            QPointF visiblePos( qMax( -canvasPos.x(), 0.0 ),
-                                qMax( -canvasPos.y(), 0.0 ) );
+            QPointF visiblePos( -canvasPos.x(), -canvasPos.y() );
 
             QSizeF visibleSize( qMin( viewportSize.width(),
                                       canvasSize.width()  ),
