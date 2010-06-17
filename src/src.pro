@@ -1,31 +1,33 @@
 TEMPLATE = app
-TARGET   = qphotoview
+TARGET	 = qphotoview
 
 
-SOURCES =               \
-    main.cpp            \
-    Exception.cpp       \
-    Logger.cpp          \
-    PhotoView.cpp       \
-    PhotoDir.cpp        \
-    Photo.cpp           \
-    PrefetchCache.cpp   \
-    Canvas.cpp          \
-    Panner.cpp          \
-    Fraction.cpp
+SOURCES =			\
+    main.cpp			\
+    Exception.cpp               \
+    Logger.cpp                  \
+    PhotoView.cpp		\
+    PhotoDir.cpp		\
+    Photo.cpp			\
+    PrefetchCache.cpp		\
+    Canvas.cpp			\
+    Panner.cpp			\
+    Fraction.cpp		\
+    GraphicsItemPosAnimation.cpp
 
 
-HEADERS =               \
-    Exception.h         \
-    Logger.h            \
-    PhotoView.h         \
-    PhotoDir.h          \
-    Photo.h             \
-    PrefetchCache.h     \
-    Canvas.h            \
-    Panner.h            \
-    Fraction.h
+HEADERS =			\
+    Exception.h                 \
+    Logger.h                    \
+    PhotoView.h			\
+    PhotoDir.h			\
+    Photo.h			\
+    PrefetchCache.h		\
+    Canvas.h			\
+    Panner.h			\
+    Fraction.h			\
+    GraphicsItemPosAnimation.h
 
 
-MOC_DIR     = .moc
+MOC_DIR	    = .moc
 OBJECTS_DIR = .obj

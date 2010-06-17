@@ -13,6 +13,8 @@
 
 class PhotoView;
 class QGraphicsSceneMouseEvent;
+class GraphicsItemPosAnimation;
+
 
 /**
  * Canvas for PhotoView: A graphics item that shows the photo.
@@ -54,6 +56,15 @@ public:
     bool panning() const { return m_panning; }
 
     /**
+     * Fix the canvas position: If the canvas is smaller than the PhotoView's
+     * viewport, center it. If it is larger in either dimension, make sure
+     * there are no black borders in that dimension.
+     *
+     * Any necessary position change is animated unless 'animate' is false.
+     */
+    void fixPosAnimated( bool animate = true );
+
+    /**
      * Return the parent photo view.
      */
     PhotoView * photoView() const { return m_photoView; }
@@ -86,8 +97,9 @@ protected:
 
 private:
 
-    PhotoView * m_photoView;
-    bool        m_panning;
+    PhotoView *                 m_photoView;
+    bool                        m_panning;
+    GraphicsItemPosAnimation *  m_animation;
 };
 
 #endif // Canvas_h

@@ -91,6 +91,12 @@ public slots:
      */
     void setZoomIncrement( qreal increment ) { m_zoomIncrement = increment; }
 
+    /**
+     * Update the panner based on the specified viewport size.
+     * If not specified, the current size of the PhotoView widget is used.
+     */
+    void updatePanner( const QSizeF & viewportSize = QSizeF() );
+
 public:
 
     /**
@@ -112,12 +118,6 @@ public:
      * Return the current photo directory.
      **/
     PhotoDir * photoDir() const { return m_photoDir; }
-
-    /**
-     * Update the panner based on the specified viewport size.
-     * If not specified, the current size of the PhotoView widget is used.
-     */
-    void updatePanner( const QSizeF & viewportSize = QSizeF() );
 
     /**
      * Return the internal canvas graphics item that displays the image.

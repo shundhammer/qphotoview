@@ -49,10 +49,8 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     setPalette( pal );
     setFrameStyle( QFrame::NoFrame );
 
-#if 1
     setVerticalScrollBarPolicy	( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-#endif
 
     // Some styles (e.g. Plastique) have an undesired two pixel wide focus rect
     // around QGraphicsView widgets. This is not what we want here, so let's
@@ -226,10 +224,10 @@ bool PhotoView::reloadCurrent( const QSize & size )
 void PhotoView::updatePanner( const QSizeF & vpSize )
 {
     QSizeF viewportSize = vpSize;
-    
+
     if ( ! viewportSize.isValid() )
         viewportSize = size();
-        
+
     if ( viewportSize.width()  < m_panner->size().width()  * 2  ||
          viewportSize.height() < m_panner->size().height() * 2  )
     {

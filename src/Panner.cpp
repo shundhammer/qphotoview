@@ -110,14 +110,21 @@ void Panner::updatePanRect( const QRectF & visibleRect,
         return;
     }
 
-    if ( ! ( m_photoView &&
-             m_photoView->canvas() &&
-             m_photoView->canvas()->panning() ) )
-    {
-        qreal scaleX = visibleRect.width()  / origSize.width();
-        qreal scaleY = visibleRect.height() / origSize.height();
+    qreal visibleXPart = visibleRect.width()  / origSize.width();
+    qreal visibleYPart = visibleRect.height() / origSize.height();
 
-        if ( scaleX > 0.99 && scaleY > 0.99 ) // Beware of rounding problems!
+    bool completelyVisible = visibleXPart > 0.99 && visibleYPart > 0.99;
+
+    if ( completelyVisible )
+    {
+#if 0
+        bool panning =
+            m_photoView &&
+            m_photoView->canvas() &&
+            m_photoView->canvas()->panning();
+
+        if ( ! panning )
+#endif
         {
             // qDebug() << "Complete image visible";
             hide();
@@ -128,11 +135,19 @@ void Panner::updatePanRect( const QRectF & visibleRect,
     lazyScalePixmap();
     show();
 
-    qreal   panPixmapWidth = m_size.width() - 2*FrameThickness;
-    qreal   scale   = panPixmapWidth / (qreal) origSize.width();
-    QPointF panPos  = scale * visibleRect.topLeft();
-    QSizeF  panSize = scale * visibleRect.size();
+    if ( completelyVisible )
+    {
+        QSizeF pixmapSize = m_pixmapItem->pixmap().size();
+        m_panRect->setRect( QRectF( QPointF( 0.0, 0.0 ), pixmapSize ) );
+    }
+    else
+    {
+        qreal   panPixmapWidth = m_size.width() - 2*FrameThickness;
+        qreal   scale   = panPixmapWidth / (qreal) origSize.width();
+        QPointF panPos  = scale * visibleRect.topLeft();
+        QSizeF  panSize = scale * visibleRect.size();
 
-    m_panRect->setRect( QRectF( panPos, panSize ) );
+        m_panRect->setRect( QRectF( panPos, panSize ) );
+    }
 }
 
