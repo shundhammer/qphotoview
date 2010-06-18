@@ -59,11 +59,11 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName, bool take )
 
 	if ( m_cache.contains( imageFileName ) )
 	{
-            
+
 	    image = take ?
                 m_cache.take ( imageFileName ) :
                 m_cache.value( imageFileName );
-            
+
             cacheMiss = false;
             // qDebug() << "Prefetch cache hit:" << imageFileName;
 	}

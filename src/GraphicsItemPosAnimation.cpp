@@ -8,6 +8,8 @@
 
 #include <QGraphicsItem>
 #include <QEasingCurve>
+#include <QDebug>
+
 #include "GraphicsItemPosAnimation.h"
 
 
@@ -25,6 +27,7 @@ GraphicsItemPosAnimation::GraphicsItemPosAnimation( QGraphicsItem * item,
 void GraphicsItemPosAnimation::updateCurrentValue( const QVariant & value )
 {
     QPointF pos = value.toPointF();
+    // qDebug() << "Setting pos " << pos;
     m_graphicsItem->setPos( pos );
 }
 

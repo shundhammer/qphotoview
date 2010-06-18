@@ -21,6 +21,7 @@
 #include "Canvas.h"
 #include "Panner.h"
 #include "SensitiveBorder.h"
+#include "BorderPanel.h"
 
 
 PhotoView::PhotoView( PhotoDir * photoDir )
@@ -42,6 +43,8 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     QSize pannerMaxSize( qApp->desktop()->screenGeometry().size() / 6 );
     m_panner = new Panner( pannerMaxSize, this );
     scene()->addItem( m_panner );
+
+    createPanels();
 
     //
     // Visual tweaks
@@ -301,11 +304,13 @@ SensitiveBorder * PhotoView::createBorder( const QString & objName )
     scene()->addItem( border );
     border->setObjectName( objName );
 
+#if 0
     connect( border, SIGNAL( borderEntered() ),
              this,   SLOT  ( showBorder()    ) );
 
     connect( border, SIGNAL( borderLeft()    ),
              this,   SLOT  ( hideBorder()    ) );
+#endif
 
     return border;
 }
@@ -347,6 +352,34 @@ void PhotoView::layoutBorders( const QSizeF & size )
 
     m_leftBorder->setRect( left, thickness,
                            thickness, height - 2 * thickness );
+}
+
+
+void PhotoView::createPanels()
+{
+    m_titlePanel = new BorderPanel( this, m_topRightCorner );
+    scene()->addItem( m_titlePanel );
+    m_titlePanel->setSize( 500, 50 );
+    m_titlePanel->setBorderFlags( BorderPanel::RightBorder |
+                                  BorderPanel::TopBorder );
+
+    m_exifPanel = new BorderPanel( this, m_rightBorder );
+    scene()->addItem( m_exifPanel );
+    m_exifPanel->setSize( 150, 300 );
+    m_exifPanel->setBorderFlags( BorderPanel::RightBorder );
+    m_exifPanel->setAlignment( Qt::AlignVCenter );
+
+    m_navigationPanel = new BorderPanel( this, m_bottomBorder );
+    scene()->addItem( m_navigationPanel );
+    m_navigationPanel->setSize( 400, 100 );
+    m_navigationPanel->setBorderFlags( BorderPanel::BottomBorder );
+    m_navigationPanel->setAlignment( Qt::AlignRight );
+
+    m_toolPanel = new BorderPanel( this, m_leftBorder );
+    scene()->addItem( m_toolPanel );
+    m_toolPanel->setSize( 100, 400 );
+    m_toolPanel->setBorderFlags( BorderPanel::LeftBorder );
+    m_toolPanel->setAlignment( Qt::AlignTop );
 }
 
 

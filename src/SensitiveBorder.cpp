@@ -6,19 +6,16 @@
  * Author:  Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
  */
 
-#include <QGraphicsSceneHoverEvent>
-#include <QWidget>
 #include <QPainter>
 #include <QPen>
 #include <QBrush>
 #include <QColor>
-#include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
 #include "SensitiveBorder.h"
 #include "PhotoView.h"
 
-const int EnterLeaveTimeout = 1000; // millisec
+static const int EnterLeaveTimeout = 1000; // millisec
 
 bool SensitiveBorder::m_debugMode = false;
 
@@ -52,7 +49,7 @@ void SensitiveBorder::paint( QPainter * painter,
 {
     Q_UNUSED( option );
     Q_UNUSED( widget );
-    
+
     if ( m_debugMode )
     {
         QPen pen( Qt::black, 1 );

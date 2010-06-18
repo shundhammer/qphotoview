@@ -20,6 +20,7 @@ class Photo;
 class Canvas;
 class Panner;
 class SensitiveBorder;
+class BorderPanel;
 
 
 /**
@@ -31,7 +32,7 @@ class PhotoView: public QGraphicsView
 
 public:
 
-    typedef enum
+    enum ZoomMode
     {
 	NoZoom = 0,	// 1:1 (1 original pixel is one screen pixel)
 	ZoomFitImage,	// Fit complete image into window to avoid all scrolling
@@ -39,7 +40,7 @@ public:
 	ZoomFitHeight,	// Fit height into window, scroll only left and right
 	ZoomFitBest,	// Fit width or height, whichever is better
 	UseZoomFactor	// Use arbitrary zoom factor
-    } ZoomMode;
+    };
 
 
     /**
@@ -178,24 +179,35 @@ protected:
      */
     void layoutBorders( const QSizeF & size );
 
+    /**
+     * Create tool panels.
+     */
+    void createPanels();
+
+
 private:
 
     PhotoDir *	m_photoDir;
-    Canvas *	m_canvas;
-    Panner *	m_panner;
-    Photo *	m_lastPhoto;
+    Canvas   *	m_canvas;
+    Panner   *	m_panner;
+    Photo    *	m_lastPhoto;
     ZoomMode	m_zoomMode;
     qreal	m_zoomFactor;
     qreal	m_zoomIncrement;
 
-    SensitiveBorder * m_topLeftCorner;
-    SensitiveBorder * m_topBorder;
-    SensitiveBorder * m_topRightCorner;
-    SensitiveBorder * m_rightBorder;
-    SensitiveBorder * m_bottomRightCorner;
-    SensitiveBorder * m_bottomBorder;
-    SensitiveBorder * m_bottomLeftCorner;
-    SensitiveBorder * m_leftBorder;
+    SensitiveBorder *   m_topLeftCorner;
+    SensitiveBorder *   m_topBorder;
+    SensitiveBorder *   m_topRightCorner;
+    SensitiveBorder *   m_rightBorder;
+    SensitiveBorder *   m_bottomRightCorner;
+    SensitiveBorder *   m_bottomBorder;
+    SensitiveBorder *   m_bottomLeftCorner;
+    SensitiveBorder *   m_leftBorder;
+
+    BorderPanel *       m_titlePanel;           // top right
+    BorderPanel *       m_exifPanel;            // right
+    BorderPanel *       m_navigationPanel;      // bottom
+    BorderPanel *       m_toolPanel;            // left
 };
 
 

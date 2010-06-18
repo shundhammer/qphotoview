@@ -56,9 +56,8 @@ public:
     static void setDebugMode( bool on = true );
 
     /**
-     * Reimplemented from QGraphicsRectItem: Paint this item.
-     * Unless debug mode is set, nothing is painted, so this will remain
-     * invisible.
+     * Reimplemented from QGraphicsRectItem: Paint this item. Unless debug mode
+     * is set, nothing is painted, so this object will remain invisible.
      */
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,

@@ -14,6 +14,7 @@ SOURCES =			\
     Panner.cpp			\
     Fraction.cpp		\
     SensitiveBorder.cpp         \
+    BorderPanel.cpp             \
     GraphicsItemPosAnimation.cpp
 
 
@@ -28,6 +29,7 @@ HEADERS =			\
     Panner.h			\
     Fraction.h			\
     SensitiveBorder.h           \
+    BorderPanel.h               \
     GraphicsItemPosAnimation.h
 
 
