@@ -204,8 +204,6 @@ bool PhotoView::reloadCurrent( const QSize & size )
 
     if ( success )
     {
-        m_canvas->center( size );
-
         if ( photo != m_lastPhoto )
         {
             m_panner->setPixmap( pixmap );
@@ -213,6 +211,7 @@ bool PhotoView::reloadCurrent( const QSize & size )
         }
 
         updatePanner( size );
+        m_canvas->fixPosAnimated( false ); // not animated
     }
 
     setSceneRect( 0, 0, size.width(), size.height() );
@@ -250,10 +249,18 @@ void PhotoView::updatePanner( const QSizeF & vpSize )
             QPointF canvasPos  = m_canvas->pos();
             QSizeF  canvasSize = m_canvas->size();
 
-            m_panner->setPos( qMax( canvasPos.x(), 0.0 ),
-                              qMin( (qreal) viewportSize.height(),
-                                    canvasPos.y() + canvasSize.height() )
-                              - m_panner->size().height() );
+            qreal   pannerX    = 0.0;
+            qreal   pannerY    = -m_panner->size().height();
+
+            if ( canvasSize.width() < viewportSize.width() )
+                pannerX = canvasPos.x();
+
+            if ( canvasSize.height() < viewportSize.height() )
+                pannerY += canvasPos.y() + canvasSize.height();
+            else
+                pannerY += viewportSize.height();
+
+            m_panner->setPos( pannerX, pannerY );
 
             QPointF visiblePos( -canvasPos.x(), -canvasPos.y() );
 

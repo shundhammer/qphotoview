@@ -15,6 +15,9 @@
 #include "GraphicsItemPosAnimation.h"
 
 
+static const int AnimationDuration = 850; // millisec
+
+
 Canvas::Canvas( PhotoView * parent )
     : QGraphicsPixmapItem( QPixmap() )
     , m_photoView( parent )
@@ -204,7 +207,10 @@ void Canvas::fixPosAnimated( bool animate )
     if ( manhattanLength > 0.0 )
     {
         if ( manhattanLength < 5.0 || ! animate )
+        {
             setPos( wantedPos );
+            m_photoView->updatePanner();
+        }
         else
         {
             // Animate moving to new position
@@ -212,18 +218,18 @@ void Canvas::fixPosAnimated( bool animate )
             if ( ! m_animation )
             {
                 m_animation = new GraphicsItemPosAnimation( this );
-
+#if 0
                 QObject::connect( m_animation, SIGNAL( finished() ),
+                                  m_photoView, SLOT  ( updatePanner() ) );
+#endif
+                QObject::connect( m_animation, SIGNAL( valueChanged(QVariant)),
                                   m_photoView, SLOT  ( updatePanner() ) );
             }
 
             m_animation->setStartValue( canvasPos );
             m_animation->setEndValue  ( wantedPos );
-            m_animation->setDuration  ( 1000 ); // millisec
+            m_animation->setDuration  ( AnimationDuration );
             m_animation->start();
-
-            if ( m_photoView->panner() )
-                m_photoView->panner()->hide();
         }
     }
 }
