@@ -19,6 +19,7 @@ class PhotoDir;
 class Photo;
 class Canvas;
 class Panner;
+class SensitiveBorder;
 
 
 /**
@@ -129,6 +130,21 @@ public:
      */
     Panner * panner() const { return m_panner; }
 
+
+protected slots:
+
+    /**
+     * Show the border corresponding to the sender() of a signal connected to
+     * this slot.
+     */
+    void showBorder();
+
+    /**
+     * Hide the border corresponding to the sender() of a signal connected to
+     * this slot.
+     */
+    void hideBorder();
+
 protected:
 
     /**
@@ -147,6 +163,21 @@ protected:
      */
     virtual void keyPressEvent( QKeyEvent * event );
 
+    /**
+     * Create sensitive borders.
+     */
+    void createBorders();
+
+    /**
+     * Create one border with object name 'objName'.
+     */
+    SensitiveBorder * createBorder( const QString & objName );
+
+    /**
+     * Layout sensitive borders with PhotoView size 'size'.
+     */
+    void layoutBorders( const QSizeF & size );
+
 private:
 
     PhotoDir *	m_photoDir;
@@ -156,6 +187,15 @@ private:
     ZoomMode	m_zoomMode;
     qreal	m_zoomFactor;
     qreal	m_zoomIncrement;
+
+    SensitiveBorder * m_topLeftCorner;
+    SensitiveBorder * m_topBorder;
+    SensitiveBorder * m_topRightCorner;
+    SensitiveBorder * m_rightBorder;
+    SensitiveBorder * m_bottomRightCorner;
+    SensitiveBorder * m_bottomBorder;
+    SensitiveBorder * m_bottomLeftCorner;
+    SensitiveBorder * m_leftBorder;
 };
 
 

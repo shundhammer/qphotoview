@@ -13,6 +13,7 @@ SOURCES =			\
     Canvas.cpp			\
     Panner.cpp			\
     Fraction.cpp		\
+    SensitiveBorder.cpp         \
     GraphicsItemPosAnimation.cpp
 
 
@@ -26,6 +27,7 @@ HEADERS =			\
     Canvas.h			\
     Panner.h			\
     Fraction.h			\
+    SensitiveBorder.h           \
     GraphicsItemPosAnimation.h
 
 

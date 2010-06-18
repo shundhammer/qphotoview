@@ -20,6 +20,7 @@
 #include "Photo.h"
 #include "Canvas.h"
 #include "Panner.h"
+#include "SensitiveBorder.h"
 
 
 PhotoView::PhotoView( PhotoDir * photoDir )
@@ -35,6 +36,8 @@ PhotoView::PhotoView( PhotoDir * photoDir )
 
     m_canvas = new Canvas( this );
     scene()->addItem( m_canvas );
+
+    createBorders();
 
     QSize pannerMaxSize( qApp->desktop()->screenGeometry().size() / 6 );
     m_panner = new Panner( pannerMaxSize, this );
@@ -127,6 +130,7 @@ void PhotoView::resizeEvent ( QResizeEvent * event )
 {
     if ( event->size() != event->oldSize() )
     {
+        layoutBorders( event->size() );
 	reloadCurrent( event->size() );
     }
 }
@@ -274,6 +278,92 @@ void PhotoView::updatePanner( const QSizeF & vpSize )
 
             m_panner->updatePanRect( visibleRect, origSize );
         }
+    }
+}
+
+
+void PhotoView::createBorders()
+{
+    m_topLeftCorner     = createBorder( "TopLeftCorner"     );
+    m_topBorder         = createBorder( "TopBorder"         );
+    m_topRightCorner    = createBorder( "TopRightCorner"    );
+    m_rightBorder       = createBorder( "RightBorder"       );
+    m_bottomRightCorner = createBorder( "BottomRightCorner" );
+    m_bottomBorder      = createBorder( "BottomBorder"      );
+    m_bottomLeftCorner  = createBorder( "BottomLeftCorner"  );
+    m_leftBorder        = createBorder( "LeftBorder"        );
+}
+
+
+SensitiveBorder * PhotoView::createBorder( const QString & objName )
+{
+    SensitiveBorder * border = new SensitiveBorder( this );
+    scene()->addItem( border );
+    border->setObjectName( objName );
+
+    connect( border, SIGNAL( borderEntered() ),
+             this,   SLOT  ( showBorder()    ) );
+
+    connect( border, SIGNAL( borderLeft()    ),
+             this,   SLOT  ( hideBorder()    ) );
+
+    return border;
+}
+
+
+void PhotoView::layoutBorders( const QSizeF & size )
+{
+    qreal top       = 0.0;
+    qreal left      = 0.0;
+    qreal width     = size.width();
+    qreal height    = size.height();
+    qreal thickness = 50.0;
+
+    if ( width < 4 * thickness )
+        thickness = width / 4;
+
+    if ( height < 4 * thickness )
+        thickness = height / 4;
+
+    m_topLeftCorner->setRect( left, top, thickness, thickness );
+
+    m_topBorder->setRect( thickness, top,
+                          width - 2 * thickness, thickness );
+
+    m_topRightCorner->setRect( width - thickness, top,
+                               thickness, thickness );
+
+    m_rightBorder->setRect( width - thickness, thickness,
+                            thickness, height - 2 * thickness );
+
+    m_bottomRightCorner->setRect( width - thickness, height - thickness,
+                                  thickness, thickness );
+
+    m_bottomBorder->setRect( thickness, height - thickness,
+                             width - 2 * thickness, thickness );
+
+    m_bottomLeftCorner->setRect( left, height - thickness,
+                                 thickness, thickness );
+
+    m_leftBorder->setRect( left, thickness,
+                           thickness, height - 2 * thickness );
+}
+
+
+void PhotoView::showBorder()
+{
+    if ( sender() )
+    {
+        qDebug() << "Show border" << sender()->objectName();
+    }
+}
+
+
+void PhotoView::hideBorder()
+{
+    if ( sender() )
+    {
+        qDebug() << "Hide border" << sender()->objectName();
     }
 }
 
