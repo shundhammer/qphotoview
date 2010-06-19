@@ -21,6 +21,7 @@ class Canvas;
 class Panner;
 class SensitiveBorder;
 class BorderPanel;
+class TextBorderPanel;
 
 
 /**
@@ -204,7 +205,7 @@ private:
     SensitiveBorder *   m_bottomLeftCorner;
     SensitiveBorder *   m_leftBorder;
 
-    BorderPanel *       m_titlePanel;           // top right
+    TextBorderPanel *   m_titlePanel;           // top right
     BorderPanel *       m_exifPanel;            // right
     BorderPanel *       m_navigationPanel;      // bottom
     BorderPanel *       m_toolPanel;            // left

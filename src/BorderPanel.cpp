@@ -47,8 +47,9 @@ BorderPanel::BorderPanel( PhotoView * parent, SensitiveBorder * border )
     setAcceptsHoverEvents( true );
     m_leaveTimer.setSingleShot( true );
 
+    // const int grey = 0xE0;
     const int grey = 0x40;
-    m_brush = QBrush( QColor( grey, grey, grey, 255*0.7 ) ); // grey transparent
+    m_brush = QBrush( QColor( grey, grey, grey, 255*0.7 ) );
     m_pen   = QPen( Qt::NoPen );
     // m_pen.setColor( Qt::red );
 
@@ -97,6 +98,9 @@ GraphicsItemPosAnimation * BorderPanel::disappearAnimation()
 
         connect( m_disappearAnimation, SIGNAL( finished() ),
                  this,                 SLOT  ( hide()     ) );
+
+        connect( m_disappearAnimation, SIGNAL( finished()    ),
+                 this,                 SIGNAL( disappeared() ) );
     }
 
     return m_disappearAnimation;
@@ -136,6 +140,7 @@ void BorderPanel::appearNow()
 {
     // qDebug() << __PRETTY_FUNCTION__;
 
+    emit aboutToAppear();
     setPos( activePos() );
     show();
     m_active = true;
@@ -158,6 +163,7 @@ void BorderPanel::appearAnimated()
                    << hex << (void *) this;
     }
 
+    emit aboutToAppear();
     QPointF startPos = pos();
 
     if ( m_disappearAnimation &&
@@ -334,8 +340,6 @@ QPointF BorderPanel::secondaryPos( const QPointF( primaryPos ) )
 
 QSizeF BorderPanel::size() const
 {
-    // TO DO: Figure out size from children
-
     return m_size;
 }
 

@@ -22,6 +22,7 @@
 #include "Panner.h"
 #include "SensitiveBorder.h"
 #include "BorderPanel.h"
+#include "TextBorderPanel.h"
 
 
 PhotoView::PhotoView( PhotoDir * photoDir )
@@ -101,15 +102,22 @@ bool PhotoView::loadImage()
 	if ( success && photo )
 	{
 	    QString title( "QPhotoView	" + photo->fileName() );
+            QString resolution;
 
 	    if ( photo->size().isValid() )
 	    {
-		title += QString( "  %1 x %2" )
+		resolution = QString( "  %1 x %2" )
 		    .arg( photo->size().width() )
 		    .arg( photo->size().height() );
 	    }
 
-	    setWindowTitle( title );
+	    setWindowTitle( title + "  " + resolution );
+
+            QString panelText = photo->fullPath();
+            panelText += "\n" + resolution;
+
+            m_titlePanel->setText( panelText );
+            m_titlePanel->setTextAlignment( Qt::AlignRight | Qt::AlignVCenter );
 	}
     }
     else // ! success
@@ -357,7 +365,7 @@ void PhotoView::layoutBorders( const QSizeF & size )
 
 void PhotoView::createPanels()
 {
-    m_titlePanel = new BorderPanel( this, m_topRightCorner );
+    m_titlePanel = new TextBorderPanel( this, m_topRightCorner );
     scene()->addItem( m_titlePanel );
     m_titlePanel->setSize( 500, 50 );
     m_titlePanel->setBorderFlags( BorderPanel::RightBorder |

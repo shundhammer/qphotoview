@@ -15,6 +15,7 @@ SOURCES =			\
     Fraction.cpp		\
     SensitiveBorder.cpp         \
     BorderPanel.cpp             \
+    TextBorderPanel.cpp         \
     GraphicsItemPosAnimation.cpp
 
 
@@ -30,6 +31,7 @@ HEADERS =			\
     Fraction.h			\
     SensitiveBorder.h           \
     BorderPanel.h               \
+    TextBorderPanel.h           \
     GraphicsItemPosAnimation.h
 
 

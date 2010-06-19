@@ -208,10 +208,24 @@ public:
     virtual void paint( QPainter * painter,
 			const QStyleOptionGraphicsItem * option,
 			QWidget * widget = 0 );
+
     /**
      * Implemented from QGraphicsItem: Return the bounding rectangle.
      */
     virtual QRectF boundingRect() const;
+
+signals:
+
+    /**
+     * Emitted when this panel is about to appear.
+     */
+    void aboutToAppear();
+
+    /**
+     * Emitted when this panel disappeared.
+     */
+    void disappeared();
+
 
 public slots:
 
@@ -239,14 +253,6 @@ public slots:
      * hide() as a slot.
      */
     void hide() { QGraphicsItem::hide(); }
-
-
-private slots:
-
-    /**
-     * Disappear with animation unless sticky.
-     */
-    void maybeDisappear();
 
 
 protected:
@@ -278,6 +284,14 @@ protected:
     virtual void mousePressEvent       ( QGraphicsSceneMouseEvent * event );
     virtual void mouseReleaseEvent     ( QGraphicsSceneMouseEvent * event );
 #endif
+
+
+private slots:
+
+    /**
+     * Disappear with animation unless sticky.
+     */
+    void maybeDisappear();
 
 private:
 
