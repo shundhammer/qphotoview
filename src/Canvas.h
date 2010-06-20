@@ -10,6 +10,7 @@
 #define Canvas_h
 
 #include <QGraphicsPixmapItem>
+#include <QCursor>
 
 class PhotoView;
 class QGraphicsSceneMouseEvent;
@@ -69,6 +70,17 @@ public:
      */
     PhotoView * photoView() const { return m_photoView; }
 
+    /**
+     * Hide the cursor. Called when the idle timer times out.
+     */
+    void hideCursor();
+
+    /**
+     * Show the cursor.
+     */
+    void showCursor();
+
+
 protected:
 
     //
@@ -100,6 +112,7 @@ private:
     PhotoView *                 m_photoView;
     bool                        m_panning;
     GraphicsItemPosAnimation *  m_animation;
+    QCursor                     m_cursor;
 };
 
 #endif // Canvas_h

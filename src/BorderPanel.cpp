@@ -43,6 +43,7 @@ BorderPanel::BorderPanel( PhotoView * parent, SensitiveBorder * border )
     , m_sticky( false )
     , m_active( false )
 {
+    m_photoView->scene()->addItem( this );
     hide();
     setAcceptsHoverEvents( true );
     m_leaveTimer.setSingleShot( true );

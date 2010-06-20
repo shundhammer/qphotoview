@@ -15,7 +15,7 @@
 #include "GraphicsItemPosAnimation.h"
 
 
-static const int AnimationDuration = 850; // millisec
+static const int AnimationDuration =  850; // millisec
 
 
 Canvas::Canvas( PhotoView * parent )
@@ -26,7 +26,9 @@ Canvas::Canvas( PhotoView * parent )
 {
     Q_CHECK_PTR( m_photoView );
 
-    setCursor( Qt::ArrowCursor );
+    m_photoView->scene()->addItem( this );
+    setCursor( Qt::OpenHandCursor );
+    m_cursor = cursor();
 }
 
 
@@ -69,6 +71,21 @@ void Canvas::center( const QSize & parentSize )
 }
 
 
+void Canvas::hideCursor()
+{
+    setCursor( Qt::BlankCursor );
+}
+
+
+void Canvas::showCursor()
+{
+    if ( m_panning )
+        setCursor( Qt::ClosedHandCursor );
+    else
+        setCursor( m_cursor );
+}
+
+
 void Canvas::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
     // qDebug() << __PRETTY_FUNCTION__;
@@ -95,7 +112,7 @@ void Canvas::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
     if ( m_panning )
     {
         m_panning = false;
-        setCursor( Qt::ArrowCursor );
+        setCursor( m_cursor );
 
         m_photoView->updatePanner();
         fixPosAnimated();
@@ -117,6 +134,10 @@ void Canvas::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
         QPointF pannerPos = m_photoView->panner()->pos();
         m_photoView->updatePanner();
         m_photoView->panner()->setPos( pannerPos );
+    }
+    else
+    {
+        setCursor( m_cursor );
     }
 }
 
@@ -144,7 +165,7 @@ void Canvas::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
         }
     }
 
-    setCursor( Qt::ArrowCursor );
+    setCursor( m_cursor );
 }
 
 

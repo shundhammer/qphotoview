@@ -29,6 +29,7 @@ Panner::Panner( const QSizeF & pannerMaxSize, PhotoView * photoView )
     , m_pannerMaxSize( pannerMaxSize )
     , m_photoView( photoView )
 {
+    m_photoView->scene()->addItem( this );
     m_pannerMaxSize -= QSizeF( 2*FrameThickness, 2*FrameThickness );
     m_size = m_pannerMaxSize;
 
@@ -39,7 +40,13 @@ Panner::Panner( const QSizeF & pannerMaxSize, PhotoView * photoView )
     QPen panRectPen( Qt::yellow, PanRectThickness );
     panRectPen.setJoinStyle( Qt::MiterJoin );
     m_panRect->setPen( panRectPen );
-    // hide();
+
+    // The panner doesn't really accept hover events, but it's irritating for
+    // the user if hover events go to a SensitiveBorder underneath the
+    // panner and a BorderPanel opens when the mouse pointer hovers over the
+    // panner.
+    setAcceptsHoverEvents( true );
+    setCursor( Qt::CrossCursor );
 }
 
 

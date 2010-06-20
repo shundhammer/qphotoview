@@ -10,7 +10,8 @@
 #define PhotoView_h
 
 #include <QGraphicsView>
-#include <QSizeF>
+#include <QTimer>
+#include <QCursor>
 
 class QGraphicsPixmapItem;
 class QResizeEvent;
@@ -100,6 +101,17 @@ public slots:
      */
     void updatePanner( const QSizeF & viewportSize = QSizeF() );
 
+    /**
+     * Hide the cursor. Called when the idle timer times out.
+     */
+    void hideCursor();
+
+    /**
+     * Show the cursor.
+     */
+    void showCursor();
+
+
 public:
 
     /**
@@ -116,6 +128,18 @@ public:
      * Return the default zoom increment.
      */
     qreal zoomIncrement() const { return m_zoomIncrement; }
+
+    /**
+     * Set the idle timeout in milliseconds: The time of inactivity (no mouse
+     * movement) after which the mouse cursor is hidden. 0 disables this
+     * feature. Any mouse movement makes the cursor visible again.
+     */
+    void setIdleTimeout( int millisec );
+
+    /**
+     * Return the idle timeout in milliseconds.
+     */
+    int idleTimeout() const { return m_idleTimeout; }
 
     /**
      * Return the current photo directory.
@@ -147,6 +171,7 @@ protected slots:
      */
     void hideBorder();
 
+
 protected:
 
     /**
@@ -161,9 +186,16 @@ protected:
     virtual void resizeEvent ( QResizeEvent * event );
 
     /**
-     * Reimplemented from QGraphicsView
+     * Reimplemented from QGraphicsView:
+     * Handle key presses for this PhotoView.
      */
     virtual void keyPressEvent( QKeyEvent * event );
+
+    /**
+     * Reimplemented from QGraphicsView:
+     * Reset idle timer.
+     */
+    virtual void mouseMoveEvent ( QMouseEvent * event );
 
     /**
      * Create sensitive borders.
@@ -195,6 +227,9 @@ private:
     ZoomMode	m_zoomMode;
     qreal	m_zoomFactor;
     qreal	m_zoomIncrement;
+    QTimer      m_idleTimer;
+    int         m_idleTimeout;
+    QCursor     m_cursor;
 
     SensitiveBorder *   m_topLeftCorner;
     SensitiveBorder *   m_topBorder;

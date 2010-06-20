@@ -25,6 +25,9 @@
 #include "TextBorderPanel.h"
 
 
+static const int DefaultIdleTimeout = 4000; // millisec
+
+
 PhotoView::PhotoView( PhotoDir * photoDir )
     : QGraphicsView()
     , m_photoDir( photoDir )
@@ -32,18 +35,16 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     , m_zoomMode( ZoomFitImage )
     , m_zoomFactor( 1.0	 )
     , m_zoomIncrement( 1.2 )
+    , m_idleTimeout( DefaultIdleTimeout )
 {
     Q_CHECK_PTR( photoDir );
     setScene( new QGraphicsScene );
 
     m_canvas = new Canvas( this );
-    scene()->addItem( m_canvas );
-
     createBorders();
 
     QSize pannerMaxSize( qApp->desktop()->screenGeometry().size() / 6 );
     m_panner = new Panner( pannerMaxSize, this );
-    scene()->addItem( m_panner );
 
     createPanels();
 
@@ -66,6 +67,16 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     // there is no other visual effect anyway.
     setStyle( new QWindowsStyle() );
 
+    // Enable mouse tracking so a mouse cursor that was set invisible by an
+    // item (e.g., Canvas) can be made visible again upon mouse movement.
+    setMouseTracking( true );
+
+    connect( &m_idleTimer, SIGNAL( timeout()    ),
+             this,         SLOT  ( hideCursor() ) );
+
+    m_idleTimer.setSingleShot( true );
+    m_idleTimer.start( m_idleTimeout );
+    m_cursor = viewport()->cursor();
 
     //
     // Load images
@@ -309,7 +320,6 @@ void PhotoView::createBorders()
 SensitiveBorder * PhotoView::createBorder( const QString & objName )
 {
     SensitiveBorder * border = new SensitiveBorder( this );
-    scene()->addItem( border );
     border->setObjectName( objName );
 
 #if 0
@@ -366,25 +376,21 @@ void PhotoView::layoutBorders( const QSizeF & size )
 void PhotoView::createPanels()
 {
     m_titlePanel = new TextBorderPanel( this, m_topRightCorner );
-    scene()->addItem( m_titlePanel );
     m_titlePanel->setSize( 500, 50 );
     m_titlePanel->setBorderFlags( BorderPanel::RightBorder |
                                   BorderPanel::TopBorder );
 
     m_exifPanel = new BorderPanel( this, m_rightBorder );
-    scene()->addItem( m_exifPanel );
     m_exifPanel->setSize( 150, 300 );
     m_exifPanel->setBorderFlags( BorderPanel::RightBorder );
     m_exifPanel->setAlignment( Qt::AlignVCenter );
 
     m_navigationPanel = new BorderPanel( this, m_bottomBorder );
-    scene()->addItem( m_navigationPanel );
     m_navigationPanel->setSize( 400, 100 );
     m_navigationPanel->setBorderFlags( BorderPanel::BottomBorder );
     m_navigationPanel->setAlignment( Qt::AlignRight );
 
     m_toolPanel = new BorderPanel( this, m_leftBorder );
-    scene()->addItem( m_toolPanel );
     m_toolPanel->setSize( 100, 400 );
     m_toolPanel->setBorderFlags( BorderPanel::LeftBorder );
     m_toolPanel->setAlignment( Qt::AlignTop );
@@ -406,6 +412,17 @@ void PhotoView::hideBorder()
     {
         qDebug() << "Hide border" << sender()->objectName();
     }
+}
+
+
+void PhotoView::setIdleTimeout( int millisec )
+{
+    m_idleTimeout = millisec;
+
+    if ( m_idleTimeout > 0 )
+        m_idleTimer.start( m_idleTimeout );
+    else
+        m_idleTimer.stop();
 }
 
 
@@ -438,6 +455,32 @@ void PhotoView::zoomOut()
 {
     if ( ! qFuzzyCompare( m_zoomIncrement, 0.0 ) )
 	setZoomFactor( m_zoomFactor / m_zoomIncrement );
+}
+
+
+void PhotoView::hideCursor()
+{
+    // qDebug() << __PRETTY_FUNCTION__;
+    m_cursor = viewport()->cursor();
+    viewport()->setCursor( Qt::BlankCursor );
+    m_canvas->hideCursor();
+}
+
+
+void PhotoView::showCursor()
+{
+    viewport()->setCursor( m_cursor );
+    m_canvas->showCursor();
+}
+
+
+void PhotoView::mouseMoveEvent ( QMouseEvent * event )
+{
+    // qDebug() << __PRETTY_FUNCTION__;
+    m_idleTimer.start( m_idleTimeout );
+    showCursor();
+
+    QGraphicsView::mouseMoveEvent( event );
 }
 
 

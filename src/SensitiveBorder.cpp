@@ -25,7 +25,9 @@ SensitiveBorder::SensitiveBorder( PhotoView * parent )
     , QGraphicsRectItem()
     , m_photoView( parent )
 {
+    m_photoView->scene()->addItem( this );
     setAcceptsHoverEvents( true );
+    setCursor( Qt::PointingHandCursor );
     m_enterTimer.setSingleShot( true );
     m_leaveTimer.setSingleShot( true );
 
