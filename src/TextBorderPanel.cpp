@@ -6,7 +6,6 @@
  * Author:  Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
  */
 
-#include <stdlib.h>     // abs()
 #include <QFontMetrics>
 #include <QPainter>
 #include <QDebug>
