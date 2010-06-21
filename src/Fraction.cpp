@@ -34,3 +34,12 @@ QString Fraction::toString() const
     return result;
 }
 
+
+double Fraction::toDouble() const
+{
+    if ( m_denominator == 0 )
+        return 0.0;
+
+    else
+        return m_numerator / (double) m_denominator;
+}

@@ -1,6 +1,14 @@
 TEMPLATE = app
 TARGET	 = qphotoview
 
+unix {
+    # LIB_EXIV2_PREFIX = /usr
+    LIB_EXIV2_PREFIX = /usr/local
+
+    LIBS    += -L $${LIB_EXIV2_PREFIX}/lib -lexiv2
+    INCLUDE += $${LIB_EXIV2_PREFIX}/include
+}
+
 
 SOURCES =			\
     main.cpp			\
@@ -9,13 +17,15 @@ SOURCES =			\
     PhotoView.cpp		\
     PhotoDir.cpp		\
     Photo.cpp			\
+    PhotoMetaData.cpp		\
     PrefetchCache.cpp		\
     Canvas.cpp			\
     Panner.cpp			\
     Fraction.cpp		\
-    SensitiveBorder.cpp         \
-    BorderPanel.cpp             \
-    TextBorderPanel.cpp         \
+    SensitiveBorder.cpp		\
+    BorderPanel.cpp		\
+    TextBorderPanel.cpp		\
+    ExifBorderPanel.cpp		\
     GraphicsItemPosAnimation.cpp
 
 
@@ -25,13 +35,15 @@ HEADERS =			\
     PhotoView.h			\
     PhotoDir.h			\
     Photo.h			\
+    PhotoMetaData.h		\
     PrefetchCache.h		\
     Canvas.h			\
     Panner.h			\
     Fraction.h			\
-    SensitiveBorder.h           \
-    BorderPanel.h               \
-    TextBorderPanel.h           \
+    SensitiveBorder.h		\
+    BorderPanel.h		\
+    TextBorderPanel.h		\
+    ExifBorderPanel.h		\
     GraphicsItemPosAnimation.h
 
 

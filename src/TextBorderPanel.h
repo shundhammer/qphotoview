@@ -13,6 +13,9 @@
 #include "BorderPanel.h"
 
 
+/**
+ * Border panel that displays text.
+ */
 class TextBorderPanel: public BorderPanel
 {
     Q_OBJECT

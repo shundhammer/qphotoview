@@ -12,7 +12,8 @@
 #include <QString>
 #include <QPixmap>
 #include <QSize>
-// #include "PhotoMetaData"
+
+#include "PhotoMetaData.h"
 
 class PhotoDir;
 
@@ -67,14 +68,12 @@ public:
      */
     void clearCachedThumbnail();
 
-#if 0
     /**
      * Return the meta data for this photo.
      * If they are not loaded yet, load them first.
      * Notice that this is independent of loading the pixmap.
      */
     PhotoMetaData metaData();
-#endif
 
     /**
      * Return the file name (without path) of this photo.

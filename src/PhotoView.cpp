@@ -23,6 +23,7 @@
 #include "SensitiveBorder.h"
 #include "BorderPanel.h"
 #include "TextBorderPanel.h"
+#include "ExifBorderPanel.h"
 
 
 static const int DefaultIdleTimeout = 4000; // millisec
@@ -129,6 +130,9 @@ bool PhotoView::loadImage()
 
             m_titlePanel->setText( panelText );
             m_titlePanel->setTextAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
+            if ( m_exifPanel->isActive() )
+                m_exifPanel->setMetaData();
 	}
     }
     else // ! success
@@ -376,12 +380,12 @@ void PhotoView::layoutBorders( const QSizeF & size )
 void PhotoView::createPanels()
 {
     m_titlePanel = new TextBorderPanel( this, m_topRightCorner );
-    m_titlePanel->setSize( 500, 50 );
+    // m_titlePanel->setSize( 500, 50 );
     m_titlePanel->setBorderFlags( BorderPanel::RightBorder |
                                   BorderPanel::TopBorder );
 
-    m_exifPanel = new BorderPanel( this, m_rightBorder );
-    m_exifPanel->setSize( 150, 300 );
+    m_exifPanel = new ExifBorderPanel( this, m_rightBorder );
+    // m_exifPanel->setSize( 150, 300 );
     m_exifPanel->setBorderFlags( BorderPanel::RightBorder );
     m_exifPanel->setAlignment( Qt::AlignVCenter );
 

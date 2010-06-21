@@ -136,12 +136,10 @@ QSize Photo::size()
 }
 
 
-#if 0
 PhotoMetaData Photo::metaData()
 {
-
+    return PhotoMetaData( this );
 }
-#endif
 
 
 QString Photo::path() const

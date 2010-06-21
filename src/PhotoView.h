@@ -23,6 +23,7 @@ class Panner;
 class SensitiveBorder;
 class BorderPanel;
 class TextBorderPanel;
+class ExifBorderPanel;
 
 
 /**
@@ -241,7 +242,7 @@ private:
     SensitiveBorder *   m_leftBorder;
 
     TextBorderPanel *   m_titlePanel;           // top right
-    BorderPanel *       m_exifPanel;            // right
+    ExifBorderPanel *   m_exifPanel;            // right
     BorderPanel *       m_navigationPanel;      // bottom
     BorderPanel *       m_toolPanel;            // left
 };

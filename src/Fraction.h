@@ -17,7 +17,7 @@ public:
     /**
      * Constructor: Create a fractional number numerator/denominator.
      */
-    Fraction( int numerator, int denominator )
+    Fraction( int numerator = 0, int denominator = 1 )
         : m_numerator( numerator )
         , m_denominator( denominator )
         {}
@@ -36,6 +36,11 @@ public:
      * Format the fraction as string "numerator/denominator".
      */
     QString toString() const;
+
+    /**
+     * Convert the fraction to double.
+     */
+    double toDouble() const;
 
     /**
      * Return 'true' if this is an integer (a whole number).
