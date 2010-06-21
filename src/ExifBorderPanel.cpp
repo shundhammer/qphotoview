@@ -52,7 +52,6 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
 
     QString text;
     QTextStream str( &text );
-    str.setRealNumberPrecision( 3 );
 
     if ( ! meta.isEmpty() )
     {
@@ -73,7 +72,8 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
         if ( meta.focalLength35mmEquiv() != meta.focalLength() &&
              meta.focalLength35mmEquiv() > 0 )
         {
-            str << "(" << meta.focalLength35mmEquiv() << " mm equiv.)\n";
+            str << tr( "(%1 mm equiv.)" ).arg( meta.focalLength35mmEquiv() )
+                << "\n";
         }
 
         str << "\n";
@@ -82,19 +82,19 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
         double megaPixel = meta.size().width() * (double) meta.size().height()
             / ( 1000 * 1000 );
 
-        str << "\n(" << megaPixel << " MPix)";
+        str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
 
         if ( meta.origSize().isValid() )
         {
             str << "\n\n";
-            str << "Original:" << "\n"
+            str << tr( "Original:" ) << "\n"
                 << meta.origSize().width() << " x "
                 << meta.origSize().height();
 
             megaPixel = meta.origSize().width() *
                 (double) meta.origSize().height() / ( 1000 * 1000 );
 
-            str << "\n(" << megaPixel << " MPix)";
+            str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
         }
 
         if ( meta.dateTimeTaken().isValid() )
@@ -114,7 +114,7 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
         double megaPixel = size.width() * (double) size.height()
             / ( 1000 * 1000 );
 
-        str << " (" << megaPixel << "MPix)";
+        str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
     }
 
     return text;
