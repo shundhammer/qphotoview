@@ -43,3 +43,66 @@ double Fraction::toDouble() const
     else
         return m_numerator / (double) m_denominator;
 }
+
+
+
+int Fraction::greatestCommonDivisor( int a, int b )
+{
+    // Euklid's algorithm, stolen from Wikipedia
+    // http://en.wikipedia.org/wiki/Euclidean_algorithm
+
+    if ( a == 0 )
+        return b;
+
+    while ( b != 0 )
+    {
+        if ( a > b )
+            a -= b;
+        else
+            b -= a;
+    }
+
+    return a;
+}
+
+
+void Fraction::simplify()
+{
+    int gcd = greatestCommonDivisor( m_numerator, m_denominator );
+
+    if ( gcd == 0 )
+        return;
+
+    m_numerator   /= gcd;
+    m_denominator /= gcd;
+}
+
+
+Fraction Fraction::simplified() const
+{
+    int gcd = greatestCommonDivisor( m_numerator, m_denominator );
+
+    if ( gcd == 0 )
+        return Fraction();
+
+    return Fraction( m_numerator   / gcd,
+                     m_denominator / gcd );
+}
+
+
+bool Fraction::operator>( double num )
+{
+    if ( m_denominator == 0 )
+        return false;
+
+    return (m_numerator / (double) m_denominator) > num;
+}
+
+
+bool Fraction::operator<( double num )
+{
+    if ( m_denominator == 0 )
+        return false;
+
+    return (m_numerator / (double) m_denominator) < num;
+}

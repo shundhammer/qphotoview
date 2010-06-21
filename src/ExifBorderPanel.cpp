@@ -52,20 +52,21 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
 
     QString text;
     QTextStream str( &text );
+    str.setRealNumberPrecision( 3 );
 
     if ( ! meta.isEmpty() )
     {
-        str << meta.exposureTime().toString();
-
-        if ( meta.exposureTime().isInt() )
-            str << " sec";
+        if ( meta.exposureTime() < 1 )
+            str << meta.exposureTime().toString();
+        else
+            str << meta.exposureTime().toDouble() << " sec";
 
         str << "\n";
         str << "f/" << meta.aperture().toDouble() << "\n";
 
         if ( meta.iso() > 0 )
             str << "ISO " << meta.iso() << "\n";
-        
+
         str << "\n";
         str << meta.focalLength() << " mm\n";
 
@@ -82,11 +83,10 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
             / ( 1000 * 1000 );
 
         str << "\n(" << megaPixel << " MPix)";
-        str << "\n";
 
         if ( meta.origSize().isValid() )
         {
-            str << "\n";
+            str << "\n\n";
             str << "Original:" << "\n"
                 << meta.origSize().width() << " x "
                 << meta.origSize().height();
@@ -95,15 +95,17 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
                 (double) meta.origSize().height() / ( 1000 * 1000 );
 
             str << "\n(" << megaPixel << " MPix)";
-            str << "\n";
         }
 
-        str << "\n"
-            << meta.dateTimeTaken().date().toString( Qt::ISODate )
-            << "\n"
-            << meta.dateTimeTaken().time().toString( "HH:mm" );
+        if ( meta.dateTimeTaken().isValid() )
+        {
+            str << "\n\n"
+                << meta.dateTimeTaken().date().toString( Qt::ISODate )
+                << "\n"
+                << meta.dateTimeTaken().time().toString( "HH:mm" );
+        }
     }
-    else
+    else // meta.isEmpty()
     {
         QSize size = photo->size();
 

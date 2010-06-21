@@ -47,10 +47,40 @@ public:
      */
     bool isInt() const;
 
+    /**
+     * Simplify this fraction in place: Reduce it with the greatest common
+     * divisor.
+     */
+    void simplify();
+
+    /**
+     * Return this fraction simplified, but don't change the original.
+     */
+    Fraction simplified() const;
+
+
+    /**
+     * Return the greatest common divisor of two numbers.
+     */
+    static int greatestCommonDivisor( int a, int b );
+
+    /**
+     * Return 'true' if this fraction is greater than 'num'.
+     */
+    bool operator>( double num );
+
+    /**
+     * Return 'true' if this fraction is smaller than 'num'.
+     */
+    bool operator<( double num );
+
 protected:
 
     int m_numerator;
     int m_denominator;
 };
+
+
+
 
 #endif // Fractional_h

@@ -75,6 +75,7 @@ Fraction PhotoMetaData::exifFract( Exiv2::ExifData &  exifData,
     {
         Exiv2::Rational rational = it->value().toRational();
         val = Fraction( rational.first, rational.second );
+        val.simplify();
     }
 
     return val;
