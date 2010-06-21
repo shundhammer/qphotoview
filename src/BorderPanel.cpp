@@ -12,6 +12,7 @@
 #include <QColor>
 #include <QGraphicsSceneMouseEvent>
 #include <QEasingCurve>
+#include <QGraphicsBlurEffect>
 #include <QDebug>
 
 #include "BorderPanel.h"
@@ -48,11 +49,16 @@ BorderPanel::BorderPanel( PhotoView * parent, SensitiveBorder * border )
     setAcceptsHoverEvents( true );
     m_leaveTimer.setSingleShot( true );
 
-    // const int grey = 0xE0;
-    const int grey = 0x40;
+    const int grey  = 0x40;
+    const int grey0 = 0x50;
+    const int grey1 = 0x30;
+
+    m_grad = new QLinearGradient();
+    m_grad->setColorAt( 0.0, QColor( grey0, grey0, grey0, 255*0.9 ) );
+    m_grad->setColorAt( 1.0, QColor( grey1, grey1, grey1, 255*0.7 ) );
+
     m_brush = QBrush( QColor( grey, grey, grey, 255*0.7 ) );
     m_pen   = QPen( Qt::NoPen );
-    // m_pen.setColor( Qt::red );
 
     if ( border )
     {
@@ -75,6 +81,9 @@ BorderPanel::~BorderPanel()
 
     if ( m_disappearAnimation )
         delete m_disappearAnimation;
+
+    if ( m_grad )
+        delete m_grad;
 }
 
 
@@ -121,10 +130,42 @@ void BorderPanel::paint( QPainter * painter,
     Q_UNUSED( option );
     Q_UNUSED( widget );
 
-    painter->setBrush( m_brush );
+    QRectF rect = boundingRect();
+
+    if ( m_grad )
+    {
+        m_grad->setStart    ( rect.topLeft() );
+        m_grad->setFinalStop( rect.bottomLeft() );
+        painter->setBrush( *m_grad );
+    }
+    else
+    {
+        painter->setBrush( m_brush );
+    }
+
     painter->setPen( m_pen );
-    painter->drawRoundedRect( QRectF( QPointF( 0, 0 ), size() ),
-                              PanelCornerRadius, PanelCornerRadius );
+    painter->drawRoundedRect( rect, PanelCornerRadius, PanelCornerRadius );
+}
+
+
+void BorderPanel::setBrush( const QBrush & brush )
+{
+    m_brush = brush;
+
+    if ( m_grad )
+    {
+        delete m_grad;
+        m_grad = 0;
+    }
+}
+
+
+void BorderPanel::setGradient( QLinearGradient * grad )
+{
+    if ( m_grad )
+        delete m_grad;
+
+    m_grad = grad;
 }
 
 

@@ -22,6 +22,7 @@ class GraphicsItemPosAnimation;
 
 class QWidget;
 class QPainter;
+class QLinearGradient;
 class QGraphicsSceneHoverEvent;
 class QGraphicsSceneMouseEvent;
 class QStyleOptionGraphicsItem;
@@ -171,15 +172,35 @@ public:
         { setSize( QSizeF( width, height ) ); }
 
     /**
-     * Set the brush used for painting the panel.
-     * By default, this is a dark transparent color.
+     * Set the brush used for painting the panel. By default, this is a dark
+     * transparent color. Setting a new brush disables the default gradient. If
+     * you only want to set the gradient, use setGradient() instead of this
+     * function.
      */
-    void setBrush( const QBrush & brush ) { m_brush = brush; }
+    void setBrush( const QBrush & brush );
 
     /**
-     * Return the current brush.
+     * Return the current brush. If a gradient is set, this value is
+     * meaningless; use gradient() instead.
      */
     QBrush brush() const { return m_brush; }
+
+    /**
+     * Set the gradient used for painting the panel.
+     * Upon painting, the top left and bottom left corners of the paint
+     * rectangle are set as start and stop points, respectively.
+     *
+     * This object takes ownership of the gradient, i.e., it will delete it in
+     * its destructor or when a new one is set.
+     *
+     * Setting the gradient to 0 disables the gradient.
+     */
+    void setGradient( QLinearGradient * grad );
+
+    /**
+     * Return the gradient used for painting the panel.
+     */
+    QLinearGradient * gradient() const { return m_grad; }
 
     /**
      * Set the pen used for painting the panel.
@@ -308,6 +329,7 @@ private:
     bool                        m_sticky;
     bool                        m_active;
     QBrush                      m_brush;
+    QLinearGradient *           m_grad;
     QPen                        m_pen;
     QTimer		        m_leaveTimer;
 };
