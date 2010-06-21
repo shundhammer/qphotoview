@@ -29,6 +29,8 @@ PhotoMetaData::PhotoMetaData( Photo * photo )
 
 void PhotoMetaData::readExifData( const QString & fileName )
 {
+    // qDebug() << __PRETTY_FUNCTION__ << fileName;
+
     try
     {
         Exiv2::Image::AutoPtr image =
@@ -52,7 +54,7 @@ void PhotoMetaData::readExifData( const QString & fileName )
         int origHeight = exifInt( exifData, "Exif.Photo.PixelYDimension" );
         m_origSize = QSize( origWidth, origHeight );
 
-        QString dateTimeStr = exifString( exifData, "Exif.Image.DateTimeOriginal" );
+        QString dateTimeStr = exifString( exifData, "Exif.Photo.DateTimeOriginal" );
         m_dateTimeTaken = QDateTime::fromString( dateTimeStr, Qt::ISODate );
     }
     catch ( Exiv2::Error& exception )
@@ -109,7 +111,7 @@ QString PhotoMetaData::exifString( Exiv2::ExifData &  exifData,
 
     if ( it != exifData.end() )
     {
-        val = (int) it->value().toString().c_str();
+        val = it->value().toString().c_str();
     }
 
     return val;

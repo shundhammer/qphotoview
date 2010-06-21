@@ -102,7 +102,7 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
             str << "\n\n"
                 << meta.dateTimeTaken().date().toString( Qt::ISODate )
                 << "\n"
-                << meta.dateTimeTaken().time().toString( "HH:mm" );
+                << meta.dateTimeTaken().time().toString( "HH:mm:ss" );
         }
     }
     else // meta.isEmpty()
