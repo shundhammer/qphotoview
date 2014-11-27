@@ -744,6 +744,7 @@ XMPMeta::Initialize()
 	XMP_Assert ( flag == (XMP_OptionBits)(-1L) );
 	XMP_Assert ( (flag ^ kXMP_PropHasLang) == 0xFFFFFFBFUL );
 	XMP_Assert ( (flag & ~kXMP_PropHasLang) == 0xFFFFFFBFUL );
+        (void) flag;
 	
 	XMP_OptionBits opt1 = 0;	// Check the general option bit macros.
 	XMP_OptionBits opt2 = ~0UL;
