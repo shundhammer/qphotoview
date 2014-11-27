@@ -167,7 +167,8 @@ Photo * PhotoDir::toNext()
     if ( m_photos.isEmpty() )
         return 0;
 
-    m_current = qBound( 0, ++m_current, m_photos.size()-1 );
+    ++m_current;
+    m_current = qBound( 0, m_current, m_photos.size()-1 );
 
     return m_photos.at( m_current );
 }
@@ -178,7 +179,8 @@ Photo * PhotoDir::toPrevious()
     if ( m_photos.isEmpty() )
         return 0;
 
-    m_current = qBound( 0, --m_current, m_photos.size()-1 );
+    --m_current;
+    m_current = qBound( 0, m_current, m_photos.size()-1 );
 
     return m_photos.at( m_current );
 }

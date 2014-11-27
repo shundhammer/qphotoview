@@ -30,6 +30,7 @@ int main ( int argc, char *argv[] )
 
     PhotoDir dir( path );
     PhotoView viewer( &dir );
+    viewer.setWindowState( viewer.windowState() | Qt::WindowFullScreen );
 
     viewer.show();
     app.exec();
