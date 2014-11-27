@@ -1,0 +1,17 @@
+*.o
+*.lo
+.deps
+.libs
+*.la
+bin/
+config.log
+config.status
+config/config.h
+config/config.mk
+config/exiv2.pc
+libtool
+po/Makefile.in
+po/POTFILES
+src/doxygen.hpp
+src/exv_conf.h
+src/lib
