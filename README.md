@@ -1,8 +1,11 @@
-Updated:  2010-06-12
+# QPhotoView 
+
+A Qt-based photo viewer that concentrates on what photographers need.
+
+Updated:  2015-12-05
 
 
-What is it?
-===========
+## What is it?
 
 QPhotoView is an image viewer for photographers. It first and foremost meant as
 a tool to be used by photographers -- for viewing photos, for comparing
@@ -17,8 +20,7 @@ each of them fails misearably at it in one way or the other (see below: Why yet
 another image viewer?).
 
 
-Design documentation
-====================
+## Design documentation
 
 doc/design/qphotoview-design.odp
 
@@ -26,15 +28,13 @@ doc/design/qphotoview-design.odp
 
 
 
-License
-=======
+## License
 
 This software is licensed under the GPL (the GNU Public License) version 2 --
 see also file COPYING.
 
 
-How to build
-============
+## How to build
 
     qmake
     make
@@ -50,8 +50,7 @@ before contacting us because of build problems.
 
 
 
-Why yet another image viewer?
-=============================
+## Why yet another image viewer?
 
 Short version: Because the other ones (at least the ones that are available on
 Linux / X11) all suck. They all suck in different ways, but they definitely all
