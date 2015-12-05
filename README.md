@@ -72,7 +72,7 @@ Gwenview (and not all that other stuff)? I don't think so. If it's there, it is
 very well hidden. Also, deleting the current image is an operation that is (at
 least in the default configuration) unreasonably difficult. Hell, when I
 just imported images from my camera and I see one that is out of focus, I want
-to get rid of it quickly -- hit [Delete] or [D] (or whatever) and good-bye.
+to get rid of it quickly -- hit [Delete] or **D** (or whatever) and good-bye.
 
 
 KDE's digiKam is an attempt of a one-tool-does-everything program. It insists
