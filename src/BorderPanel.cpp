@@ -46,8 +46,13 @@ BorderPanel::BorderPanel( PhotoView * parent, SensitiveBorder * border )
 {
     m_photoView->scene()->addItem( this );
     hide();
-    setAcceptsHoverEvents( true );
     m_leaveTimer.setSingleShot( true );
+
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
+    setAcceptsHoverEvents( true );
+#else
+    setAcceptHoverEvents( true );
+#endif
 
     const int grey  = 0x40;
     const int grey0 = 0x50;

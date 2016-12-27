@@ -26,8 +26,14 @@ SensitiveBorder::SensitiveBorder( PhotoView * parent )
     , m_photoView( parent )
 {
     m_photoView->scene()->addItem( this );
-    setAcceptsHoverEvents( true );
     setCursor( Qt::PointingHandCursor );
+
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
+    setAcceptsHoverEvents( true );
+#else
+    setAcceptHoverEvents( true );
+#endif
+
     m_enterTimer.setSingleShot( true );
     m_leaveTimer.setSingleShot( true );
 

@@ -8,12 +8,12 @@
 
 #include <QApplication>
 #include <QGraphicsPixmapItem>
-#include <QWindowsStyle>
 #include <QResizeEvent>
 #include <QKeyEvent>
 #include <QTime>
 #include <QDebug>
 #include <QDesktopWidget>
+#include <QStyle>
 
 #include "PhotoView.h"
 #include "PhotoDir.h"
@@ -61,12 +61,21 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     setVerticalScrollBarPolicy	( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
+#if 0
     // Some styles (e.g. Plastique) have an undesired two pixel wide focus rect
     // around QGraphicsView widgets. This is not what we want here, so let's
     // select a style that does not do this. This does not have an effect on
     // existing or future child widgets. And since scroll bars are turned off,
     // there is no other visual effect anyway.
+
+    // FIXME
+    // FIXME
+    // FIXME
     setStyle( new QWindowsStyle() );
+    // FIXME
+    // FIXME
+    // FIXME
+#endif
 
     // Enable mouse tracking so a mouse cursor that was set invisible by an
     // item (e.g., Canvas) can be made visible again upon mouse movement.

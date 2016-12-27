@@ -45,7 +45,13 @@ Panner::Panner( const QSizeF & pannerMaxSize, PhotoView * photoView )
     // the user if hover events go to a SensitiveBorder underneath the
     // panner and a BorderPanel opens when the mouse pointer hovers over the
     // panner.
+
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
     setAcceptsHoverEvents( true );
+#else
+    setAcceptHoverEvents( true );
+#endif
+
     setCursor( Qt::CrossCursor );
 }
 

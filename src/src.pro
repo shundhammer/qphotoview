@@ -1,5 +1,22 @@
-TEMPLATE = app
-TARGET	 = qphotoview
+# qmake .pro file for qphotoview/src
+#
+# Go to the project toplevel dir and build all Makefiles:
+#
+#     qmake
+#
+# Then build with
+#
+#     make
+#
+
+TEMPLATE         = app
+
+QT		+= widgets
+QT		+= widgets
+CONFIG		+= debug
+DEPENDPATH	+= .
+MOC_DIR		 = .moc
+OBJECTS_DIR	 = .obj
 
 unix {
     # LIB_EXIV2_PREFIX = /usr
@@ -8,6 +25,12 @@ unix {
     LIBS    += -L $${LIB_EXIV2_PREFIX}/lib -lexiv2
     INCLUDE += $${LIB_EXIV2_PREFIX}/include
 }
+
+TARGET	         = qphotoview
+TARGET.files	 = qphotoview
+TARGET.path	 = /usr/bin
+INSTALLS	+= TARGET
+# INSTALLS	+= TARGET desktop icons
 
 
 SOURCES =			\
@@ -47,5 +70,8 @@ HEADERS =			\
     GraphicsItemPosAnimation.h
 
 
-MOC_DIR	    = .moc
-OBJECTS_DIR = .obj
+# desktop.files = *.desktop
+# desktop.path  = /usr/share/applications
+#
+# icons.files   = icons/qphotoview.png
+# icons.path    = /usr/share/icons/hicolor/32x32/apps
