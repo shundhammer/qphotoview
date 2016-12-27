@@ -1,10 +1,11 @@
 /*
- * QPhotoView support classes
+ *   File name: Logger.cpp
+ *   Summary:	Logger class for QPhotoView
+ *   License:	GPL V2 - See file LICENSE for details.
  *
- * License: GPL V2. See file COPYING for details.
- *
- * Author:  Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
+ *   Author:	Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
  */
+
 
 #include "Logger.h"
 
@@ -13,12 +14,19 @@
 #include <QString>
 #include <QStringList>
 
-#include <stdio.h>      // stderr, fprintf()
-#include <unistd.h>     // getpid()
-#include <sys/types.h>  // pid_t
+#include <stdio.h>	// stderr, fprintf()
+#include <stdlib.h>     // abort()
+#include <unistd.h>	// getpid()
+#include <sys/types.h>	// pid_t
 
 
-static void qt_logger( QtMsgType msgType , const char *msg );
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
+static void qt_logger( QtMsgType msgType, const char *msg);
+#else
+static void qt_logger( QtMsgType msgType,
+		       const QMessageLogContext &context,
+		       const QString & msg );
+#endif
 
 Logger * Logger::_defaultLogger = 0;
 
@@ -38,11 +46,11 @@ Logger::Logger( const QString &filename ):
 
     if ( _nullDevice.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
-        _nullStream.setDevice( &_nullDevice );
+	_nullStream.setDevice( &_nullDevice );
     }
     else
     {
-        fprintf( stderr, "ERROR: Can't open /dev/null to suppress log output\n" );
+	fprintf( stderr, "ERROR: Can't open /dev/null to suppress log output\n" );
     }
 
 
@@ -52,25 +60,25 @@ Logger::Logger( const QString &filename ):
 
     if ( ! _logFile.isOpen() || _logFile.fileName() != filename )
     {
-        _logFile.setFileName( filename );
+	_logFile.setFileName( filename );
 
-        if ( _logFile.open( QIODevice::WriteOnly |
-                            QIODevice::Text      |
-                            QIODevice::Append      ) )
-        {
-            if ( ! _defaultLogger )
-                setDefaultLogger();
+	if ( _logFile.open( QIODevice::WriteOnly |
+			    QIODevice::Text	 |
+			    QIODevice::Append	   ) )
+	{
+	    if ( ! _defaultLogger )
+		setDefaultLogger();
 
-            fprintf( stderr, "Logging to %s\n", qPrintable( filename ) );
-            _logStream.setDevice( &_logFile );
-            _logStream << "\n\n";
-            log( __FILE__, __LINE__, __FUNCTION__, LogSeverityDebug )
-                << "-- Log Start --" << endl;
-        }
-        else
-        {
-            fprintf( stderr, "ERROR: Can't open log file %s\n", qPrintable( filename ) );
-        }
+	    fprintf( stderr, "Logging to %s\n", qPrintable( filename ) );
+	    _logStream.setDevice( &_logFile );
+	    _logStream << "\n\n";
+	    log( __FILE__, __LINE__, __FUNCTION__, LogSeverityInfo )
+		<< "-- Log Start --" << endl;
+	}
+	else
+	{
+	    fprintf( stderr, "ERROR: Can't open log file %s\n", qPrintable( filename ) );
+	}
     }
 }
 
@@ -79,14 +87,18 @@ Logger::~Logger()
 {
     if ( _logFile.isOpen() )
     {
-        logDebug() << "-- Log End --\n" << endl;
-        _logFile.close();
+	logInfo() << "-- Log End --\n" << endl;
+	_logFile.close();
     }
 
     if ( this == _defaultLogger )
     {
-        _defaultLogger = 0;
-        qInstallMsgHandler(0); // Restore default message handler
+	_defaultLogger = 0;
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
+	qInstallMsgHandler(0);
+#else
+	qInstallMessageHandler(0); // Restore default message handler
+#endif
     }
 }
 
@@ -94,53 +106,58 @@ Logger::~Logger()
 void Logger::setDefaultLogger()
 {
     _defaultLogger = this;
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
     qInstallMsgHandler( qt_logger );
+#else
+    qInstallMessageHandler( qt_logger );
+#endif
 }
 
 
-QTextStream & Logger::log( Logger *       logger,
-                           const QString &srcFile,
-                           int            srcLine,
-                           const QString &srcFunction,
-                           LogSeverity    severity )
+QTextStream & Logger::log( Logger *	  logger,
+			   const QString &srcFile,
+			   int		  srcLine,
+			   const QString &srcFunction,
+			   LogSeverity	  severity )
 {
     static QTextStream stderrStream( stderr, QIODevice::WriteOnly );
 
     if ( ! logger )
-        logger = Logger::defaultLogger();
+	logger = Logger::defaultLogger();
 
     if ( logger )
-        return logger->log( srcFile, srcLine, srcFunction, severity );
+	return logger->log( srcFile, srcLine, srcFunction, severity );
     else
-        return stderrStream;
+	return stderrStream;
 }
 
 
 QTextStream & Logger::log( const QString &srcFile,
-                           int            srcLine,
-                           const QString &srcFunction,
-                           LogSeverity    severity )
+			   int		  srcLine,
+			   const QString &srcFunction,
+			   LogSeverity	  severity )
 {
     if ( severity < _logLevel )
-        return _nullStream;
+	return _nullStream;
 
     QString sev;
 
     switch ( severity )
     {
-        case LogSeverityVerbose:   sev = "<Verbose>"; break;
-        case LogSeverityDebug:     sev = "<Debug>  "; break;
-        case LogSeverityWarning:   sev = "<WARNING>"; break;
-        case LogSeverityError:     sev = "<ERROR>  "; break;
-            // Intentionally omitting 'default' branch so the compiler can
-            // complain about unhandled enum values
+	case LogSeverityVerbose:   sev = "<Verbose>"; break;
+	case LogSeverityDebug:	   sev = "<Debug>  "; break;
+	case LogSeverityInfo:	   sev = "<Info>   "; break;
+	case LogSeverityWarning:   sev = "<WARNING>"; break;
+	case LogSeverityError:	   sev = "<ERROR>  "; break;
+	    // Intentionally omitting 'default' branch so the compiler can
+	    // complain about unhandled enum values
     }
 
     _logStream << Logger::timeStamp() << " "
-               << "[" << (int) getpid() << "] "
-               << sev << " "
-               << srcFile << ":" << srcLine << " "
-               << srcFunction << "():  ";
+	       << "[" << (int) getpid() << "] "
+	       << sev << " "
+	       << srcFile << ":" << srcLine << " "
+	       << srcFunction << "():  ";
 
     return _logStream;
 }
@@ -149,32 +166,32 @@ QTextStream & Logger::log( const QString &srcFile,
 void Logger::newline( Logger *logger )
 {
     if ( ! logger )
-        logger = Logger::defaultLogger();
+	logger = Logger::defaultLogger();
 
     if ( logger )
-        logger->newline();
+	logger->newline();
 }
 
 
 LogSeverity Logger::logLevel( Logger *logger )
 {
     if ( ! logger )
-        logger = Logger::defaultLogger();
+	logger = Logger::defaultLogger();
 
     if ( logger )
-        return logger->logLevel();
+	return logger->logLevel();
     else
-        return LogSeverityVerbose;
+	return LogSeverityVerbose;
 }
 
 
 void Logger::setLogLevel( Logger *logger, LogSeverity newLevel )
 {
     if ( ! logger )
-        logger = Logger::defaultLogger();
+	logger = Logger::defaultLogger();
 
     if ( logger )
-        logger->setLogLevel( newLevel );
+	logger->setLogLevel( newLevel );
 }
 
 
@@ -191,7 +208,7 @@ QString Logger::timeStamp()
 
 
 QString Logger::prefixLines( const QString &prefix,
-                             const QString &multiLineText )
+			     const QString &multiLineText )
 {
     QStringList lines = multiLineText.split( "\n" );
     QString result = lines.isEmpty() ? QString() : prefix;
@@ -202,7 +219,7 @@ QString Logger::prefixLines( const QString &prefix,
 
 
 QString Logger::indentLines( int indentWidth,
-                             const QString &multiLineText )
+			     const QString &multiLineText )
 {
     QString prefix( indentWidth, ' ' );
 
@@ -210,30 +227,45 @@ QString Logger::indentLines( int indentWidth,
 }
 
 
-static void qt_logger( QtMsgType msgType , const char *msg )
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
+static void qt_logger( QtMsgType msgType, const char *msg)
+#else
+static void qt_logger( QtMsgType msgType,
+		       const QMessageLogContext &context,
+		       const QString & msg )
+#endif
 {
-    if ( Logger::defaultLogger() )
+    LogSeverity severity;
+
+    switch ( msgType )
     {
-        QString category;
-
-        switch ( msgType )
-        {
-            case QtDebugMsg:    category = "qDebug";    break;
-            case QtWarningMsg:  category = "qWARNING";  break;
-            case QtCriticalMsg: category = "qCRITICAL"; break;
-            case QtFatalMsg:    category = "qFATAL";    break;
-        }
-
-        Logger::defaultLogger()->logStream()
-            << Logger::timeStamp() << " "
-            << "[" << (int) getpid() << "] "
-            << "<" << category << "> "
-            << msg
-            << endl;
+	case QtDebugMsg:    severity = LogSeverityVerbose; break;
+	case QtWarningMsg:  severity = LogSeverityWarning; break;
+	case QtCriticalMsg: severity = LogSeverityError;   break;
+	case QtFatalMsg:    severity = LogSeverityError;   break;
+#if QT_VERSION >= 0x050500
+	case QtInfoMsg:	    severity = LogSeverityInfo;	   break;
+#endif
     }
 
+    Logger::log( 0, // use default logger
+#if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
+		 "", 0, "",
+#else
+		 context.file, context.line, context.function,
+#endif
+		 severity )
+	<< msg << endl;
+
     if ( msgType == QtFatalMsg )
-        abort();
+    {
+        fprintf( stderr, "FATAL: %s\n", qPrintable( msg ) );
+
+        if ( msg.contains( "Could not connect to display" ) )
+            exit( 1 );
+        else
+            abort();
+    }
 }
 
 
