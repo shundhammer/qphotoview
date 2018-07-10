@@ -12,7 +12,6 @@
 TEMPLATE         = app
 
 QT		+= widgets
-QT		+= widgets
 CONFIG		+= debug
 DEPENDPATH	+= .
 MOC_DIR		 = .moc
