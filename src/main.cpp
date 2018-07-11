@@ -11,10 +11,12 @@
 
 #include "PhotoView.h"
 #include "PhotoDir.h"
+#include "Logger.h"
 
 
 int main ( int argc, char *argv[] )
 {
+    Logger logger( "/tmp/qphotoview-$USER", "qphotoview.log" );
     QApplication app( argc, argv );
 
     if ( argc > 2 )

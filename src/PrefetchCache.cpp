@@ -12,6 +12,7 @@
 
 #include "PrefetchCache.h"
 #include "Photo.h"
+#include "Logger.h"
 
 
 PrefetchCache::PrefetchCache( const QString & path )
@@ -24,8 +25,8 @@ PrefetchCache::PrefetchCache( const QString & path )
 
 PrefetchCache::~PrefetchCache()
 {
-    qDebug() << "Unused images in prefetch cache:" << _cache.size()
-	     << "(" << 100*_cache.size() / _sizes.size() << "%)";
+    logDebug() << "Unused images in prefetch cache: " << _cache.size()
+               << " (" << 100*_cache.size() / _sizes.size() << "%)" << endl;
     clear();
 
     if ( _workerThread.isRunning() )
@@ -65,13 +66,13 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName, bool take )
 		_cache.value( imageFileName );
 
 	    cacheMiss = false;
-	    // qDebug() << "Prefetch cache hit:" << imageFileName;
+	    // logDebug() << "Prefetch cache hit: " << imageFileName << endl;
 	}
     }
 
     if ( cacheMiss )
     {
-	// qDebug() << "Prefetch cache miss:" << imageFileName;
+	// logDebug() << "Prefetch cache miss: " << imageFileName << endl;
 	image.load( fullPath( imageFileName ) );
 	QSize size = image.size();
 	qreal scaleFactor = Photo::scaleFactor( size, _fullScreenSize );
@@ -147,9 +148,10 @@ void PrefetchCacheWorkerThread::run()
 	    if ( _prefetchCache->_jobQueue.isEmpty() )
 	    {
 #if 0
-		qDebug() << "Prefetch jobs done - terminating worker thread;"
-			 << "images in cache:"
-			 << _prefetchCache->_cache.size();
+		logDebug() << "Prefetch jobs done - terminating worker thread;"
+                           << "images in cache: "
+                           << _prefetchCache->_cache.size()
+                           << endl;
 #endif
 		return;
 	    }
@@ -158,12 +160,12 @@ void PrefetchCacheWorkerThread::run()
 	}
 
 	QString fullPath = _prefetchCache->fullPath( imageName );
-	// qDebug() << "Prefetching" << fullPath;
+	// logDebug() << "Prefetching " << fullPath << endl;
 	QImage image;
 
 	if ( ! image.load( fullPath ) )
 	{
-	    qDebug() << "Prefetching failed for" << fullPath;
+	    // logDebug() << "Prefetching failed for " << fullPath << endl;
 	}
 	else
 	{

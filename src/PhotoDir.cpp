@@ -14,6 +14,7 @@
 #include "PhotoDir.h"
 #include "Photo.h"
 #include "PrefetchCache.h"
+#include "Logger.h"
 
 
 PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
@@ -24,12 +25,17 @@ PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
     QString startPhotoName;
     QFileInfo fileInfo( path );
 
-    if ( ! fileInfo.isDir() )
+    if ( fileInfo.isDir() )
     {
-	_path	      = fileInfo.absolutePath();
+	_path	       = fileInfo.absolutePath() + "/" + path;
+    }
+    else
+    {
+	_path	       = fileInfo.absolutePath();
 	startPhotoName = fileInfo.fileName();
     }
 
+    logInfo() << "New photo dir " << _path << endl;
     _prefetchCache = new PrefetchCache( _path );
     read( _path, startPhotoName );
 }
