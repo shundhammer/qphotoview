@@ -2,6 +2,12 @@
 
 A Qt-based photo viewer that concentrates on what photographers need.
 
+(c) 2015-2018 Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
+
+Target Platforms: Linux, BSD, Unix-like systems
+
+License: GPL V2
+
 Updated:  2018-07-11
 
 
@@ -32,13 +38,6 @@ _Main window screenshot_
 doc/design/qphotoview-design.odp
 
 (OpenOffice presentation)
-
-
-
-## License
-
-This software is licensed under the GPL (the GNU Public License) version 2 --
-see also file COPYING.
 
 
 ## How to build
@@ -123,33 +122,11 @@ ratio. This was insane even back in the 1990s, but even more insane is the fact
 that this was kept like this during all that time.
 
 
-Contributing
-============
 
-Patches are welcome. But everybody who wishes to contribute please keep the
-above design goals in mind: This is meant as a tool for photographers. It is
-not a generic viewer for everything. It is not an image manipulation
-program. It is not, does not want to be and will never be a substitute for Gimp
-or for PhotoShop.
+## Contributing
 
-Please stick to the coding conventions used in the rest of the code, in
-particular braces (new line for opening brace, not added to the previous line),
-indentation (4 blanks) and tab width (1 tab is 8 blanks). If in doubt, look at
-how existing code in the project does it.
-
-Life is too short for wasting time with fixing somebody else's broken coding
-style; I've done way too much of that in my life already.
-
-Please DO NOT copy and paste the complete GPL or other confusing legalese blurb
-into the header of each file. One or two lines stating that it's GPL'ed and a
-reference to the COPYING file is plenty, and it does not distract others from
-the real code.
-
-On the other hand, please DO write one or two lines near the top of the file
-explaining what the declarations (in the case of header files) or the code
-does. This helps tremendously for getting one's bearings while browsing through
-the code.
-
+See file [Contributing.md](https://github.com/shundhammer/qdirstat/blob/master/doc/Contributing.md)
+and [GitHub-Workflow.md](https://github.com/shundhammer/qdirstat/blob/master/doc/GitHub-Workflow.md)
 
 
 Author
