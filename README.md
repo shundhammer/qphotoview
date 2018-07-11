@@ -125,6 +125,6 @@ that this was kept like this during all that time.
 
 ## Contributing
 
-See file [Contributing.md](https://github.com/shundhammer/qdirstat/blob/master/doc/Contributing.md)
+See file [Contributing.md](https://github.com/shundhammer/qphotoview/blob/master/doc/Contributing.md)
 and [GitHub-Workflow.md](https://github.com/shundhammer/qdirstat/blob/master/doc/GitHub-Workflow.md)
 
