@@ -1,4 +1,4 @@
-# Contributing to QDirStat
+# Contributing to QPhotoView
 
 Contributions are welcome. Please follow the rules and guide lines in this
 document:
@@ -117,7 +117,7 @@ See separate document [GitHub-Workflow.md](https://github.com/shundhammer/qdirst
 
 - Use the Qt reference documentation.
 - Install and study carefully the available Qt examples for reference.
-- Read the (extensive!) documentation in the QDirStat header files.
+- Read the (extensive!) documentation in the QPhotoView header files.
 - Use Stack Overflow.
 - Use Google.
 - Make sure you can build a basic Qt program.
@@ -128,8 +128,7 @@ See separate document [GitHub-Workflow.md](https://github.com/shundhammer/qdirst
 If you did all of the above (and only then!) and still couldn't figure out
 what's wrong:
 
-- Use IRC (#qdirstat on irc.freenode.net; fallback: contact HuHa in #yast on
-  freenode IRC)
+- Use IRC: contact HuHa in #yast on freenode IRC
 - Write a mail
 
 It is a matter of professional courtesy to first use what is freely available
