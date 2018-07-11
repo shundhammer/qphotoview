@@ -17,3 +17,5 @@ exiv2-*/xmpsdk/CMakeFiles/
 exiv2-*/xmpsdk/cmake_install.cmake
 exiv2-*/src/libexiv2.so*
 exiv2-*/xmpsdk/libxmp.a
+exiv2-*/src/src
+exiv2-*/install_manifest.txt
