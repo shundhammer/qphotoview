@@ -112,6 +112,16 @@ public slots:
      */
     void showCursor();
 
+    /**
+     * Switch back and forth between fullscreen and windowed mode.
+     */
+    void toggleFullScreen();
+
+    /**
+     * Force a reload of the current image.
+     */
+    void forceReload();
+
 
 public:
 

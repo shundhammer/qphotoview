@@ -2,7 +2,7 @@
 
 A Qt-based photo viewer that concentrates on what photographers need.
 
-(c) 2015-2018 Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
+(c) 2010-2018 Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
 
 Target Platforms: Linux, BSD, Unix-like systems
 

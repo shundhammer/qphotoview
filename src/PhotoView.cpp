@@ -487,6 +487,24 @@ void PhotoView::showCursor()
 }
 
 
+void PhotoView::toggleFullScreen()
+{
+    setWindowState( windowState() ^ Qt::WindowFullScreen );
+}
+
+
+void PhotoView::forceReload()
+{
+    Photo * photo = _photoDir->current();
+
+    if ( photo )
+    {
+        photo->dropCache();
+        loadImage();
+    }
+}
+
+
 void PhotoView::mouseMoveEvent ( QMouseEvent * event )
 {
     // qDebug() << __PRETTY_FUNCTION__;
@@ -528,15 +546,7 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	    break;
 
 	case Qt::Key_F5: // Force reload
-	    {
-		Photo * photo = _photoDir->current();
-
-		if ( photo )
-		{
-		    photo->dropCache();
-		    loadImage();
-		}
-	    }
+            forceReload();
 	    break;
 
 	case Qt::Key_Plus:
@@ -584,7 +594,7 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	    break;
 
 	case Qt::Key_Return:
-	    setWindowState( windowState() ^ Qt::WindowFullScreen );
+            toggleFullScreen();
 	    break;
 
 	case Qt::Key_Y:
