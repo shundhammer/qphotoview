@@ -10,6 +10,7 @@
 #define PhotoView_h
 
 #include <QGraphicsView>
+#include <QAction>
 #include <QTimer>
 #include <QCursor>
 
@@ -35,6 +36,26 @@ class PhotoView: public QGraphicsView
 
 public:
 
+    /**
+     * Helper class to bundle all the interactive actions provided by this the
+     * photo view widget so they can easier be put into menus etc.
+     */
+    class Actions
+    {
+    public:
+        Actions( PhotoView * photoView );
+
+        QAction * forceReload;
+        QAction * toggleFullscreen;
+        QAction * quit;
+
+    private:
+        QAction * createAction( const QString & text,
+                                QKeySequence    shortcut = QKeySequence() );
+
+        PhotoView * _photoView;
+    };
+
     enum ZoomMode
     {
 	NoZoom = 0,	// 1:1 (1 original pixel is one screen pixel)
@@ -55,6 +76,8 @@ public:
      * Destructor.
      */
     virtual ~PhotoView();
+
+    const Actions & actions() const { return _actions; }
 
 
 public slots:
@@ -115,7 +138,7 @@ public slots:
     /**
      * Switch back and forth between fullscreen and windowed mode.
      */
-    void toggleFullScreen();
+    void toggleFullscreen();
 
     /**
      * Force a reload of the current image.
@@ -241,6 +264,7 @@ private:
     QTimer	_idleTimer;
     int		_idleTimeout;
     QCursor	_cursor;
+    Actions     _actions;
 
     SensitiveBorder *	_topLeftCorner;
     SensitiveBorder *	_topBorder;

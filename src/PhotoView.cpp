@@ -24,6 +24,7 @@
 #include "BorderPanel.h"
 #include "TextBorderPanel.h"
 #include "ExifBorderPanel.h"
+#include "Logger.h"
 
 
 static const int DefaultIdleTimeout = 4000; // millisec
@@ -37,6 +38,7 @@ PhotoView::PhotoView( PhotoDir * photoDir )
     , _zoomFactor( 1.0	 )
     , _zoomIncrement( 1.2 )
     , _idleTimeout( DefaultIdleTimeout )
+    , _actions( this )
 {
     Q_CHECK_PTR( photoDir );
     setScene( new QGraphicsScene );
@@ -122,6 +124,7 @@ bool PhotoView::loadImage()
 
 	if ( success && photo )
 	{
+            logInfo() << "Loading " << photo->fileName() << endl;
 	    QString title( "QPhotoView	" + photo->fileName() );
 	    QString resolution;
 
@@ -487,7 +490,7 @@ void PhotoView::showCursor()
 }
 
 
-void PhotoView::toggleFullScreen()
+void PhotoView::toggleFullscreen()
 {
     setWindowState( windowState() ^ Qt::WindowFullScreen );
 }
@@ -545,10 +548,6 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	    loadImage();
 	    break;
 
-	case Qt::Key_F5: // Force reload
-            forceReload();
-	    break;
-
 	case Qt::Key_Plus:
 	    zoomIn();
 	    break;
@@ -588,15 +587,6 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	    setZoomMode( ZoomFitHeight );
 	    break;
 
-	case Qt::Key_Q:
-	case Qt::Key_Escape:
-	    qApp->quit();
-	    break;
-
-	case Qt::Key_Return:
-            toggleFullScreen();
-	    break;
-
 	case Qt::Key_Y:
 	    {
 		const int max=10;
@@ -618,4 +608,36 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	default:
 	    QGraphicsView::keyPressEvent( event );
     }
+}
+
+
+#define CONNECT_ACTION(ACTION, RECEIVER, RCVR_SLOT) \
+    connect( (ACTION), SIGNAL( triggered() ), (RECEIVER), SLOT( RCVR_SLOT ) )
+
+
+PhotoView::Actions::Actions( PhotoView * photoView ):
+    _photoView( photoView )
+{
+    forceReload = createAction( tr( "Force &Reload" ), Qt::Key_F5 );
+    CONNECT_ACTION( forceReload, photoView, forceReload() );
+
+    toggleFullscreen = createAction( tr( "Toggle &Fullscreen" ), Qt::Key_Return );
+    CONNECT_ACTION( toggleFullscreen, photoView, toggleFullscreen() );
+
+    quit = createAction( tr ( "Quit" ) );
+    quit->setShortcuts( QList<QKeySequence>() << Qt::Key_Q << Qt::Key_Escape );
+    CONNECT_ACTION( quit, qApp, quit() );
+}
+
+
+QAction * PhotoView::Actions::createAction( const QString & text,
+                                            QKeySequence    shortcut )
+{
+    QAction * action = new QAction( text, _photoView );
+    _photoView->addAction( action );
+
+    if ( ! shortcut.isEmpty() )
+        action->setShortcut( shortcut );
+
+    return action;
 }
