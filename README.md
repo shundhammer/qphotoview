@@ -35,9 +35,9 @@ _Main window screenshot_
 
 ## Design documentation
 
-doc/design/qphotoview-design.odp
+[PDF](https://github.com/shundhammer/qphotoview/blob/master/doc/design/qphotoview-design.pdf)
 
-(OpenOffice presentation)
+[OpenOffice presentation](https://github.com/shundhammer/qphotoview/blob/master/doc/design/qphotoview-design.odp)
 
 
 ## How to build
@@ -128,8 +128,3 @@ that this was kept like this during all that time.
 See file [Contributing.md](https://github.com/shundhammer/qdirstat/blob/master/doc/Contributing.md)
 and [GitHub-Workflow.md](https://github.com/shundhammer/qdirstat/blob/master/doc/GitHub-Workflow.md)
 
-
-Author
-======
-
-Stefan Hundhammer <Stefan.Hundhammer@gmx.de>
