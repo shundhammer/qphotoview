@@ -1,8 +1,8 @@
-# QPhotoView 
+# QPhotoView
 
 A Qt-based photo viewer that concentrates on what photographers need.
 
-Updated:  2015-12-05
+Updated:  2018-07-11
 
 
 ## What is it?
@@ -18,6 +18,13 @@ It is explicitly not meant as a one-size-fits all do-everything viewer, much
 less as an image manipulation tool. There are other tools that try that, and
 each of them fails misearably at it in one way or the other (see below: Why yet
 another image viewer?).
+
+
+## Screenshot
+
+[<img src="https://github.com/shundhammer/qphotoview/blob/master/screenshots/QPhotoView-main-win.png" width="949">](https://raw.githubusercontent.com/shundhammer/qphotoview/master/screenshots/QPhotoView-main-win.png)
+
+_Main window screenshot_
 
 
 ## Design documentation
@@ -36,11 +43,21 @@ see also file COPYING.
 
 ## How to build
 
+### Build libexiv2
+
+    cd 3rdparty/exiv2*
+    cmake .
+    make
+    sudo make install
+    cd ../..
+
+### Build QPhotoView itself
+
     qmake
     make
-    make install           (as root)
+    sudo make install
 
-You neeed a working C++ compiler environment and Qt 4.5 or later. On most Linux
+You neeed a working C++ compiler environment and Qt 5.x. On most Linux
 distributions, you will have to install the -devel (openSUSE) or -dev
 (Debian/Ubuntu) packages for Qt which include the header files and development
 tools like "qmake" and "moc".
@@ -51,6 +68,8 @@ before contacting us because of build problems.
 
 
 ## Why yet another image viewer?
+
+_This might be a bit outdated, but still mostly true_
 
 Short version: Because the other ones (at least the ones that are available on
 Linux / X11) all suck. They all suck in different ways, but they definitely all
