@@ -48,7 +48,7 @@ public:
     /**
      * Return the PhotoView parent.
      */
-    PhotoView * photoView() const { return m_photoView; }
+    PhotoView * photoView() const { return _photoView; }
 
     /**
      * Set debug mode on or off so the border can be made visible.
@@ -60,8 +60,8 @@ public:
      * is set, nothing is painted, so this object will remain invisible.
      */
     virtual void paint( QPainter * painter,
-                        const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = 0 );
+			const QStyleOptionGraphicsItem * option,
+			QWidget * widget = 0 );
 signals:
 
     /**
@@ -83,10 +83,11 @@ protected:
 
 private:
 
-    PhotoView * m_photoView;
-    QTimer      m_enterTimer;
-    QTimer      m_leaveTimer;
-    static bool m_debugMode;
+    PhotoView * _photoView;
+    QTimer	_enterTimer;
+    QTimer	_leaveTimer;
+    static bool _debugMode;
 };
+
 
 #endif // SensitiveBorder_h

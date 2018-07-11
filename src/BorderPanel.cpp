@@ -21,32 +21,32 @@
 #include "GraphicsItemPosAnimation.h"
 
 
-static const int   AppearAnimationDuration    =  850; // millisec
-static const int   DisappearAnimationDuration =  850; // millisec
-static const int   EnterLeaveTimeout          = 1000; // millisec
+static const int   AppearAnimationDuration    =	 850; // millisec
+static const int   DisappearAnimationDuration =	 850; // millisec
+static const int   EnterLeaveTimeout	      = 1000; // millisec
 
-static const qreal PanelCornerRadius          =  8.0;
-static const qreal DefaultBorderMargin        = 10.0;
-static const qreal DefaultMargin              = 10.0;
+static const qreal PanelCornerRadius	      =	 8.0;
+static const qreal DefaultBorderMargin	      = 10.0;
+static const qreal DefaultMargin	      = 10.0;
 
 
 
 BorderPanel::BorderPanel( PhotoView * parent, SensitiveBorder * border )
     : QObject()
     , QGraphicsItem()
-    , m_photoView( parent )
-    , m_sensitiveBorder( border )
-    , m_appearAnimation( 0 )
-    , m_disappearAnimation( 0 )
-    , m_alignment( Qt::AlignCenter )
-    , m_borderMargin( DefaultBorderMargin )
-    , m_margin( DefaultMargin )
-    , m_sticky( false )
-    , m_active( false )
+    , _photoView( parent )
+    , _sensitiveBorder( border )
+    , _appearAnimation( 0 )
+    , _disappearAnimation( 0 )
+    , _alignment( Qt::AlignCenter )
+    , _borderMargin( DefaultBorderMargin )
+    , _margin( DefaultMargin )
+    , _sticky( false )
+    , _active( false )
 {
-    m_photoView->scene()->addItem( this );
+    _photoView->scene()->addItem( this );
     hide();
-    m_leaveTimer.setSingleShot( true );
+    _leaveTimer.setSingleShot( true );
 
 #if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
     setAcceptsHoverEvents( true );
@@ -58,67 +58,67 @@ BorderPanel::BorderPanel( PhotoView * parent, SensitiveBorder * border )
     const int grey0 = 0x50;
     const int grey1 = 0x30;
 
-    m_grad = new QLinearGradient();
-    m_grad->setColorAt( 0.0, QColor( grey0, grey0, grey0, 255*0.9 ) );
-    m_grad->setColorAt( 1.0, QColor( grey1, grey1, grey1, 255*0.7 ) );
+    _grad = new QLinearGradient();
+    _grad->setColorAt( 0.0, QColor( grey0, grey0, grey0, 255*0.9 ) );
+    _grad->setColorAt( 1.0, QColor( grey1, grey1, grey1, 255*0.7 ) );
 
-    m_brush = QBrush( QColor( grey, grey, grey, 255*0.7 ) );
-    m_pen   = QPen( Qt::NoPen );
+    _brush = QBrush( QColor( grey, grey, grey, 255*0.7 ) );
+    _pen   = QPen( Qt::NoPen );
 
     if ( border )
     {
-        connect( border, SIGNAL( borderEntered()     ),
-                 this,   SLOT  ( appearAnimated()    ) );
+	connect( border, SIGNAL( borderEntered()     ),
+		 this,	 SLOT  ( appearAnimated()    ) );
 
-        connect( border, SIGNAL( borderLeft()        ),
-                 this,   SLOT  ( disappearAnimated() ) );
+	connect( border, SIGNAL( borderLeft()	     ),
+		 this,	 SLOT  ( disappearAnimated() ) );
     }
 
-    connect( &m_leaveTimer, SIGNAL( timeout() ),
-             this,          SLOT  ( maybeDisappear() ) );
+    connect( &_leaveTimer, SIGNAL( timeout() ),
+	     this,	    SLOT  ( maybeDisappear() ) );
 }
 
 
 BorderPanel::~BorderPanel()
 {
-    if ( m_appearAnimation )
-        delete m_appearAnimation;
+    if ( _appearAnimation )
+	delete _appearAnimation;
 
-    if ( m_disappearAnimation )
-        delete m_disappearAnimation;
+    if ( _disappearAnimation )
+	delete _disappearAnimation;
 
-    if ( m_grad )
-        delete m_grad;
+    if ( _grad )
+	delete _grad;
 }
 
 
 GraphicsItemPosAnimation * BorderPanel::appearAnimation()
 {
-    if ( ! m_appearAnimation )
+    if ( ! _appearAnimation )
     {
-        m_appearAnimation = new GraphicsItemPosAnimation( this );
-        m_appearAnimation->setEasingCurve( QEasingCurve::OutCubic );
+	_appearAnimation = new GraphicsItemPosAnimation( this );
+	_appearAnimation->setEasingCurve( QEasingCurve::OutCubic );
     }
 
-    return m_appearAnimation;
+    return _appearAnimation;
 }
 
 
 GraphicsItemPosAnimation * BorderPanel::disappearAnimation()
 {
-    if ( ! m_disappearAnimation )
+    if ( ! _disappearAnimation )
     {
-        m_disappearAnimation = new GraphicsItemPosAnimation( this );
-        m_disappearAnimation->setEasingCurve( QEasingCurve::OutCubic );
+	_disappearAnimation = new GraphicsItemPosAnimation( this );
+	_disappearAnimation->setEasingCurve( QEasingCurve::OutCubic );
 
-        connect( m_disappearAnimation, SIGNAL( finished() ),
-                 this,                 SLOT  ( hide()     ) );
+	connect( _disappearAnimation, SIGNAL( finished() ),
+		 this,		      SLOT  ( hide()	 ) );
 
-        connect( m_disappearAnimation, SIGNAL( finished()    ),
-                 this,                 SIGNAL( disappeared() ) );
+	connect( _disappearAnimation, SIGNAL( finished()    ),
+		 this,		      SIGNAL( disappeared() ) );
     }
 
-    return m_disappearAnimation;
+    return _disappearAnimation;
 }
 
 
@@ -129,57 +129,57 @@ QRectF BorderPanel::boundingRect() const
 
 
 void BorderPanel::paint( QPainter * painter,
-                         const QStyleOptionGraphicsItem * option,
-                         QWidget * widget )
+			 const QStyleOptionGraphicsItem * option,
+			 QWidget * widget )
 {
     Q_UNUSED( option );
     Q_UNUSED( widget );
 
     QRectF rect = boundingRect();
 
-    if ( m_grad )
+    if ( _grad )
     {
-        m_grad->setStart    ( rect.topLeft() );
-        m_grad->setFinalStop( rect.bottomLeft() );
-        painter->setBrush( *m_grad );
+	_grad->setStart	   ( rect.topLeft() );
+	_grad->setFinalStop( rect.bottomLeft() );
+	painter->setBrush( *_grad );
     }
     else
     {
-        painter->setBrush( m_brush );
+	painter->setBrush( _brush );
     }
 
-    painter->setPen( m_pen );
+    painter->setPen( _pen );
     painter->drawRoundedRect( rect, PanelCornerRadius, PanelCornerRadius );
 }
 
 
 void BorderPanel::setBrush( const QBrush & brush )
 {
-    m_brush = brush;
+    _brush = brush;
 
-    if ( m_grad )
+    if ( _grad )
     {
-        delete m_grad;
-        m_grad = 0;
+	delete _grad;
+	_grad = 0;
     }
 }
 
 
 void BorderPanel::setGradient( QLinearGradient * grad )
 {
-    if ( m_grad )
-        delete m_grad;
+    if ( _grad )
+	delete _grad;
 
-    m_grad = grad;
+    _grad = grad;
 }
 
 
 void BorderPanel::setSticky( bool sticky )
 {
-    m_sticky = sticky;
+    _sticky = sticky;
 
-    if ( m_sticky && ! m_active )
-        appearNow();
+    if ( _sticky && ! _active )
+	appearNow();
 }
 
 
@@ -190,7 +190,7 @@ void BorderPanel::appearNow()
     emit aboutToAppear();
     setPos( activePos() );
     show();
-    m_active = true;
+    _active = true;
 }
 
 
@@ -200,28 +200,28 @@ void BorderPanel::appearAnimated()
 
     if ( ! scene() )
     {
-        qWarning() << "ERROR: BorderPanel" << hex << (void *) this
-                   << "not added to a scene!";
+	qWarning() << "ERROR: BorderPanel" << hex << (void *) this
+		   << "not added to a scene!";
     }
 
-    if ( m_borderFlags == NoBorder )
+    if ( _borderFlags == NoBorder )
     {
-        qWarning() << "ERROR: No BorderFlags specified for BorderPanel"
-                   << hex << (void *) this;
+	qWarning() << "ERROR: No BorderFlags specified for BorderPanel"
+		   << hex << (void *) this;
     }
 
     emit aboutToAppear();
     QPointF startPos = pos();
 
-    if ( m_disappearAnimation &&
-         m_disappearAnimation->state() == QAbstractAnimation::Running )
+    if ( _disappearAnimation &&
+	 _disappearAnimation->state() == QAbstractAnimation::Running )
     {
-        m_disappearAnimation->stop();
+	_disappearAnimation->stop();
     }
     else
     {
-        startPos = inactivePos();
-        setPos( startPos );
+	startPos = inactivePos();
+	setPos( startPos );
     }
 
     show();
@@ -231,7 +231,7 @@ void BorderPanel::appearAnimated()
     animation->setDuration  ( AppearAnimationDuration );
     animation->start();
 
-    m_active = true;
+    _active = true;
 }
 
 
@@ -239,10 +239,10 @@ void BorderPanel::disappearAnimated()
 {
     // qDebug() << __PRETTY_FUNCTION__;
 
-    if ( m_appearAnimation &&
-         m_appearAnimation->state() == QAbstractAnimation::Running )
+    if ( _appearAnimation &&
+	 _appearAnimation->state() == QAbstractAnimation::Running )
     {
-        m_appearAnimation->stop();
+	_appearAnimation->stop();
     }
 
     GraphicsItemPosAnimation * animation = disappearAnimation();
@@ -251,14 +251,14 @@ void BorderPanel::disappearAnimated()
     animation->setDuration  ( DisappearAnimationDuration );
     animation->start();
 
-    m_active = false;
+    _active = false;
 }
 
 
 void BorderPanel::maybeDisappear()
 {
-    if ( ! m_sticky )
-        disappearAnimated();
+    if ( ! _sticky )
+	disappearAnimated();
 }
 
 
@@ -266,26 +266,26 @@ QPointF BorderPanel::activePos()
 {
     // qDebug() << __PRETTY_FUNCTION__;
 
-    QSizeF viewportSize = m_photoView->size();
-    QSizeF panelSize    = size();
+    QSizeF viewportSize = _photoView->size();
+    QSizeF panelSize	= size();
 
     // Start with fallback: Centered on viewport
     // This is important when the calling application forgets to set any border
     // flags at all.
-    qreal  panelX = ( viewportSize.width()  - panelSize.width()  ) / 2;
+    qreal  panelX = ( viewportSize.width()  - panelSize.width()	 ) / 2;
     qreal  panelY = ( viewportSize.height() - panelSize.height() ) / 2;
 
-    if ( m_borderFlags & LeftBorder )
-        panelX = m_borderMargin;
+    if ( _borderFlags & LeftBorder )
+	panelX = _borderMargin;
 
-    if ( m_borderFlags & RightBorder )
-        panelX = viewportSize.width() - panelSize.width() - m_borderMargin;
+    if ( _borderFlags & RightBorder )
+	panelX = viewportSize.width() - panelSize.width() - _borderMargin;
 
-    if ( m_borderFlags & TopBorder )
-        panelY = m_borderMargin;
+    if ( _borderFlags & TopBorder )
+	panelY = _borderMargin;
 
-    if ( m_borderFlags & BottomBorder )
-        panelY = viewportSize.height() - panelSize.height() - m_borderMargin;
+    if ( _borderFlags & BottomBorder )
+	panelY = viewportSize.height() - panelSize.height() - _borderMargin;
 
 #if 0
     qDebug() << "viewport size: " << viewportSize;
@@ -301,22 +301,22 @@ QPointF BorderPanel::inactivePos()
 {
     // qDebug() << __PRETTY_FUNCTION__;
 
-    QSizeF viewportSize = m_photoView->size();
-    QSizeF panelSize    = size();
+    QSizeF viewportSize = _photoView->size();
+    QSizeF panelSize	= size();
     qreal  panelX = 0.0;
     qreal  panelY = 0.0;
 
-    if ( m_borderFlags & LeftBorder )
-        panelX = -panelSize.width() - 1;
+    if ( _borderFlags & LeftBorder )
+	panelX = -panelSize.width() - 1;
 
-    if ( m_borderFlags & RightBorder )
-        panelX = viewportSize.width() + 1;
+    if ( _borderFlags & RightBorder )
+	panelX = viewportSize.width() + 1;
 
-    if ( m_borderFlags & TopBorder )
-        panelY = -panelSize.height() - 1;
+    if ( _borderFlags & TopBorder )
+	panelY = -panelSize.height() - 1;
 
-    if ( m_borderFlags & BottomBorder )
-        panelY = viewportSize.height() + 1;
+    if ( _borderFlags & BottomBorder )
+	panelY = viewportSize.height() + 1;
 
 #if 0
     qDebug() << "viewport size: " << viewportSize;
@@ -334,45 +334,45 @@ QPointF BorderPanel::secondaryPos( const QPointF( primaryPos ) )
 
     qreal  panelX = primaryPos.x();
     qreal  panelY = primaryPos.y();
-    QSizeF viewportSize = m_photoView->size();
-    QSizeF panelSize    = size();
+    QSizeF viewportSize = _photoView->size();
+    QSizeF panelSize	= size();
 
-    QRectF parentRect = m_sensitiveBorder ?
-        m_sensitiveBorder->rect() :
-        QRectF( QPointF( 0.0, 0.0 ), viewportSize );
+    QRectF parentRect = _sensitiveBorder ?
+	_sensitiveBorder->rect() :
+	QRectF( QPointF( 0.0, 0.0 ), viewportSize );
 
-    if ( ( m_borderFlags & ( LeftBorder | RightBorder ) ) == 0 )
+    if ( ( _borderFlags & ( LeftBorder | RightBorder ) ) == 0 )
     {
-        // Horizontal alignment
+	// Horizontal alignment
 
-        if ( m_alignment & Qt::AlignHCenter )
-        {
-            panelX = ( parentRect.width() - panelSize.width() ) / 2;
-            panelX += parentRect.x();
-        }
+	if ( _alignment & Qt::AlignHCenter )
+	{
+	    panelX = ( parentRect.width() - panelSize.width() ) / 2;
+	    panelX += parentRect.x();
+	}
 
-        if ( m_alignment & Qt::AlignLeft )
-            panelX = parentRect.x();
+	if ( _alignment & Qt::AlignLeft )
+	    panelX = parentRect.x();
 
-        if ( m_alignment & Qt::AlignRight )
-            panelX = parentRect.width() - panelSize.width();
+	if ( _alignment & Qt::AlignRight )
+	    panelX = parentRect.width() - panelSize.width();
     }
 
-    if ( ( m_borderFlags & ( TopBorder | BottomBorder ) ) == 0 )
+    if ( ( _borderFlags & ( TopBorder | BottomBorder ) ) == 0 )
     {
-        // Vertical alignment
+	// Vertical alignment
 
-        if ( m_alignment & Qt::AlignVCenter )
-        {
-            panelY = ( parentRect.height() - panelSize.height() ) / 2;
-            panelY += parentRect.y();
-        }
+	if ( _alignment & Qt::AlignVCenter )
+	{
+	    panelY = ( parentRect.height() - panelSize.height() ) / 2;
+	    panelY += parentRect.y();
+	}
 
-        if ( m_alignment & Qt::AlignTop )
-            panelY = parentRect.y();
+	if ( _alignment & Qt::AlignTop )
+	    panelY = parentRect.y();
 
-        if ( m_alignment & Qt::AlignBottom )
-            panelY = parentRect.height() - panelSize.height();
+	if ( _alignment & Qt::AlignBottom )
+	    panelY = parentRect.height() - panelSize.height();
     }
 
 #if 0
@@ -387,7 +387,7 @@ QPointF BorderPanel::secondaryPos( const QPointF( primaryPos ) )
 
 QSizeF BorderPanel::size() const
 {
-    return m_size;
+    return _size;
 }
 
 
@@ -396,8 +396,8 @@ void BorderPanel::hoverEnterEvent( QGraphicsSceneHoverEvent * event )
     Q_UNUSED( event) ;
     // qDebug() << __PRETTY_FUNCTION__ << objectName();
 
-    if ( m_leaveTimer.isActive() )
-        m_leaveTimer.stop();
+    if ( _leaveTimer.isActive() )
+	_leaveTimer.stop();
 }
 
 
@@ -406,7 +406,7 @@ void BorderPanel::hoverLeaveEvent( QGraphicsSceneHoverEvent * event )
     Q_UNUSED( event) ;
     // qDebug() << __PRETTY_FUNCTION__ << objectName();
 
-    m_leaveTimer.start( EnterLeaveTimeout );
+    _leaveTimer.start( EnterLeaveTimeout );
 }
 
 
@@ -428,13 +428,13 @@ void BorderPanel::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
 {
     Q_UNUSED( event );
 
-    if ( m_sticky )
+    if ( _sticky )
     {
-        m_sticky = false;
-        disappearAnimated();
+	_sticky = false;
+	disappearAnimated();
     }
     else
     {
-        m_sticky = true;
+	_sticky = true;
     }
 }

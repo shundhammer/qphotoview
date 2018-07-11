@@ -16,12 +16,12 @@
 
 
 ExifBorderPanel::ExifBorderPanel( PhotoView * parent,
-                                  SensitiveBorder * border )
+				  SensitiveBorder * border )
     : TextBorderPanel( parent, border )
-    , m_lastPhoto( 0 )
+    , _lastPhoto( 0 )
 {
     connect( this, SIGNAL( aboutToAppear()  ),
-             this, SLOT  ( setMetaData()    ) );
+	     this, SLOT	 ( setMetaData()    ) );
 }
 
 
@@ -29,16 +29,16 @@ void ExifBorderPanel::setMetaData()
 {
     if ( photoView()->photoDir() )
     {
-        Photo * photo = photoView()->photoDir()->current();
+	Photo * photo = photoView()->photoDir()->current();
 
-        if ( photo != m_lastPhoto )
-            setText( formatMetaData( photo ) );
+	if ( photo != _lastPhoto )
+	    setText( formatMetaData( photo ) );
 
-        m_lastPhoto = photo;
+	_lastPhoto = photo;
     }
     else
     {
-        setText( "" );
+	setText( "" );
     }
 }
 
@@ -46,7 +46,7 @@ void ExifBorderPanel::setMetaData()
 QString ExifBorderPanel::formatMetaData( Photo * photo )
 {
     if ( ! photo )
-        return QString();
+	return QString();
 
     PhotoMetaData meta = photo->metaData();
 
@@ -55,66 +55,66 @@ QString ExifBorderPanel::formatMetaData( Photo * photo )
 
     if ( ! meta.isEmpty() )
     {
-        if ( meta.exposureTime() < 1 )
-            str << meta.exposureTime().toString();
-        else
-            str << meta.exposureTime().toDouble() << " sec";
+	if ( meta.exposureTime() < 1 )
+	    str << meta.exposureTime().toString();
+	else
+	    str << meta.exposureTime().toDouble() << " sec";
 
-        str << "\n";
-        str << "f/" << meta.aperture().toDouble() << "\n";
+	str << "\n";
+	str << "f/" << meta.aperture().toDouble() << "\n";
 
-        if ( meta.iso() > 0 )
-            str << "ISO " << meta.iso() << "\n";
+	if ( meta.iso() > 0 )
+	    str << "ISO " << meta.iso() << "\n";
 
-        str << "\n";
-        str << meta.focalLength() << " mm\n";
+	str << "\n";
+	str << meta.focalLength() << " mm\n";
 
-        if ( meta.focalLength35mmEquiv() != meta.focalLength() &&
-             meta.focalLength35mmEquiv() > 0 )
-        {
-            str << tr( "(%1 mm equiv.)" ).arg( meta.focalLength35mmEquiv() )
-                << "\n";
-        }
+	if ( meta.focalLength35mmEquiv() != meta.focalLength() &&
+	     meta.focalLength35mmEquiv() > 0 )
+	{
+	    str << tr( "(%1 mm equiv.)" ).arg( meta.focalLength35mmEquiv() )
+		<< "\n";
+	}
 
-        str << "\n";
-        str << meta.size().width() << " x " << meta.size().height();
+	str << "\n";
+	str << meta.size().width() << " x " << meta.size().height();
 
-        double megaPixel = meta.size().width() * (double) meta.size().height()
-            / ( 1000 * 1000 );
+	double megaPixel = meta.size().width() * (double) meta.size().height()
+	    / ( 1000 * 1000 );
 
-        str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
+	str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
 
-        if ( meta.origSize().isValid() )
-        {
-            str << "\n\n";
-            str << tr( "Original:" ) << "\n"
-                << meta.origSize().width() << " x "
-                << meta.origSize().height();
+	if ( meta.origSize().isValid() )
+	{
+	    str << "\n\n";
+	    str << tr( "Original:" ) << "\n"
+		<< meta.origSize().width() << " x "
+		<< meta.origSize().height();
 
-            megaPixel = meta.origSize().width() *
-                (double) meta.origSize().height() / ( 1000 * 1000 );
+	    megaPixel = meta.origSize().width() *
+		(double) meta.origSize().height() / ( 1000 * 1000 );
 
-            str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
-        }
+	    str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
+	}
 
-        if ( meta.dateTimeTaken().isValid() )
-        {
-            str << "\n\n"
-                << meta.dateTimeTaken().date().toString( Qt::ISODate )
-                << "\n"
-                << meta.dateTimeTaken().time().toString( "HH:mm:ss" );
-        }
+	if ( meta.dateTimeTaken().isValid() )
+	{
+	    str << "\n\n"
+		<< meta.dateTimeTaken().date().toString( Qt::ISODate )
+		<< "\n"
+		<< meta.dateTimeTaken().time().toString( "HH:mm:ss" );
+	}
     }
     else // meta.isEmpty()
     {
-        QSize size = photo->size();
+	QSize size = photo->size();
 
-        str << size.width() << " x " << size.height();
+	str << size.width() << " x " << size.height();
 
-        double megaPixel = size.width() * (double) size.height()
-            / ( 1000 * 1000 );
+	double megaPixel = size.width() * (double) size.height()
+	    / ( 1000 * 1000 );
 
-        str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
+	str << "\n" << tr( "(%1 MPix)" ).arg( megaPixel, 0, 'f', 1 );
     }
 
     return text;

@@ -54,7 +54,7 @@ public:
      * Return 'true' if panning is in progress, i.e. if the user currently
      * drags (scrolls) the image.
      */
-    bool panning() const { return m_panning; }
+    bool panning() const { return _panning; }
 
     /**
      * Fix the canvas position: If the canvas is smaller than the PhotoView's
@@ -68,7 +68,7 @@ public:
     /**
      * Return the parent photo view.
      */
-    PhotoView * photoView() const { return m_photoView; }
+    PhotoView * photoView() const { return _photoView; }
 
     /**
      * Hide the cursor. Called when the idle timer times out.
@@ -90,7 +90,7 @@ protected:
     /**
      * Pan (scroll) the image with left mouse button pressed
      */
-    virtual void mouseMoveEvent   ( QGraphicsSceneMouseEvent * event );
+    virtual void mouseMoveEvent	  ( QGraphicsSceneMouseEvent * event );
 
     /**
      * Prepare panning
@@ -109,10 +109,11 @@ protected:
 
 private:
 
-    PhotoView *                 m_photoView;
-    bool                        m_panning;
-    GraphicsItemPosAnimation *  m_animation;
-    QCursor                     m_cursor;
+    PhotoView *			_photoView;
+    bool			_panning;
+    GraphicsItemPosAnimation *	_animation;
+    QCursor			_cursor;
 };
+
 
 #endif // Canvas_h

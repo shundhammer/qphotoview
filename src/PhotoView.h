@@ -94,7 +94,7 @@ public slots:
     /**
      * Set the default zoom increment.
      */
-    void setZoomIncrement( qreal increment ) { m_zoomIncrement = increment; }
+    void setZoomIncrement( qreal increment ) { _zoomIncrement = increment; }
 
     /**
      * Update the panner based on the specified viewport size.
@@ -118,17 +118,17 @@ public:
     /**
      * Return the current zoom mode.
      */
-    ZoomMode zoomMode() const { return m_zoomMode; }
+    ZoomMode zoomMode() const { return _zoomMode; }
 
     /**
      * Return the current zoom factor.
      */
-    qreal zoomFactor() const { return m_zoomFactor; }
+    qreal zoomFactor() const { return _zoomFactor; }
 
     /**
      * Return the default zoom increment.
      */
-    qreal zoomIncrement() const { return m_zoomIncrement; }
+    qreal zoomIncrement() const { return _zoomIncrement; }
 
     /**
      * Set the idle timeout in milliseconds: The time of inactivity (no mouse
@@ -140,22 +140,22 @@ public:
     /**
      * Return the idle timeout in milliseconds.
      */
-    int idleTimeout() const { return m_idleTimeout; }
+    int idleTimeout() const { return _idleTimeout; }
 
     /**
      * Return the current photo directory.
      **/
-    PhotoDir * photoDir() const { return m_photoDir; }
+    PhotoDir * photoDir() const { return _photoDir; }
 
     /**
      * Return the internal canvas graphics item that displays the image.
      */
-    Canvas * canvas() const { return m_canvas; }
+    Canvas * canvas() const { return _canvas; }
 
     /**
      * Return the internal panner graphics item that displays the scroll status.
      */
-    Panner * panner() const { return m_panner; }
+    Panner * panner() const { return _panner; }
 
 
 protected slots:
@@ -221,30 +221,30 @@ protected:
 
 private:
 
-    PhotoDir *	m_photoDir;
-    Canvas   *	m_canvas;
-    Panner   *	m_panner;
-    Photo    *	m_lastPhoto;
-    ZoomMode	m_zoomMode;
-    qreal	m_zoomFactor;
-    qreal	m_zoomIncrement;
-    QTimer      m_idleTimer;
-    int         m_idleTimeout;
-    QCursor     m_cursor;
+    PhotoDir *	_photoDir;
+    Canvas   *	_canvas;
+    Panner   *	_panner;
+    Photo    *	_lastPhoto;
+    ZoomMode	_zoomMode;
+    qreal	_zoomFactor;
+    qreal	_zoomIncrement;
+    QTimer	_idleTimer;
+    int		_idleTimeout;
+    QCursor	_cursor;
 
-    SensitiveBorder *   m_topLeftCorner;
-    SensitiveBorder *   m_topBorder;
-    SensitiveBorder *   m_topRightCorner;
-    SensitiveBorder *   m_rightBorder;
-    SensitiveBorder *   m_bottomRightCorner;
-    SensitiveBorder *   m_bottomBorder;
-    SensitiveBorder *   m_bottomLeftCorner;
-    SensitiveBorder *   m_leftBorder;
+    SensitiveBorder *	_topLeftCorner;
+    SensitiveBorder *	_topBorder;
+    SensitiveBorder *	_topRightCorner;
+    SensitiveBorder *	_rightBorder;
+    SensitiveBorder *	_bottomRightCorner;
+    SensitiveBorder *	_bottomBorder;
+    SensitiveBorder *	_bottomLeftCorner;
+    SensitiveBorder *	_leftBorder;
 
-    TextBorderPanel *   m_titlePanel;           // top right
-    ExifBorderPanel *   m_exifPanel;            // right
-    BorderPanel *       m_navigationPanel;      // bottom
-    BorderPanel *       m_toolPanel;            // left
+    TextBorderPanel *	_titlePanel;	       // top right
+    ExifBorderPanel *	_exifPanel;	       // right
+    BorderPanel *	_navigationPanel;      // bottom
+    BorderPanel *	_toolPanel;	       // left
 };
 
 

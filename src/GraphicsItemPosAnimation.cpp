@@ -14,9 +14,9 @@
 
 
 GraphicsItemPosAnimation::GraphicsItemPosAnimation( QGraphicsItem * item,
-                                                    QObject * parent )
+						    QObject * parent )
     : QVariantAnimation( parent )
-    , m_graphicsItem( item )
+    , _graphicsItem( item )
 {
     Q_CHECK_PTR( item );
 
@@ -28,6 +28,6 @@ void GraphicsItemPosAnimation::updateCurrentValue( const QVariant & value )
 {
     QPointF pos = value.toPointF();
     // qDebug() << "Setting pos " << pos;
-    m_graphicsItem->setPos( pos );
+    _graphicsItem->setPos( pos );
 }
 

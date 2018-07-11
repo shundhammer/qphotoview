@@ -41,7 +41,7 @@ protected:
     virtual void run();
 
 private:
-    PrefetchCache * m_prefetchCache;
+    PrefetchCache * _prefetchCache;
 };
 
 
@@ -101,13 +101,13 @@ public:
 
 private:
 
-    QMap<QString, QImage> m_cache;
-    QMap<QString, QSize>  m_sizes;
-    QString     m_path;
-    QStringList m_jobQueue;
-    QMutex	m_cacheMutex; // protects m_cache, m_sizes, m_jobQueue
-    QSize	m_fullScreenSize;
-    PrefetchCacheWorkerThread m_workerThread;
+    QMap<QString, QImage> _cache;
+    QMap<QString, QSize>  _sizes;
+    QString	_path;
+    QStringList _jobQueue;
+    QMutex	_cacheMutex; // protects _cache, _sizes, _jobQueue
+    QSize	_fullScreenSize;
+    PrefetchCacheWorkerThread _workerThread;
 };
 
 

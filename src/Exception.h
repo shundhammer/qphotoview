@@ -30,7 +30,7 @@ public:
      * Destructor.
      */
     virtual ~Exception() throw()
-        {}
+	{}
 
     /**
      * Return a text description of what was wrong.
@@ -70,14 +70,14 @@ public:
      * This is used in the THROW and RETHROW macros.
      */
     void setSrcLocation( const QString &srcFile,
-                         int            srcLine,
-                         const QString &srcFunction ) const;
+			 int		srcLine,
+			 const QString &srcFunction ) const;
 
 protected:
     QString _what;
 
     mutable QString _srcFile;
-    mutable int     _srcLine;
+    mutable int	    _srcLine;
     mutable QString _srcFunction;
 };
 
@@ -90,11 +90,11 @@ class NullPointerException: public Exception
 {
 public:
     NullPointerException():
-        Exception( "Null pointer" )
-        {}
+	Exception( "Null pointer" )
+	{}
 
     virtual ~NullPointerException() throw()
-        {}
+	{}
 };
 
 
@@ -106,11 +106,11 @@ class OutOfMemoryException: public Exception
 {
 public:
     OutOfMemoryException():
-        Exception( "Null pointer" )
-        {}
+	Exception( "Null pointer" )
+	{}
 
     virtual ~OutOfMemoryException() throw()
-        {}
+	{}
 };
 
 
@@ -118,12 +118,12 @@ class FileException: public Exception
 {
 public:
     FileException( const QString &filename, const QString &msg ):
-        Exception( msg ),
-        _filename( filename )
-        {}
+	Exception( msg ),
+	_filename( filename )
+	{}
 
     virtual ~FileException() throw()
-        {}
+	{}
 
     QString filename() const { return _filename; }
 
@@ -136,11 +136,11 @@ class DynamicCastException: public Exception
 {
 public:
     DynamicCastException( const QString &expectedType ):
-        Exception( "dynamic_cast failed; expected: " + expectedType )
-        {}
+	Exception( "dynamic_cast failed; expected: " + expectedType )
+	{}
 
     virtual ~DynamicCastException() throw()
-        {}
+	{}
 };
 
 
@@ -167,15 +167,15 @@ public:
  *
  *     try
  *     {
- *         ...do something...
- *         THROW( Exception( "Catastrophic failure" ) );
- *         ...
+ *	   ...do something...
+ *	   THROW( Exception( "Catastrophic failure" ) );
+ *	   ...
  *     }
  *     catch( const Exception &exception )
  *     {
- *         CAUGHT( exception );
- *         ...clean up to prevent memory leaks etc. ...
- *         RETHROW( exception ); // equivalent of   throw   without args
+ *	   CAUGHT( exception );
+ *	   ...clean up to prevent memory leaks etc. ...
+ *	   RETHROW( exception ); // equivalent of   throw   without args
  *     }
  *
  * This will leave 3 lines for that exception in the log file: One for
@@ -201,13 +201,13 @@ public:
  * The do..while() loop is used because it syntactically allows to put a
  * semicolon (without nasty side effects) after the macro when it is used.
  */
-#define CHECK_NEW( PTR )                        \
-    do                                          \
-    {                                           \
-        if ( ! (PTR) )                          \
-        {                                       \
-            THROW( OutOfMemoryException() );    \
-        }                                       \
+#define CHECK_NEW( PTR )			\
+    do						\
+    {						\
+	if ( ! (PTR) )				\
+	{					\
+	    THROW( OutOfMemoryException() );	\
+	}					\
     } while( 0 )
 
 
@@ -215,26 +215,26 @@ public:
 /**
  * Check a pointer and throw an exception if it returned 0.
  */
-#define CHECK_PTR( PTR )                        \
-    do                                          \
-    {                                           \
-        if ( ! (PTR) )                          \
-        {                                       \
-            THROW( NullPointerException() );    \
-        }                                       \
+#define CHECK_PTR( PTR )			\
+    do						\
+    {						\
+	if ( ! (PTR) )				\
+	{					\
+	    THROW( NullPointerException() );	\
+	}					\
     } while( 0 )
 
 
 /**
  * Check the result of a dynamic_cast and throw an exception if it returned 0.
  */
-#define CHECK_DYNAMIC_CAST( PTR, EXPECTED_TYPE )                \
-    do                                                          \
-    {                                                           \
-        if ( ! (PTR) )                                          \
-        {                                                       \
-            THROW( DynamicCastException( EXPECTED_TYPE) );      \
-        }                                                       \
+#define CHECK_DYNAMIC_CAST( PTR, EXPECTED_TYPE )		\
+    do								\
+    {								\
+	if ( ! (PTR) )						\
+	{							\
+	    THROW( DynamicCastException( EXPECTED_TYPE) );	\
+	}							\
     } while( 0 )
 
 
@@ -243,57 +243,56 @@ public:
 //
 
 template<class EX_t>
-void _throw_helper( const EX_t    &exception,
-                    Logger *       logger,
-                    const QString &srcFile,
-                    int            srcLine,
-                    const QString &srcFunction )
+void _throw_helper( const EX_t	  &exception,
+		    Logger *	   logger,
+		    const QString &srcFile,
+		    int		   srcLine,
+		    const QString &srcFunction )
 {
     exception.setSrcLocation( srcFile, srcLine, srcFunction );
 
     Logger::log( logger, srcFile, srcLine, srcFunction, LogSeverityWarning )
-        << "THROW "
-        << exception.className() << ": "
-        << exception.what()
-        << endl;
+	<< "THROW "
+	<< exception.className() << ": "
+	<< exception.what()
+	<< endl;
 
     throw( exception );
 }
 
 
 template<class EX_t>
-void _caught_helper( const EX_t    &exception,
-                    Logger *       logger,
-                     const QString &srcFile,
-                     int            srcLine,
-                     const QString &srcFunction )
+void _caught_helper( const EX_t	   &exception,
+		    Logger *	   logger,
+		     const QString &srcFile,
+		     int	    srcLine,
+		     const QString &srcFunction )
 {
     Logger::log( logger, srcFile, srcLine, srcFunction, LogSeverityWarning )
-        << "CAUGHT "
-        << exception.className() << ": "
-        << exception.what()
-        << endl;
+	<< "CAUGHT "
+	<< exception.className() << ": "
+	<< exception.what()
+	<< endl;
 }
 
 
 template<class EX_t>
 void _rethrow_helper( const EX_t    &exception,
-                      Logger *       logger,
-                      const QString &srcFile,
-                      int            srcLine,
-                      const QString &srcFunction )
+		      Logger *	     logger,
+		      const QString &srcFile,
+		      int	     srcLine,
+		      const QString &srcFunction )
 {
     exception.setSrcLocation( srcFile, srcLine, srcFunction );
 
     Logger::log( logger, srcFile, srcLine, srcFunction, LogSeverityWarning )
-        << "RETHROW "
-        << exception.className() << ": "
-        << exception.what()
-        << endl;
+	<< "RETHROW "
+	<< exception.className() << ": "
+	<< exception.what()
+	<< endl;
 
     throw;
 }
-
 
 
 #endif // Exception_h

@@ -44,7 +44,7 @@ public:
      * Return the pixmap of this photo resized to the specified size.
      * This might use a cached pixmap that gets scaled down.
      */
-    QPixmap pixmap( const QSize  & size );
+    QPixmap pixmap( const QSize	 & size );
     QPixmap pixmap( const QSizeF & size );
 
     /**
@@ -78,7 +78,7 @@ public:
     /**
      * Return the file name (without path) of this photo.
      */
-    QString fileName() const { return m_fileName; }
+    QString fileName() const { return _fileName; }
 
     /**
      * Return the path name (without file name) of this photo.
@@ -93,12 +93,12 @@ public:
     /**
      * Return the parent PhotoDir or 0 if there is none.
      */
-    PhotoDir * photoDir() const { return m_photoDir; }
+    PhotoDir * photoDir() const { return _photoDir; }
 
     /**
      * Reparent this photo to the specified PhotoDir.
      * If 'parentDir' is 0 (i.e., this photo gets orphaned), the path is taken
-     * from there and stored in m_photoDir.
+     * from there and stored in _photoDir.
      */
     void reparent( PhotoDir * parentDir );
 
@@ -106,7 +106,7 @@ public:
      * Return 'true' if the pixmap for this photo (not the thumbnail!) was ever
      * accessed.
      */
-    bool pixmapAccessed() { return m_lastPixmapAccess > 0; }
+    bool pixmapAccessed() { return _lastPixmapAccess > 0; }
 
     /**
      * Return a timestamp when the pixmap for this photo was last
@@ -114,19 +114,19 @@ public:
      * the pixmap of another photo. This is meant for cache optimization
      * purposes.
      */
-    long lastCachedPixmapAccess() { return m_lastPixmapAccess; }
+    long lastCachedPixmapAccess() { return _lastPixmapAccess; }
 
     /**
      * Return a timestamp when the thumbnail for this photo was last
      * accessed. Similar to lastPixmapAccess(), this makes only sense when
      * compared to the timestamp of the thumbnail of another photo.
      */
-    long lastThumbnailAccess() { return m_lastThumbnailAccess; }
+    long lastThumbnailAccess() { return _lastThumbnailAccess; }
 
     /**
      * Return the thumbnail size.
      */
-    static QSize thumbnailSize() { return m_thumbnailSize; }
+    static QSize thumbnailSize() { return _thumbnailSize; }
 
     /**
      * Set the thumbnail size. This affects only thumbnails created after this
@@ -134,7 +134,7 @@ public:
      * photo's thumbnail actually creates the thumbnail. From then on, only the
      * cached value is used.
      */
-    static void setThumbnailSize( const QSize & size ) { m_thumbnailSize = size; }
+    static void setThumbnailSize( const QSize & size ) { _thumbnailSize = size; }
 
     /**
      * Helper function: Scale down 'origSize' to fit into 'boundingSize' while
@@ -148,7 +148,7 @@ public:
      * 'origSize'.
      */
     static qreal scaleFactor( const QSize & origSize,
-                              const QSize & boundingSize );
+			      const QSize & boundingSize );
 
     /**
      * Return a scaled pixmap.
@@ -158,20 +158,20 @@ public:
 private:
     Q_DISABLE_COPY( Photo );
 
-    PhotoDir *  m_photoDir;
-    QString     m_fileName;
-    QString     m_path;
+    PhotoDir *	_photoDir;
+    QString	_fileName;
+    QString	_path;
 
-    QPixmap     m_pixmap;
-    QPixmap     m_thumbnail;
-    QSize       m_size;
+    QPixmap	_pixmap;
+    QPixmap	_thumbnail;
+    QSize	_size;
 
-    long        m_lastPixmapAccess;
-    long        m_lastThumbnailAccess;
+    long	_lastPixmapAccess;
+    long	_lastThumbnailAccess;
 
-    static long         m_pixmapAccessCount;
-    static long         m_thumbnailAccessCount;
-    static QSize        m_thumbnailSize;
+    static long		_pixmapAccessCount;
+    static long		_thumbnailAccessCount;
+    static QSize	_thumbnailSize;
 };
 
 

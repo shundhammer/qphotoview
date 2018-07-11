@@ -11,24 +11,24 @@
 
 bool Fraction::isInt() const
 {
-    return ( m_denominator == 0 || m_numerator % m_denominator == 0 );
+    return ( _denominator == 0 || _numerator % _denominator == 0 );
 }
 
 
 QString Fraction::toString() const
 {
-    if ( m_denominator == 0 )
-        return "0";
+    if ( _denominator == 0 )
+	return "0";
 
     QString result;
 
     if ( isInt() )
     {
-        result.setNum( m_numerator / m_denominator );
+	result.setNum( _numerator / _denominator );
     }
     else
     {
-        result = QString( "%1/%2" ).arg( m_numerator ).arg( m_denominator );
+	result = QString( "%1/%2" ).arg( _numerator ).arg( _denominator );
     }
 
     return result;
@@ -37,11 +37,11 @@ QString Fraction::toString() const
 
 double Fraction::toDouble() const
 {
-    if ( m_denominator == 0 )
-        return 0.0;
+    if ( _denominator == 0 )
+	return 0.0;
 
     else
-        return m_numerator / (double) m_denominator;
+	return _numerator / (double) _denominator;
 }
 
 
@@ -52,14 +52,14 @@ int Fraction::greatestCommonDivisor( int a, int b )
     // http://en.wikipedia.org/wiki/Euclidean_algorithm
 
     if ( a == 0 )
-        return b;
+	return b;
 
     while ( b != 0 )
     {
-        if ( a > b )
-            a -= b;
-        else
-            b -= a;
+	if ( a > b )
+	    a -= b;
+	else
+	    b -= a;
     }
 
     return a;
@@ -68,41 +68,41 @@ int Fraction::greatestCommonDivisor( int a, int b )
 
 void Fraction::simplify()
 {
-    int gcd = greatestCommonDivisor( m_numerator, m_denominator );
+    int gcd = greatestCommonDivisor( _numerator, _denominator );
 
     if ( gcd == 0 )
-        return;
+	return;
 
-    m_numerator   /= gcd;
-    m_denominator /= gcd;
+    _numerator	 /= gcd;
+    _denominator /= gcd;
 }
 
 
 Fraction Fraction::simplified() const
 {
-    int gcd = greatestCommonDivisor( m_numerator, m_denominator );
+    int gcd = greatestCommonDivisor( _numerator, _denominator );
 
     if ( gcd == 0 )
-        return Fraction();
+	return Fraction();
 
-    return Fraction( m_numerator   / gcd,
-                     m_denominator / gcd );
+    return Fraction( _numerator	  / gcd,
+		     _denominator / gcd );
 }
 
 
 bool Fraction::operator>( double num )
 {
-    if ( m_denominator == 0 )
-        return false;
+    if ( _denominator == 0 )
+	return false;
 
-    return (m_numerator / (double) m_denominator) > num;
+    return (_numerator / (double) _denominator) > num;
 }
 
 
 bool Fraction::operator<( double num )
 {
-    if ( m_denominator == 0 )
-        return false;
+    if ( _denominator == 0 )
+	return false;
 
-    return (m_numerator / (double) m_denominator) < num;
+    return (_numerator / (double) _denominator) < num;
 }

@@ -48,7 +48,7 @@ public:
 	RightBorder  = 0x2,
 	TopBorder    = 0x4,
 	BottomBorder = 0x8,
-        CenterInView = 0x10
+	CenterInView = 0x10
     };
 
     Q_DECLARE_FLAGS( BorderFlags, BorderFlag );
@@ -76,12 +76,12 @@ public:
      * BorderPanel::RightBorder. A panel that is attached to the bottom left
      * corner would use BorderPanel::LeftBorder | BorderPanel::BottomBorder.
      */
-    void setBorderFlags( BorderFlags flags ) { m_borderFlags = flags; }
+    void setBorderFlags( BorderFlags flags ) { _borderFlags = flags; }
 
     /**
      * Return the border flags.
      */
-    BorderFlags borderFlags() const { return m_borderFlags; }
+    BorderFlags borderFlags() const { return _borderFlags; }
 
     /**
      * Set the alignment in the "other" dimension -- the dimension that does
@@ -90,34 +90,34 @@ public:
      *
      * The default is Qt::Center.
      */
-    void setAlignment( Qt::Alignment align ) { m_alignment = align; }
+    void setAlignment( Qt::Alignment align ) { _alignment = align; }
 
     /**
      * Return the alignment in the "other" dimension.
      */
-    Qt::Alignment alignment() const { return m_alignment; }
+    Qt::Alignment alignment() const { return _alignment; }
 
     /**
      * Set the border margin. This is the distance between the outline of the
      * panel and the edge of the border it is attached to.
      */
-    void setBorderMargin( qreal margin ) { m_borderMargin = margin; }
+    void setBorderMargin( qreal margin ) { _borderMargin = margin; }
 
     /**
      * Return the edge margin.
      */
-    qreal borderMargin() const { return m_borderMargin; }
+    qreal borderMargin() const { return _borderMargin; }
 
     /**
      * Set the inner margin. This is the distance betwen the outline of the
      * panel and its content.
      */
-    void setMargin( qreal margin ) { m_margin = margin; }
+    void setMargin( qreal margin ) { _margin = margin; }
 
     /**
      * Return the margin.
      */
-    qreal margin() const { return m_margin; }
+    qreal margin() const { return _margin; }
 
     /**
      * Set this panel "sticky", i.e. it stays on screen even when the mouse is
@@ -130,13 +130,13 @@ public:
     /**
      * Return 'true' if this panel is sticky.
      */
-    bool isSticky() const { return m_sticky; }
+    bool isSticky() const { return _sticky; }
 
     /**
      * Return 'true' if this panel is currently active, i.e. if it is visible
      * on the screen.
      */
-    bool isActive() const { return m_active; }
+    bool isActive() const { return _active; }
 
     /**
      * Return the animation that is used to make this panel appear.
@@ -162,14 +162,14 @@ public:
     /**
      * Set the size. This is only used if there are no child items.
      */
-    virtual void setSize( const QSizeF & size ) { m_size = size; }
+    virtual void setSize( const QSizeF & size ) { _size = size; }
 
     /**
      * Set the size. Overloaded for convenience.
      * This value is only used if there are no child items.
      */
     void setSize( qreal width, qreal height )
-        { setSize( QSizeF( width, height ) ); }
+	{ setSize( QSizeF( width, height ) ); }
 
     /**
      * Set the brush used for painting the panel. By default, this is a dark
@@ -183,7 +183,7 @@ public:
      * Return the current brush. If a gradient is set, this value is
      * meaningless; use gradient() instead.
      */
-    QBrush brush() const { return m_brush; }
+    QBrush brush() const { return _brush; }
 
     /**
      * Set the gradient used for painting the panel.
@@ -200,28 +200,28 @@ public:
     /**
      * Return the gradient used for painting the panel.
      */
-    QLinearGradient * gradient() const { return m_grad; }
+    QLinearGradient * gradient() const { return _grad; }
 
     /**
      * Set the pen used for painting the panel.
      * By default, this is Qt::NoPen.
      */
-    void setPen( const QPen & pen ) { m_pen = pen; }
+    void setPen( const QPen & pen ) { _pen = pen; }
 
     /**
      * Return the current pen.
      */
-    QPen pen() const { return m_pen; }
+    QPen pen() const { return _pen; }
 
     /**
      * Return the parent PhotoView.
      */
-    PhotoView * photoView() const { return m_photoView; }
+    PhotoView * photoView() const { return _photoView; }
 
     /**
      * Return the associated SensitiveBorder.
      */
-    SensitiveBorder * sensitiveBorder() const { return m_sensitiveBorder; }
+    SensitiveBorder * sensitiveBorder() const { return _sensitiveBorder; }
 
     /**
      * Implemented from QGraphicsItem: Paint this item.
@@ -316,22 +316,22 @@ private slots:
 
 private:
 
-    PhotoView *			m_photoView;
-    SensitiveBorder *		m_sensitiveBorder;
-    GraphicsItemPosAnimation *	m_appearAnimation;
-    GraphicsItemPosAnimation *	m_disappearAnimation;
+    PhotoView *			_photoView;
+    SensitiveBorder *		_sensitiveBorder;
+    GraphicsItemPosAnimation *	_appearAnimation;
+    GraphicsItemPosAnimation *	_disappearAnimation;
 
-    BorderFlags		        m_borderFlags;
-    Qt::Alignment               m_alignment;
-    qreal		        m_borderMargin;
-    qreal		        m_margin;
-    QSizeF                      m_size;
-    bool                        m_sticky;
-    bool                        m_active;
-    QBrush                      m_brush;
-    QLinearGradient *           m_grad;
-    QPen                        m_pen;
-    QTimer		        m_leaveTimer;
+    BorderFlags			_borderFlags;
+    Qt::Alignment		_alignment;
+    qreal			_borderMargin;
+    qreal			_margin;
+    QSizeF			_size;
+    bool			_sticky;
+    bool			_active;
+    QBrush			_brush;
+    QLinearGradient *		_grad;
+    QPen			_pen;
+    QTimer			_leaveTimer;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( BorderPanel::BorderFlags );

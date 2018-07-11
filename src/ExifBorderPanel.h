@@ -19,7 +19,7 @@ class Photo;
 class ExifBorderPanel: public TextBorderPanel
 {
     Q_OBJECT
-    
+
 public:
     /**
      * Constructor. Create an ExifBorderPanel as child of the specified parent.
@@ -41,8 +41,9 @@ public slots:
 
 private:
 
-    Photo * m_lastPhoto;
+    Photo * _lastPhoto;
 };
+
 
 #endif // ExifBorderPanel_h
 

@@ -18,19 +18,19 @@ public:
      * Constructor: Create a fractional number numerator/denominator.
      */
     Fraction( int numerator = 0, int denominator = 1 )
-        : m_numerator( numerator )
-        , m_denominator( denominator )
-        {}
+	: _numerator( numerator )
+	, _denominator( denominator )
+	{}
 
     /**
      * Return the numerator of the fraction.
      */
-    int numerator() const { return m_numerator; }
+    int numerator() const { return _numerator; }
 
     /**
      * Return the denominator of the fraction.
      */
-    int denominator() const { return m_denominator; }
+    int denominator() const { return _denominator; }
 
     /**
      * Format the fraction as string "numerator/denominator".
@@ -76,11 +76,9 @@ public:
 
 protected:
 
-    int m_numerator;
-    int m_denominator;
+    int _numerator;
+    int _denominator;
 };
-
-
 
 
 #endif // Fractional_h

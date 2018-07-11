@@ -31,7 +31,7 @@ public:
     /**
      * Return the graphics item.
      */
-    QGraphicsItem * graphicsItem() const { return m_graphicsItem; }
+    QGraphicsItem * graphicsItem() const { return _graphicsItem; }
 
 protected:
 
@@ -43,7 +43,8 @@ protected:
 
 private:
 
-    QGraphicsItem * m_graphicsItem;
+    QGraphicsItem * _graphicsItem;
 };
+
 
 #endif // GraphicsItemPosAnimation_h

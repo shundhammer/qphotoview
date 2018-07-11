@@ -15,37 +15,37 @@
 
 
 PrefetchCache::PrefetchCache( const QString & path )
-    : m_path( path )
-    , m_workerThread( this )
+    : _path( path )
+    , _workerThread( this )
 {
-    m_fullScreenSize = qApp->desktop()->screenGeometry().size();
+    _fullScreenSize = qApp->desktop()->screenGeometry().size();
 }
 
 
 PrefetchCache::~PrefetchCache()
 {
-    qDebug() << "Unused images in prefetch cache:" << m_cache.size()
-             << "(" << 100*m_cache.size() / m_sizes.size() << "%)";
+    qDebug() << "Unused images in prefetch cache:" << _cache.size()
+	     << "(" << 100*_cache.size() / _sizes.size() << "%)";
     clear();
 
-    if ( m_workerThread.isRunning() )
-	m_workerThread.wait();
+    if ( _workerThread.isRunning() )
+	_workerThread.wait();
 }
 
 
 void PrefetchCache::prefetch( const QStringList & fileNames )
 {
     {
-	QMutexLocker locker( &m_cacheMutex );
+	QMutexLocker locker( &_cacheMutex );
 
 	foreach ( QString fileName, fileNames )
 	{
-	    m_jobQueue.append( fileName );
+	    _jobQueue.append( fileName );
 	}
     }
 
-    if ( ! m_workerThread.isRunning() )
-	m_workerThread.start();
+    if ( ! _workerThread.isRunning() )
+	_workerThread.start();
 }
 
 
@@ -55,17 +55,17 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName, bool take )
     bool cacheMiss = true;
 
     {
-	QMutexLocker locker( &m_cacheMutex );
+	QMutexLocker locker( &_cacheMutex );
 
-	if ( m_cache.contains( imageFileName ) )
+	if ( _cache.contains( imageFileName ) )
 	{
 
 	    image = take ?
-                m_cache.take ( imageFileName ) :
-                m_cache.value( imageFileName );
+		_cache.take ( imageFileName ) :
+		_cache.value( imageFileName );
 
-            cacheMiss = false;
-            // qDebug() << "Prefetch cache hit:" << imageFileName;
+	    cacheMiss = false;
+	    // qDebug() << "Prefetch cache hit:" << imageFileName;
 	}
     }
 
@@ -73,23 +73,23 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName, bool take )
     {
 	// qDebug() << "Prefetch cache miss:" << imageFileName;
 	image.load( fullPath( imageFileName ) );
-        QSize size = image.size();
-        qreal scaleFactor = Photo::scaleFactor( size, m_fullScreenSize );
+	QSize size = image.size();
+	qreal scaleFactor = Photo::scaleFactor( size, _fullScreenSize );
 
-        if ( scaleFactor < 1.0 )
-        {
-            image = image.scaled( m_fullScreenSize,
-                                  Qt::KeepAspectRatio,
-                                  Qt::SmoothTransformation );
-        }
+	if ( scaleFactor < 1.0 )
+	{
+	    image = image.scaled( _fullScreenSize,
+				  Qt::KeepAspectRatio,
+				  Qt::SmoothTransformation );
+	}
 
-	QMutexLocker locker( &m_cacheMutex );
-        if ( take )
-            m_cache.insert( imageFileName, image );
-        m_sizes.insert( imageFileName, size  );
+	QMutexLocker locker( &_cacheMutex );
+	if ( take )
+	    _cache.insert( imageFileName, image );
+	_sizes.insert( imageFileName, size  );
 
-	if ( m_jobQueue.contains( imageFileName ) )
-	    m_jobQueue.removeAll( imageFileName );
+	if ( _jobQueue.contains( imageFileName ) )
+	    _jobQueue.removeAll( imageFileName );
     }
 
     return QPixmap::fromImage( image );
@@ -98,38 +98,38 @@ QPixmap PrefetchCache::pixmap( const QString & imageFileName, bool take )
 
 QSize PrefetchCache::pixelSize( const QString & imageFileName )
 {
-    if ( m_sizes.contains( imageFileName ) )
-        return m_sizes.value( imageFileName );
+    if ( _sizes.contains( imageFileName ) )
+	return _sizes.value( imageFileName );
     else
-        return pixmap( imageFileName ).size();
+	return pixmap( imageFileName ).size();
 }
 
 
 void PrefetchCache::clear()
 {
     {
-	QMutexLocker locker( &m_cacheMutex );
-	m_jobQueue.clear();
+	QMutexLocker locker( &_cacheMutex );
+	_jobQueue.clear();
     }
 
-    if ( m_workerThread.isRunning() )
-	m_workerThread.wait();
+    if ( _workerThread.isRunning() )
+	_workerThread.wait();
 
-    QMutexLocker locker( &m_cacheMutex ); // not strictly necessary
-    m_cache.clear();
-    // not clearing m_sizes - this is very cheap
+    QMutexLocker locker( &_cacheMutex ); // not strictly necessary
+    _cache.clear();
+    // not clearing _sizes - this is very cheap
 }
 
 
 QString PrefetchCache::fullPath( const QString & imageFileName )
 {
-    return m_path + "/" + imageFileName;
+    return _path + "/" + imageFileName;
 }
 
 
 
 PrefetchCacheWorkerThread::PrefetchCacheWorkerThread( PrefetchCache * prefetchCache )
-    : m_prefetchCache( prefetchCache )
+    : _prefetchCache( prefetchCache )
 {
 
 }
@@ -142,44 +142,44 @@ void PrefetchCacheWorkerThread::run()
 	QString imageName;
 
 	{
-	    QMutexLocker locker( &m_prefetchCache->m_cacheMutex );
+	    QMutexLocker locker( &_prefetchCache->_cacheMutex );
 
-	    if ( m_prefetchCache->m_jobQueue.isEmpty() )
+	    if ( _prefetchCache->_jobQueue.isEmpty() )
 	    {
 #if 0
 		qDebug() << "Prefetch jobs done - terminating worker thread;"
 			 << "images in cache:"
-                         << m_prefetchCache->m_cache.size();
+			 << _prefetchCache->_cache.size();
 #endif
 		return;
 	    }
 
-	    imageName = m_prefetchCache->m_jobQueue.takeFirst();
+	    imageName = _prefetchCache->_jobQueue.takeFirst();
 	}
 
-        QString fullPath = m_prefetchCache->fullPath( imageName );
+	QString fullPath = _prefetchCache->fullPath( imageName );
 	// qDebug() << "Prefetching" << fullPath;
 	QImage image;
 
 	if ( ! image.load( fullPath ) )
-        {
+	{
 	    qDebug() << "Prefetching failed for" << fullPath;
-        }
+	}
 	else
 	{
-            QSize size = image.size();
-            QSize targetSize = m_prefetchCache->m_fullScreenSize;
+	    QSize size = image.size();
+	    QSize targetSize = _prefetchCache->_fullScreenSize;
 
-            if ( Photo::scaleFactor( size, targetSize ) < 1.0 )
-            {
-                image = image.scaled( targetSize,
-                                      Qt::KeepAspectRatio,
-                                      Qt::SmoothTransformation );
-            }
+	    if ( Photo::scaleFactor( size, targetSize ) < 1.0 )
+	    {
+		image = image.scaled( targetSize,
+				      Qt::KeepAspectRatio,
+				      Qt::SmoothTransformation );
+	    }
 
-	    QMutexLocker locker( &m_prefetchCache->m_cacheMutex );
-	    m_prefetchCache->m_cache.insert( imageName, image );
-	    m_prefetchCache->m_sizes.insert( imageName, size  );
+	    QMutexLocker locker( &_prefetchCache->_cacheMutex );
+	    _prefetchCache->_cache.insert( imageName, image );
+	    _prefetchCache->_sizes.insert( imageName, size  );
 	}
     }
 }

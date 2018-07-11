@@ -17,15 +17,15 @@
 
 static const int EnterLeaveTimeout = 1000; // millisec
 
-bool SensitiveBorder::m_debugMode = false;
+bool SensitiveBorder::_debugMode = false;
 
 
 SensitiveBorder::SensitiveBorder( PhotoView * parent )
     : QObject()
     , QGraphicsRectItem()
-    , m_photoView( parent )
+    , _photoView( parent )
 {
-    m_photoView->scene()->addItem( this );
+    _photoView->scene()->addItem( this );
     setCursor( Qt::PointingHandCursor );
 
 #if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
@@ -34,14 +34,14 @@ SensitiveBorder::SensitiveBorder( PhotoView * parent )
     setAcceptHoverEvents( true );
 #endif
 
-    m_enterTimer.setSingleShot( true );
-    m_leaveTimer.setSingleShot( true );
+    _enterTimer.setSingleShot( true );
+    _leaveTimer.setSingleShot( true );
 
-    connect( &m_enterTimer, SIGNAL( timeout()       ),
-             this,          SIGNAL( borderEntered() ) );
+    connect( &_enterTimer, SIGNAL( timeout()	   ),
+	     this,	    SIGNAL( borderEntered() ) );
 
-    connect( &m_leaveTimer, SIGNAL( timeout()       ),
-             this,          SIGNAL( borderLeft()    ) );
+    connect( &_leaveTimer, SIGNAL( timeout()	   ),
+	     this,	    SIGNAL( borderLeft()    ) );
 }
 
 
@@ -52,31 +52,31 @@ SensitiveBorder::~SensitiveBorder()
 
 
 void SensitiveBorder::paint( QPainter * painter,
-                             const QStyleOptionGraphicsItem * option,
-                             QWidget * widget )
+			     const QStyleOptionGraphicsItem * option,
+			     QWidget * widget )
 {
     Q_UNUSED( option );
     Q_UNUSED( widget );
 
-    if ( m_debugMode )
+    if ( _debugMode )
     {
-        QPen pen( Qt::black, 1 );
-        pen.setJoinStyle( Qt::MiterJoin );
+	QPen pen( Qt::black, 1 );
+	pen.setJoinStyle( Qt::MiterJoin );
 
-        const int grey = 32;
-        QBrush brush( QColor( grey, grey, grey, 255*0.5 ) ); // grey transparent
+	const int grey = 32;
+	QBrush brush( QColor( grey, grey, grey, 255*0.5 ) ); // grey transparent
 
-        painter->setPen( pen );
-        painter->setBrush( brush );
+	painter->setPen( pen );
+	painter->setBrush( brush );
 
-        painter->drawRect( rect() );
+	painter->drawRect( rect() );
     }
 }
 
 
 void SensitiveBorder::setDebugMode( bool on )
 {
-    m_debugMode = on;
+    _debugMode = on;
 }
 
 
@@ -85,10 +85,10 @@ void SensitiveBorder::hoverEnterEvent( QGraphicsSceneHoverEvent * event )
     Q_UNUSED( event) ;
     // qDebug() << __PRETTY_FUNCTION__ << objectName();
 
-    if ( m_leaveTimer.isActive() )
-        m_leaveTimer.stop();
+    if ( _leaveTimer.isActive() )
+	_leaveTimer.stop();
     else
-        m_enterTimer.start( EnterLeaveTimeout );
+	_enterTimer.start( EnterLeaveTimeout );
 }
 
 
@@ -97,8 +97,8 @@ void SensitiveBorder::hoverLeaveEvent( QGraphicsSceneHoverEvent * event )
     Q_UNUSED( event) ;
     // qDebug() << __PRETTY_FUNCTION__ << objectName();
 
-    if ( m_enterTimer.isActive() )
-        m_enterTimer.stop();
+    if ( _enterTimer.isActive() )
+	_enterTimer.stop();
     else
-        m_leaveTimer.start( EnterLeaveTimeout );
+	_leaveTimer.start( EnterLeaveTimeout );
 }

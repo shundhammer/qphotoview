@@ -16,13 +16,13 @@
 
 PhotoMetaData::PhotoMetaData( Photo * photo )
 {
-    m_isEmpty = true;
+    _isEmpty = true;
 
     if ( photo )
     {
-        m_photoFullPath = photo->fullPath();
-        m_size = photo->size();
-        readExifData( m_photoFullPath );
+	_photoFullPath = photo->fullPath();
+	_size = photo->size();
+	readExifData( _photoFullPath );
     }
 }
 
@@ -33,51 +33,51 @@ void PhotoMetaData::readExifData( const QString & fileName )
 
     try
     {
-        Exiv2::Image::AutoPtr image =
-            Exiv2::ImageFactory::open( m_photoFullPath.toStdString() );
+	Exiv2::Image::AutoPtr image =
+	    Exiv2::ImageFactory::open( _photoFullPath.toStdString() );
 
-        image->readMetadata();
-        Exiv2::ExifData &exifData = image->exifData();
+	image->readMetadata();
+	Exiv2::ExifData &exifData = image->exifData();
 
-        if ( exifData.empty() )
-            return;
+	if ( exifData.empty() )
+	    return;
 
-        m_isEmpty = false;
+	_isEmpty = false;
 
-        m_exposureTime = exifFract( exifData, "Exif.Photo.ExposureTime" );
-        m_aperture     = exifFract( exifData, "Exif.Photo.FNumber"      );
-        m_iso          = exifInt  ( exifData, "Exif.Photo.ISOSpeedRatings" );
-        m_focalLength  = exifFract( exifData, "Exif.Photo.FocalLength" ).toDouble();
-        m_focalLength35mmEquiv = exifInt( exifData, "Exif.Photo.FocalLengthIn35mmFilm" );
+	_exposureTime = exifFract( exifData, "Exif.Photo.ExposureTime" );
+	_aperture     = exifFract( exifData, "Exif.Photo.FNumber"      );
+	_iso	      = exifInt	 ( exifData, "Exif.Photo.ISOSpeedRatings" );
+	_focalLength  = exifFract( exifData, "Exif.Photo.FocalLength" ).toDouble();
+	_focalLength35mmEquiv = exifInt( exifData, "Exif.Photo.FocalLengthIn35mmFilm" );
 
-        int origWidth  = exifInt( exifData, "Exif.Photo.PixelXDimension" );
-        int origHeight = exifInt( exifData, "Exif.Photo.PixelYDimension" );
-        m_origSize = QSize( origWidth, origHeight );
+	int origWidth  = exifInt( exifData, "Exif.Photo.PixelXDimension" );
+	int origHeight = exifInt( exifData, "Exif.Photo.PixelYDimension" );
+	_origSize = QSize( origWidth, origHeight );
 
-        QString dateTimeStr = exifString( exifData, "Exif.Photo.DateTimeOriginal" );
-        m_dateTimeTaken = QDateTime::fromString( dateTimeStr, Qt::ISODate );
+	QString dateTimeStr = exifString( exifData, "Exif.Photo.DateTimeOriginal" );
+	_dateTimeTaken = QDateTime::fromString( dateTimeStr, Qt::ISODate );
     }
     catch ( Exiv2::Error& exception )
     {
-        qWarning() << "Caught Exiv2 exception:" << exception.what()
-                   << "for" << fileName;
+	qWarning() << "Caught Exiv2 exception:" << exception.what()
+		   << "for" << fileName;
     }
 }
 
 
 Fraction PhotoMetaData::exifFract( Exiv2::ExifData &  exifData,
-                                   const char *       exifKey )
+				   const char *	      exifKey )
 {
     Exiv2::ExifData::const_iterator it =
-        exifData.findKey( Exiv2::ExifKey( exifKey ) );
+	exifData.findKey( Exiv2::ExifKey( exifKey ) );
 
     Fraction val;
 
     if ( it != exifData.end() )
     {
-        Exiv2::Rational rational = it->value().toRational();
-        val = Fraction( rational.first, rational.second );
-        val.simplify();
+	Exiv2::Rational rational = it->value().toRational();
+	val = Fraction( rational.first, rational.second );
+	val.simplify();
     }
 
     return val;
@@ -85,16 +85,16 @@ Fraction PhotoMetaData::exifFract( Exiv2::ExifData &  exifData,
 
 
 int PhotoMetaData::exifInt( Exiv2::ExifData &  exifData,
-                            const char *       exifKey )
+			    const char *       exifKey )
 {
     Exiv2::ExifData::const_iterator it =
-        exifData.findKey( Exiv2::ExifKey( exifKey ) );
+	exifData.findKey( Exiv2::ExifKey( exifKey ) );
 
     int val = 0;
 
     if ( it != exifData.end() )
     {
-        val = (int) it->value().toLong();
+	val = (int) it->value().toLong();
     }
 
     return val;
@@ -102,16 +102,16 @@ int PhotoMetaData::exifInt( Exiv2::ExifData &  exifData,
 
 
 QString PhotoMetaData::exifString( Exiv2::ExifData &  exifData,
-                                   const char *       exifKey )
+				   const char *	      exifKey )
 {
     Exiv2::ExifData::const_iterator it =
-        exifData.findKey( Exiv2::ExifKey( exifKey ) );
+	exifData.findKey( Exiv2::ExifKey( exifKey ) );
 
     QString val;
 
     if ( it != exifData.end() )
     {
-        val = it->value().toString().c_str();
+	val = it->value().toString().c_str();
     }
 
     return val;

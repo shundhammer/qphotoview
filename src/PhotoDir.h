@@ -47,17 +47,17 @@ public:
      * constructor: This is a normalized absolute path to the directory, even
      * if a relative path or an image file was passed in the constructor.
      */
-    QString path() const { return m_path; }
+    QString path() const { return _path; }
 
     /**
      * Return the number of photos in this PhotoDir.
      */
-    int size() const { return m_photos.size(); }
+    int size() const { return _photos.size(); }
 
     /**
      * Check if this photo directory is empty.
      */
-    bool isEmpty() const { return m_photos.isEmpty(); }
+    bool isEmpty() const { return _photos.isEmpty(); }
 
     /**
      * Return the photo with the specifed index or 0 if there is no photo with
@@ -74,7 +74,7 @@ public:
      * Return the index of the current Photo (the first one is 0)
      * or -1 if there is none.
      */
-    int currentIndex() const { return m_current; }
+    int currentIndex() const { return _current; }
 
     /**
      * Return the first photo.
@@ -146,19 +146,19 @@ public:
      * Return 'true' if only JPG files are considered in this directory
      * (see also constructor).
      */
-    bool jpgOnly() const { return m_jpgOnly; }
+    bool jpgOnly() const { return _jpgOnly; }
 
     /**
      * Return the prefetch cache for this directory.
      */
-    PrefetchCache * prefetchCache() const { return m_prefetchCache; }
+    PrefetchCache * prefetchCache() const { return _prefetchCache; }
 
 
 protected:
 
     /**
      * Read the disk directory 'dirPath', create a Photo object for each image
-     * file, and set m_current to the directory entry 'startPhotoName'.
+     * file, and set _current to the directory entry 'startPhotoName'.
      */
     void read( const QString & dirPath, const QString & startPhotoName );
 
@@ -170,11 +170,12 @@ protected:
 
 private:
 
-    QString             m_path;
-    QList<Photo *>      m_photos;
-    int                 m_current;
-    bool                m_jpgOnly;
-    PrefetchCache *     m_prefetchCache;
+    QString		_path;
+    QList<Photo *>	_photos;
+    int			_current;
+    bool		_jpgOnly;
+    PrefetchCache *	_prefetchCache;
 };
+
 
 #endif // PhotoDir_h

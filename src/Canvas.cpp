@@ -20,22 +20,22 @@ static const int AnimationDuration =  850; // millisec
 
 Canvas::Canvas( PhotoView * parent )
     : QGraphicsPixmapItem( QPixmap() )
-    , m_photoView( parent )
-    , m_panning( false )
-    , m_animation( 0 )
+    , _photoView( parent )
+    , _panning( false )
+    , _animation( 0 )
 {
-    Q_CHECK_PTR( m_photoView );
+    Q_CHECK_PTR( _photoView );
 
-    m_photoView->scene()->addItem( this );
+    _photoView->scene()->addItem( this );
     setCursor( Qt::OpenHandCursor );
-    m_cursor = cursor();
+    _cursor = cursor();
 }
 
 
 Canvas::~Canvas()
 {
-    if ( m_animation )
-        delete m_animation;
+    if ( _animation )
+	delete _animation;
 }
 
 
@@ -58,14 +58,14 @@ void Canvas::center( const QSize & parentSize )
     qreal y = pos().y();
 
     if ( pixmapSize.width() < parentSize.width() )
-        x = ( parentSize.width() - pixmapSize.width()  ) / 2.0;
+	x = ( parentSize.width() - pixmapSize.width()  ) / 2.0;
     else if ( x > 0.0 )
-        x = 0.0;
+	x = 0.0;
 
     if ( pixmapSize.height() < parentSize.height() )
-        y = ( parentSize.height() - pixmapSize.height() ) / 2.0;
+	y = ( parentSize.height() - pixmapSize.height() ) / 2.0;
     else if ( y > 0.0 )
-        y = 0.0;
+	y = 0.0;
 
     setPos( x, y );
 }
@@ -79,10 +79,10 @@ void Canvas::hideCursor()
 
 void Canvas::showCursor()
 {
-    if ( m_panning )
-        setCursor( Qt::ClosedHandCursor );
+    if ( _panning )
+	setCursor( Qt::ClosedHandCursor );
     else
-        setCursor( m_cursor );
+	setCursor( _cursor );
 }
 
 
@@ -92,13 +92,13 @@ void Canvas::mousePressEvent( QGraphicsSceneMouseEvent * event )
 
     if ( event && event->button() == Qt::LeftButton )
     {
-        m_panning = true;
-        setCursor( Qt::ClosedHandCursor );
+	_panning = true;
+	setCursor( Qt::ClosedHandCursor );
 
-        if ( m_animation && m_animation->state() == QAbstractAnimation::Running )
-            m_animation->stop();
+	if ( _animation && _animation->state() == QAbstractAnimation::Running )
+	    _animation->stop();
 
-        m_photoView->updatePanner();
+	_photoView->updatePanner();
     }
 }
 
@@ -109,13 +109,13 @@ void Canvas::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 
     // qDebug() << __PRETTY_FUNCTION__;
 
-    if ( m_panning )
+    if ( _panning )
     {
-        m_panning = false;
-        setCursor( m_cursor );
+	_panning = false;
+	setCursor( _cursor );
 
-        m_photoView->updatePanner();
-        fixPosAnimated();
+	_photoView->updatePanner();
+	fixPosAnimated();
     }
 }
 
@@ -124,20 +124,20 @@ void Canvas::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 {
     // qDebug() << __PRETTY_FUNCTION__;
 
-    if ( event && m_panning )
+    if ( event && _panning )
     {
-        QPointF diff   = event->pos() - event->lastPos();
-        QPointF newPos = pos() + diff;
-        setPos( newPos );
-        // qDebug() << "Mouse move diff:" << diff;
+	QPointF diff   = event->pos() - event->lastPos();
+	QPointF newPos = pos() + diff;
+	setPos( newPos );
+	// qDebug() << "Mouse move diff:" << diff;
 
-        QPointF pannerPos = m_photoView->panner()->pos();
-        m_photoView->updatePanner();
-        m_photoView->panner()->setPos( pannerPos );
+	QPointF pannerPos = _photoView->panner()->pos();
+	_photoView->updatePanner();
+	_photoView->panner()->setPos( pannerPos );
     }
     else
     {
-        setCursor( m_cursor );
+	setCursor( _cursor );
     }
 }
 
@@ -148,74 +148,74 @@ void Canvas::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
 
     if ( event )
     {
-        switch ( event->button() )
-        {
-            case Qt::LeftButton:
-                m_photoView->zoomIn();
-                // TO DO: Center on click position
-                break;
+	switch ( event->button() )
+	{
+	    case Qt::LeftButton:
+		_photoView->zoomIn();
+		// TO DO: Center on click position
+		break;
 
-            case Qt::RightButton:
-                m_photoView->zoomOut();
-                // TO DO: Center on click position
-                break;
+	    case Qt::RightButton:
+		_photoView->zoomOut();
+		// TO DO: Center on click position
+		break;
 
-            default:
-                break;
-        }
+	    default:
+		break;
+	}
     }
 
-    setCursor( m_cursor );
+    setCursor( _cursor );
 }
 
 
 void Canvas::fixPosAnimated( bool animate )
 {
-    QSize   viewportSize = m_photoView->size();
-    QSize   canvasSize   = size();
-    QPointF canvasPos    = pos();
-    QPointF wantedPos    = canvasPos;
+    QSize   viewportSize = _photoView->size();
+    QSize   canvasSize	 = size();
+    QPointF canvasPos	 = pos();
+    QPointF wantedPos	 = canvasPos;
 
     if ( canvasSize.width() < viewportSize.width() )
     {
-        // Center horizontally
+	// Center horizontally
 
-        wantedPos.setX( ( viewportSize.width() - canvasSize.width() ) / 2.0 );
+	wantedPos.setX( ( viewportSize.width() - canvasSize.width() ) / 2.0 );
     }
     else
     {
-        // Check if we panned too far left or right
+	// Check if we panned too far left or right
 
-        if ( canvasPos.x() > 0.0 ) // Black border left?
-            wantedPos.setX( 0.0 );
+	if ( canvasPos.x() > 0.0 ) // Black border left?
+	    wantedPos.setX( 0.0 );
 
-        if ( canvasPos.x() + canvasSize.width() < viewportSize.width() )
-            wantedPos.setX( viewportSize.width() - canvasSize.width() );
+	if ( canvasPos.x() + canvasSize.width() < viewportSize.width() )
+	    wantedPos.setX( viewportSize.width() - canvasSize.width() );
     }
 
     if ( canvasSize.height() < viewportSize.height() )
     {
-        // Center vertically
+	// Center vertically
 
-        wantedPos.setY( ( viewportSize.height() -
-                          canvasSize.height()    ) / 2.0 );
+	wantedPos.setY( ( viewportSize.height() -
+			  canvasSize.height()	 ) / 2.0 );
     }
     else
     {
-        // Check if we panned to far up or down
+	// Check if we panned to far up or down
 
-        if ( canvasPos.y() > 0.0 ) // Black border at the top?
-            wantedPos.setY( 0.0 );
+	if ( canvasPos.y() > 0.0 ) // Black border at the top?
+	    wantedPos.setY( 0.0 );
 
-        if ( canvasPos.y() + canvasSize.height() < viewportSize.height() )
-            wantedPos.setY( viewportSize.height() - canvasSize.height() );
+	if ( canvasPos.y() + canvasSize.height() < viewportSize.height() )
+	    wantedPos.setY( viewportSize.height() - canvasSize.height() );
     }
 
     QPointF diff = wantedPos - canvasPos;
     qreal manhattanLength = diff.manhattanLength();
 
 #if 0
-    qDebug() << "Canvas pos:\t"  << canvasPos;
+    qDebug() << "Canvas pos:\t"	 << canvasPos;
     qDebug() << "Canvas size:\t" << canvasSize;
     qDebug() << "VP size:\t" << viewportSize;
     qDebug() << "Wanted pos:\t" << wantedPos;
@@ -227,31 +227,31 @@ void Canvas::fixPosAnimated( bool animate )
 
     if ( manhattanLength > 0.0 )
     {
-        if ( manhattanLength < 5.0 || ! animate )
-        {
-            setPos( wantedPos );
-            m_photoView->updatePanner();
-        }
-        else
-        {
-            // Animate moving to new position
+	if ( manhattanLength < 5.0 || ! animate )
+	{
+	    setPos( wantedPos );
+	    _photoView->updatePanner();
+	}
+	else
+	{
+	    // Animate moving to new position
 
-            if ( ! m_animation )
-            {
-                m_animation = new GraphicsItemPosAnimation( this );
+	    if ( ! _animation )
+	    {
+		_animation = new GraphicsItemPosAnimation( this );
 #if 0
-                QObject::connect( m_animation, SIGNAL( finished() ),
-                                  m_photoView, SLOT  ( updatePanner() ) );
+		QObject::connect( _animation, SIGNAL( finished() ),
+				  _photoView, SLOT  ( updatePanner() ) );
 #endif
-                QObject::connect( m_animation, SIGNAL( valueChanged(QVariant)),
-                                  m_photoView, SLOT  ( updatePanner() ) );
-            }
+		QObject::connect( _animation, SIGNAL( valueChanged(QVariant)),
+				  _photoView, SLOT  ( updatePanner() ) );
+	    }
 
-            m_animation->setStartValue( canvasPos );
-            m_animation->setEndValue  ( wantedPos );
-            m_animation->setDuration  ( AnimationDuration );
-            m_animation->start();
-        }
+	    _animation->setStartValue( canvasPos );
+	    _animation->setEndValue  ( wantedPos );
+	    _animation->setDuration  ( AnimationDuration );
+	    _animation->start();
+	}
     }
 }
 

@@ -15,7 +15,7 @@
 #include <QStringList>
 
 #include <stdio.h>	// stderr, fprintf()
-#include <stdlib.h>     // abort()
+#include <stdlib.h>	// abort()
 #include <unistd.h>	// getpid()
 #include <sys/types.h>	// pid_t
 
@@ -230,9 +230,9 @@ QString Logger::indentLines( int indentWidth,
 #if (QT_VERSION < QT_VERSION_CHECK( 5, 0, 0 ))
 static void qt_logger( QtMsgType msgType, const char *msg)
 #else
-static void qt_logger( QtMsgType msgType,
-		       const QMessageLogContext &context,
-		       const QString & msg )
+    static void qt_logger( QtMsgType msgType,
+			   const QMessageLogContext &context,
+			   const QString & msg )
 #endif
 {
     LogSeverity severity;
@@ -259,12 +259,12 @@ static void qt_logger( QtMsgType msgType,
 
     if ( msgType == QtFatalMsg )
     {
-        fprintf( stderr, "FATAL: %s\n", qPrintable( msg ) );
+	fprintf( stderr, "FATAL: %s\n", qPrintable( msg ) );
 
-        if ( msg.contains( "Could not connect to display" ) )
-            exit( 1 );
-        else
-            abort();
+	if ( msg.contains( "Could not connect to display" ) )
+	    exit( 1 );
+	else
+	    abort();
     }
 }
 

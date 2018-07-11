@@ -19,14 +19,14 @@ int main ( int argc, char *argv[] )
 
     if ( argc > 2 )
     {
-        qCritical() << "\nUsage:" << argv[0] << "<image-file-or-dir>\n";
-        return 1;
+	qCritical() << "\nUsage:" << argv[0] << "<image-file-or-dir>\n";
+	return 1;
     }
 
     QString path = ".";
 
     if ( argc > 1 )
-        path = argv[1];
+	path = argv[1];
 
     PhotoDir dir( path );
     PhotoView viewer( &dir );

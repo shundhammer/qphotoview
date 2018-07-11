@@ -17,28 +17,28 @@
 
 
 PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
- : m_path( path )
- , m_current( -1 )
- , m_jpgOnly( jpgOnly )
+    : _path( path )
+    , _current( -1 )
+    , _jpgOnly( jpgOnly )
 {
     QString startPhotoName;
     QFileInfo fileInfo( path );
 
     if ( ! fileInfo.isDir() )
     {
-        m_path         = fileInfo.absolutePath();
-        startPhotoName = fileInfo.fileName();
+	_path	      = fileInfo.absolutePath();
+	startPhotoName = fileInfo.fileName();
     }
 
-    m_prefetchCache = new PrefetchCache( m_path );
-    read( m_path, startPhotoName );
+    _prefetchCache = new PrefetchCache( _path );
+    read( _path, startPhotoName );
 }
 
 
 PhotoDir::~PhotoDir()
 {
-    qDeleteAll( m_photos );
-    delete m_prefetchCache;
+    qDeleteAll( _photos );
+    delete _prefetchCache;
 }
 
 
@@ -47,83 +47,83 @@ void PhotoDir::read( const QString & dirPath, const QString & startPhotoName )
     QStringList nameFilters;
     nameFilters << "*.jpg" << "*.jpeg" << "*.JPG" << "*.JPEG";
 
-    if ( ! m_jpgOnly )
+    if ( ! _jpgOnly )
     {
-        nameFilters << "*.png"  << "*.PNG"
-                    << "*.gif"  << "*.GIF"
-                    << "*.bmp"  << "*.BMP"
-                    << "*.tif"  << "*.TIF"
-                    << "*.tiff" << "*.TIFF"
-                    << "*.xpm"  << "*.XPM"
-                    << "*.ppm"  << "*.PPM"
-                    << "*.pgm"  << "*.PGM"
-                    << "*.pbm"  << "*.PBM";
+	nameFilters << "*.png"	<< "*.PNG"
+		    << "*.gif"	<< "*.GIF"
+		    << "*.bmp"	<< "*.BMP"
+		    << "*.tif"	<< "*.TIF"
+		    << "*.tiff" << "*.TIFF"
+		    << "*.xpm"	<< "*.XPM"
+		    << "*.ppm"	<< "*.PPM"
+		    << "*.pgm"	<< "*.PGM"
+		    << "*.pbm"	<< "*.PBM";
     }
 
     QDir dir ( dirPath );
-    m_path = dir.absolutePath();
+    _path = dir.absolutePath();
     QStringList imageFileNames = dir.entryList( nameFilters,
-                                                QDir::Files,  // wanted type
-                                                QDir::Name ); // sort by
+						QDir::Files,  // wanted type
+						QDir::Name ); // sort by
 
     foreach ( QString imageFileName, imageFileNames )
     {
-        Photo * photo = new Photo( imageFileName, this );
-        m_photos.append( photo );
+	Photo * photo = new Photo( imageFileName, this );
+	_photos.append( photo );
 
-        if ( imageFileName == startPhotoName )
-            m_current = m_photos.size()-1;
+	if ( imageFileName == startPhotoName )
+	    _current = _photos.size()-1;
     }
 
-    if ( ! m_photos.isEmpty() && m_current < 0 )
-        m_current = 0;
+    if ( ! _photos.isEmpty() && _current < 0 )
+	_current = 0;
 }
 
 
 Photo * PhotoDir::photo( int index ) const
 {
-    if ( index < 0 || index >= m_photos.size() )
-        return 0;
+    if ( index < 0 || index >= _photos.size() )
+	return 0;
 
-    return m_photos.at( index );
+    return _photos.at( index );
 }
 
 
 Photo * PhotoDir::current() const
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    int current = qBound( 0, m_current, m_photos.size()-1 );
-    return m_photos.at( current );
+    int current = qBound( 0, _current, _photos.size()-1 );
+    return _photos.at( current );
 }
 
 
 Photo * PhotoDir::first() const
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    return m_photos.first();
+    return _photos.first();
 }
 
 
 Photo * PhotoDir::last() const
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    return m_photos.last();
+    return _photos.last();
 }
 
 
 Photo * PhotoDir::setCurrent( int index )
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    m_current = qBound( 0, index, m_photos.size()-1 );
-    return m_photos.at( m_current );
+    _current = qBound( 0, index, _photos.size()-1 );
+    return _photos.at( _current );
 }
 
 
@@ -132,112 +132,112 @@ void PhotoDir::setCurrent( Photo * photo )
     int index = find( photo );
 
     if ( index >= 0 )
-        m_current = index;
+	_current = index;
 }
 
 
 int PhotoDir::find( Photo * photo )
 {
-    return m_photos.indexOf( photo );
+    return _photos.indexOf( photo );
 }
 
 
 Photo * PhotoDir::toFirst()
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    m_current = 0;
-    return m_photos.first();
+    _current = 0;
+    return _photos.first();
 }
 
 
 Photo * PhotoDir::toLast()
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    m_current = m_photos.size()-1;
-    return m_photos.last();
+    _current = _photos.size()-1;
+    return _photos.last();
 }
 
 
 Photo * PhotoDir::toNext()
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    ++m_current;
-    m_current = qBound( 0, m_current, m_photos.size()-1 );
+    ++_current;
+    _current = qBound( 0, _current, _photos.size()-1 );
 
-    return m_photos.at( m_current );
+    return _photos.at( _current );
 }
 
 
 Photo * PhotoDir::toPrevious()
 {
-    if ( m_photos.isEmpty() )
-        return 0;
+    if ( _photos.isEmpty() )
+	return 0;
 
-    --m_current;
-    m_current = qBound( 0, m_current, m_photos.size()-1 );
+    --_current;
+    _current = qBound( 0, _current, _photos.size()-1 );
 
-    return m_photos.at( m_current );
+    return _photos.at( _current );
 }
 
 
 void PhotoDir::prefetch()
 {
-    if ( m_photos.isEmpty() )
-        return;
+    if ( _photos.isEmpty() )
+	return;
 
     QStringList jobs;
-    int last = m_photos.size()-1;
+    int last = _photos.size()-1;
 
-    if ( m_current >= 0   )     addJob( jobs, m_current   );
-    if ( m_current < last )     addJob( jobs, m_current+1 );
-    if ( m_current > 0    )     addJob( jobs, m_current-1 );
+    if ( _current >= 0	 )     addJob( jobs, _current	);
+    if ( _current < last )     addJob( jobs, _current+1 );
+    if ( _current > 0	 )     addJob( jobs, _current-1 );
 
-    if ( m_current > 1      )   addJob( jobs, 0 );
-    if ( last > m_current+1 )   addJob( jobs, last );
+    if ( _current > 1	   )   addJob( jobs, 0 );
+    if ( last > _current+1 )   addJob( jobs, last );
 
-    for ( int i = m_current+2; i < last; ++i )
-        addJob( jobs, i );
+    for ( int i = _current+2; i < last; ++i )
+	addJob( jobs, i );
 
-    for ( int i = m_current-2; i > 0; --i )
-        addJob( jobs,  i );
+    for ( int i = _current-2; i > 0; --i )
+	addJob( jobs,  i );
 
-    m_prefetchCache->prefetch( jobs );
+    _prefetchCache->prefetch( jobs );
 }
 
 
 void PhotoDir::addJob( QStringList & jobs, int index )
 {
-    jobs.append( m_photos.at( index )->fileName() );
+    jobs.append( _photos.at( index )->fileName() );
 }
 
 
 void PhotoDir::dropCache()
 {
-    m_prefetchCache->clear();
+    _prefetchCache->clear();
 
-    foreach ( Photo * photo, m_photos )
+    foreach ( Photo * photo, _photos )
     {
-        photo->dropCache();
+	photo->dropCache();
     }
 }
 
 
 void PhotoDir::take( Photo * photo )
 {
-    int index = m_photos.indexOf( photo );
+    int index = _photos.indexOf( photo );
 
     if ( index == -1 ) // Not found
-        return;
+	return;
 
-    if ( m_current >= index )
-        --m_current;
+    if ( _current >= index )
+	--_current;
 
     photo->reparent( 0 );
-    m_photos.removeAt( index );
+    _photos.removeAt( index );
 }

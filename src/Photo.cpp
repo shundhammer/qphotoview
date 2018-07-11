@@ -14,31 +14,31 @@
 #include "PhotoDir.h"
 #include "PrefetchCache.h"
 
-long  Photo::m_pixmapAccessCount      = 0;
-long  Photo::m_thumbnailAccessCount   = 0;
-QSize Photo::m_thumbnailSize          = QSize( 120, 80 );
+long  Photo::_pixmapAccessCount	     = 0;
+long  Photo::_thumbnailAccessCount   = 0;
+QSize Photo::_thumbnailSize	     = QSize( 120, 80 );
 
 
 Photo::Photo( const QString & fileName, PhotoDir *parentDir )
-    : m_photoDir( parentDir )
-    , m_lastPixmapAccess( 0 )
-    , m_lastThumbnailAccess( 0 )
+    : _photoDir( parentDir )
+    , _lastPixmapAccess( 0 )
+    , _lastThumbnailAccess( 0 )
 {
     // qDebug() << __PRETTY_FUNCTION__ << fileName << parentDir;
 
-    if ( m_photoDir )
+    if ( _photoDir )
     {
-        m_fileName = fileName;
-        // m_path is fetched from m_photoDir when needed
+	_fileName = fileName;
+	// _path is fetched from _photoDir when needed
     }
     else
     {
-        if ( ! fileName.isEmpty() )
-        {
-            QFileInfo fileInfo( fileName );
-            m_fileName = fileInfo.fileName();
-            m_path     = fileInfo.absolutePath();
-        }
+	if ( ! fileName.isEmpty() )
+	{
+	    QFileInfo fileInfo( fileName );
+	    _fileName = fileInfo.fileName();
+	    _path     = fileInfo.absolutePath();
+	}
     }
 }
 
@@ -52,7 +52,7 @@ Photo::~Photo()
 QPixmap Photo::fullSizePixmap()
 {
     QPixmap pixmap( fullPath() );
-    m_size = pixmap.size();
+    _size = pixmap.size();
 
     return pixmap;
 }
@@ -60,8 +60,8 @@ QPixmap Photo::fullSizePixmap()
 
 QPixmap Photo::pixmap( const QSizeF & size )
 {
-    return pixmap( QSize( qRound( size.width()  ),
-                          qRound( size.height() ) ) );
+    return pixmap( QSize( qRound( size.width()	),
+			  qRound( size.height() ) ) );
 }
 
 
@@ -69,30 +69,30 @@ QPixmap Photo::pixmap( const QSize & size )
 {
     QPixmap scaledPixmap;
 
-    if ( m_pixmap.isNull() )
+    if ( _pixmap.isNull() )
     {
-        if ( m_photoDir && m_photoDir->prefetchCache() )
-        {
-            m_size   = m_photoDir->prefetchCache()->pixelSize( m_fileName );
-            m_pixmap = m_photoDir->prefetchCache()->pixmap( m_fileName,
-                                                            true ); // take
-        }
+	if ( _photoDir && _photoDir->prefetchCache() )
+	{
+	    _size   = _photoDir->prefetchCache()->pixelSize( _fileName );
+	    _pixmap = _photoDir->prefetchCache()->pixmap( _fileName,
+							  true ); // take
+	}
     }
 
-    qreal scaleFac = scaleFactor( m_pixmap.size(), size );
+    qreal scaleFac = scaleFactor( _pixmap.size(), size );
 
     if ( scaleFac <= 1.0 ) // not larger than cached pixmap
     {
-        scaledPixmap = scale( m_pixmap, scaleFac );
+	scaledPixmap = scale( _pixmap, scaleFac );
     }
     else // larger than cached pixmap
     {
-        scaledPixmap = fullSizePixmap();
-        scaleFac     = scaleFactor( scaledPixmap.size(), size );
-        scaledPixmap = scale( scaledPixmap, scaleFac );
+	scaledPixmap = fullSizePixmap();
+	scaleFac     = scaleFactor( scaledPixmap.size(), size );
+	scaledPixmap = scale( scaledPixmap, scaleFac );
     }
 
-    m_lastPixmapAccess = ++m_pixmapAccessCount;
+    _lastPixmapAccess = ++_pixmapAccessCount;
     // In theory, here should be a check for integer overflow.
     // In the real world, this won't ever be relevant, so we don't bother.
 
@@ -102,13 +102,13 @@ QPixmap Photo::pixmap( const QSize & size )
 
 void Photo::dropCache()
 {
-    m_pixmap = QPixmap();
+    _pixmap = QPixmap();
 }
 
 
 QPixmap Photo::thumbnail()
 {
-    m_lastThumbnailAccess = ++m_thumbnailAccessCount;
+    _lastThumbnailAccess = ++_thumbnailAccessCount;
     // In theory, here should be a check for integer overflow.
     // In the real world, this won't ever be relevant, so we don't bother.
 
@@ -120,19 +120,19 @@ QPixmap Photo::thumbnail()
 
 void Photo::clearCachedThumbnail()
 {
-    m_thumbnail = QPixmap();
+    _thumbnail = QPixmap();
 }
 
 
 QSize Photo::size()
 {
-    if ( ! m_size.isValid() )
+    if ( ! _size.isValid() )
     {
-        if ( m_photoDir && m_photoDir->prefetchCache() )
-            m_size = m_photoDir->prefetchCache()->pixelSize( m_fileName );
+	if ( _photoDir && _photoDir->prefetchCache() )
+	    _size = _photoDir->prefetchCache()->pixelSize( _fileName );
     }
 
-    return m_size;
+    return _size;
 }
 
 
@@ -144,10 +144,10 @@ PhotoMetaData Photo::metaData()
 
 QString Photo::path() const
 {
-    if ( m_photoDir )
-        return m_photoDir->path();
+    if ( _photoDir )
+	return _photoDir->path();
     else
-        return m_path;
+	return _path;
 }
 
 
@@ -156,9 +156,9 @@ QString Photo::fullPath() const
     QString result = path();
 
     if ( ! result.endsWith( QDir::separator() ) )
-        result += QDir::separator();
+	result += QDir::separator();
 
-    result += m_fileName;
+    result += _fileName;
 
     return result;
 }
@@ -166,13 +166,13 @@ QString Photo::fullPath() const
 
 void Photo::reparent( PhotoDir * newParentDir )
 {
-    if ( ! newParentDir && m_photoDir )
-        m_path = m_photoDir->path();
+    if ( ! newParentDir && _photoDir )
+	_path = _photoDir->path();
 
     if ( newParentDir )
-        m_path.clear();
+	_path.clear();
 
-    m_photoDir = newParentDir;
+    _photoDir = newParentDir;
 }
 
 
@@ -185,7 +185,7 @@ QSize Photo::scale( const QSize & origSize, const QSize & boundingSize )
 qreal Photo::scaleFactor( const QSize & origSize, const QSize & boundingSize )
 {
     if ( origSize.width() == 0 || origSize.height() == 0 )
-        return 0.0;
+	return 0.0;
 
     qreal scaleFactorX = boundingSize.width()  / ( (qreal) origSize.width()  );
     qreal scaleFactorY = boundingSize.height() / ( (qreal) origSize.height() );
@@ -197,10 +197,10 @@ qreal Photo::scaleFactor( const QSize & origSize, const QSize & boundingSize )
 QPixmap Photo::scale( const QPixmap & origPixmap, qreal scaleFactor )
 {
     if ( qFuzzyCompare( scaleFactor, 1.0 ) )
-        return origPixmap;
+	return origPixmap;
 
     if ( origPixmap.isNull() )
-        return origPixmap;
+	return origPixmap;
 
     QPixmap pixmap( origPixmap );
 
@@ -216,31 +216,31 @@ QPixmap Photo::scale( const QPixmap & origPixmap, qreal scaleFactor )
 
     if ( scaleFactor < 1.0 )
     {
-        qreal tmpScaleFactor = scaleFactor * 1.1;
+	qreal tmpScaleFactor = scaleFactor * 1.1;
 
-        if ( tmpScaleFactor < 0.9 )
-        {
-            // Optimization: Fast but crude approximation to the real result:
-            // Use fast transformation in a first step to drastically reduce
-            // the number of (original) pixels to be considered in the smooth
-            // (but exact) transformation.
+	if ( tmpScaleFactor < 0.9 )
+	{
+	    // Optimization: Fast but crude approximation to the real result:
+	    // Use fast transformation in a first step to drastically reduce
+	    // the number of (original) pixels to be considered in the smooth
+	    // (but exact) transformation.
 
-            pixmap = pixmap.scaled( tmpScaleFactor * origPixmap.size(),
-                                    Qt::KeepAspectRatio,
-                                    Qt::FastTransformation );
-        }
+	    pixmap = pixmap.scaled( tmpScaleFactor * origPixmap.size(),
+				    Qt::KeepAspectRatio,
+				    Qt::FastTransformation );
+	}
     }
     else if ( scaleFactor > 1.2 )
     {
-        pixmap = pixmap.scaled( (scaleFactor - 0.1 ) * origPixmap.size(),
-                                Qt::KeepAspectRatio,
-                                Qt::FastTransformation );
+	pixmap = pixmap.scaled( (scaleFactor - 0.1 ) * origPixmap.size(),
+				Qt::KeepAspectRatio,
+				Qt::FastTransformation );
     }
 #endif
 
     pixmap = pixmap.scaled( scaleFactor * origPixmap.size(),
-                            Qt::KeepAspectRatio,
-                            Qt::SmoothTransformation );
+			    Qt::KeepAspectRatio,
+			    Qt::SmoothTransformation );
 
     return pixmap;
 }

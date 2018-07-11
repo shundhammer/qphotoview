@@ -44,7 +44,7 @@ public:
     /**
      * Return the text.
      */
-    QString text() const { return m_text; }
+    QString text() const { return _text; }
 
     /**
      * Set the font. If not explicitly set, QApplication::font() is used.
@@ -54,27 +54,27 @@ public:
     /**
      * Return the font.
      */
-    QFont font() const { return m_font; }
+    QFont font() const { return _font; }
 
     /**
      * Set the text color.
      */
-    void setTextColor( const QColor & color ) { m_textColor = color; }
+    void setTextColor( const QColor & color ) { _textColor = color; }
 
     /**
      * Return the text color.
      */
-    QColor textColor() const { return m_textColor; }
+    QColor textColor() const { return _textColor; }
 
     /**
      * Set the text alignment.
      */
-    void setTextAlignment( Qt::Alignment align )  { m_textAlignment = align; }
+    void setTextAlignment( Qt::Alignment align )  { _textAlignment = align; }
 
     /**
      * Return the text alignment.
      */
-    Qt::Alignment textAlignment() const { return m_textAlignment; }
+    Qt::Alignment textAlignment() const { return _textAlignment; }
 
     /**
      * Reimplemented from BorderPanel: Return the current size.
@@ -98,11 +98,12 @@ private:
 
     // Data members
 
-    QString             m_text;
-    QFont               m_font;
-    QColor              m_textColor;
-    Qt::Alignment       m_textAlignment;
-    QSizeF              m_textSize;
+    QString		_text;
+    QFont		_font;
+    QColor		_textColor;
+    Qt::Alignment	_textAlignment;
+    QSizeF		_textSize;
 };
+
 
 #endif // TextBorderPanel_h

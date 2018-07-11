@@ -20,26 +20,26 @@
 #include "PhotoView.h"
 #include "Canvas.h"
 
-static const int FrameThickness   = 4;
+static const int FrameThickness	  = 4;
 static const int PanRectThickness = 3;
 
 
 Panner::Panner( const QSizeF & pannerMaxSize, PhotoView * photoView )
     : QGraphicsItem()
-    , m_pannerMaxSize( pannerMaxSize )
-    , m_photoView( photoView )
+    , _pannerMaxSize( pannerMaxSize )
+    , _photoView( photoView )
 {
-    m_photoView->scene()->addItem( this );
-    m_pannerMaxSize -= QSizeF( 2*FrameThickness, 2*FrameThickness );
-    m_size = m_pannerMaxSize;
+    _photoView->scene()->addItem( this );
+    _pannerMaxSize -= QSizeF( 2*FrameThickness, 2*FrameThickness );
+    _size = _pannerMaxSize;
 
-    m_pixmapItem = new QGraphicsPixmapItem( this );
-    m_pixmapItem->setPos( QPointF( FrameThickness, FrameThickness ) );
+    _pixmapItem = new QGraphicsPixmapItem( this );
+    _pixmapItem->setPos( QPointF( FrameThickness, FrameThickness ) );
 
-    m_panRect = new QGraphicsRectItem( QRectF( 0, 0, 20, 20 ), m_pixmapItem );
+    _panRect = new QGraphicsRectItem( QRectF( 0, 0, 20, 20 ), _pixmapItem );
     QPen panRectPen( Qt::yellow, PanRectThickness );
     panRectPen.setJoinStyle( Qt::MiterJoin );
-    m_panRect->setPen( panRectPen );
+    _panRect->setPen( panRectPen );
 
     // The panner doesn't really accept hover events, but it's irritating for
     // the user if hover events go to a SensitiveBorder underneath the
@@ -63,8 +63,8 @@ Panner::~Panner()
 
 
 void Panner::paint( QPainter * painter,
-                    const QStyleOptionGraphicsItem * option,
-                    QWidget * widget )
+		    const QStyleOptionGraphicsItem * option,
+		    QWidget * widget )
 {
     Q_UNUSED( option );
     Q_UNUSED( widget );
@@ -74,53 +74,53 @@ void Panner::paint( QPainter * painter,
     painter->setPen( pen );
 
     painter->drawRect( FrameThickness/2.0,
-                       FrameThickness/2.0,
-                       m_size.width()  - FrameThickness,
-                       m_size.height() - FrameThickness );
+		       FrameThickness/2.0,
+		       _size.width()  - FrameThickness,
+		       _size.height() - FrameThickness );
 }
 
 
 QRectF Panner::boundingRect() const
 {
-    return QRectF( QPointF( 0, 0 ), m_size );
+    return QRectF( QPointF( 0, 0 ), _size );
 }
 
 
 void Panner::setPixmap( const QPixmap & pixmap )
 {
-    m_pixmap = pixmap;
+    _pixmap = pixmap;
 
-    m_size = pixmap.size();
-    m_size.scale( m_pannerMaxSize, Qt::KeepAspectRatio );
-    m_size += QSizeF( 2*FrameThickness, 2*FrameThickness );
+    _size = pixmap.size();
+    _size.scale( _pannerMaxSize, Qt::KeepAspectRatio );
+    _size += QSizeF( 2*FrameThickness, 2*FrameThickness );
 }
 
 
 void Panner::lazyScalePixmap()
 {
-    if ( m_pixmap.isNull() )
-        return;
+    if ( _pixmap.isNull() )
+	return;
 
-    QSizeF pannerPixmapSize = m_pixmap.size();
-    pannerPixmapSize.scale( m_pannerMaxSize, Qt::KeepAspectRatio );
+    QSizeF pannerPixmapSize = _pixmap.size();
+    pannerPixmapSize.scale( _pannerMaxSize, Qt::KeepAspectRatio );
 
     // This is expensive
-    QPixmap scaledPixmap = m_pixmap.scaled( qRound( pannerPixmapSize.width() ),
-                                            qRound( pannerPixmapSize.height() ),
-                                            Qt::KeepAspectRatio,
-                                            Qt::SmoothTransformation );
-    m_pixmapItem->setPixmap( scaledPixmap );
-    m_pixmap = QPixmap();
+    QPixmap scaledPixmap = _pixmap.scaled( qRound( pannerPixmapSize.width() ),
+					   qRound( pannerPixmapSize.height() ),
+					   Qt::KeepAspectRatio,
+					   Qt::SmoothTransformation );
+    _pixmapItem->setPixmap( scaledPixmap );
+    _pixmap = QPixmap();
 }
 
 
 void Panner::updatePanRect( const QRectF & visibleRect,
-                            const QSizeF & origSize )
+			    const QSizeF & origSize )
 {
     if ( ! visibleRect.isValid() )
     {
-        qDebug() << __PRETTY_FUNCTION__ << ": Invalid visible rect";
-        return;
+	qDebug() << __PRETTY_FUNCTION__ << ": Invalid visible rect";
+	return;
     }
 
     qreal visibleXPart = visibleRect.width()  / origSize.width();
@@ -131,18 +131,18 @@ void Panner::updatePanRect( const QRectF & visibleRect,
     if ( completelyVisible )
     {
 #if 0
-        bool panning =
-            m_photoView &&
-            m_photoView->canvas() &&
-            m_photoView->canvas()->panning();
+	bool panning =
+	    _photoView &&
+	    _photoView->canvas() &&
+	    _photoView->canvas()->panning();
 
-        if ( ! panning )
+	if ( ! panning )
 #endif
-        {
-            // qDebug() << "Complete image visible";
-            hide();
-            return;
-        }
+	{
+	    // qDebug() << "Complete image visible";
+	    hide();
+	    return;
+	}
     }
 
     lazyScalePixmap();
@@ -150,17 +150,17 @@ void Panner::updatePanRect( const QRectF & visibleRect,
 
     if ( completelyVisible )
     {
-        QSizeF pixmapSize = m_pixmapItem->pixmap().size();
-        m_panRect->setRect( QRectF( QPointF( 0.0, 0.0 ), pixmapSize ) );
+	QSizeF pixmapSize = _pixmapItem->pixmap().size();
+	_panRect->setRect( QRectF( QPointF( 0.0, 0.0 ), pixmapSize ) );
     }
     else
     {
-        qreal   panPixmapWidth = m_size.width() - 2*FrameThickness;
-        qreal   scale   = panPixmapWidth / (qreal) origSize.width();
-        QPointF panPos  = scale * visibleRect.topLeft();
-        QSizeF  panSize = scale * visibleRect.size();
+	qreal	panPixmapWidth = _size.width() - 2*FrameThickness;
+	qreal	scale	= panPixmapWidth / (qreal) origSize.width();
+	QPointF panPos	= scale * visibleRect.topLeft();
+	QSizeF	panSize = scale * visibleRect.size();
 
-        m_panRect->setRect( QRectF( panPos, panSize ) );
+	_panRect->setRect( QRectF( panPos, panSize ) );
     }
 }
 

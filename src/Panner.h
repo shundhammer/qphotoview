@@ -61,8 +61,8 @@ public:
      * Reimplemented from QGraphicsItem: Paint the panner shape.
      */
     virtual void paint( QPainter * painter,
-                        const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = 0 );
+			const QStyleOptionGraphicsItem * option,
+			QWidget * widget = 0 );
 
     /**
      * Reimplemented from QGraphicsItem: Return the bounding rect.
@@ -72,12 +72,12 @@ public:
     /**
      * Return the pixel size of the panner.
      */
-    QSizeF size() const { return m_size; }
+    QSizeF size() const { return _size; }
 
     /**
      * Return the parent PhotoView.
      */
-    PhotoView * photoView() const { return m_photoView; }
+    PhotoView * photoView() const { return _photoView; }
 
 protected:
 
@@ -88,13 +88,14 @@ protected:
 
 private:
 
-    QGraphicsPixmapItem *       m_pixmapItem;
-    QGraphicsRectItem *         m_panRect;
-    QSizeF                      m_pannerMaxSize;
-    QPixmap                     m_pixmap;
-    qreal                       m_scale;
-    QSizeF                      m_size;
-    PhotoView *                 m_photoView;
+    QGraphicsPixmapItem *	_pixmapItem;
+    QGraphicsRectItem *		_panRect;
+    QSizeF			_pannerMaxSize;
+    QPixmap			_pixmap;
+    qreal			_scale;
+    QSizeF			_size;
+    PhotoView *			_photoView;
 };
+
 
 #endif // Panner_h
