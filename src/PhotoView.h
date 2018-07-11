@@ -48,10 +48,18 @@ public:
         QAction * forceReload;
         QAction * toggleFullscreen;
         QAction * quit;
+        QAction * noZoom;
+        QAction * zoomFitImage; // fit image into window
+        QAction * zoomFitWidth;
+        QAction * zoomFitHeight;
+        QAction * zoomFitBest;  // width or height, whichever fits best
+        QAction * zoomIn;
+        QAction * zoomOut;
 
     private:
         QAction * createAction( const QString & text,
-                                QKeySequence    shortcut = QKeySequence() );
+                                QKeySequence    shortcut = QKeySequence(),
+                                QVariant        data     = QVariant() );
 
         PhotoView * _photoView;
     };
@@ -97,6 +105,12 @@ public slots:
      * Set the zoom mode.
      */
     void setZoomMode( ZoomMode mode );
+
+    /**
+     * Set the zoom mode that is set from the data() of a QAction if this is
+     * where the signal was sent from.
+     */
+    void setZoomMode();
 
     /**
      * Set the zoom factor. This automatically sets the zoom mode:

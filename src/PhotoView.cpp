@@ -449,6 +449,19 @@ void PhotoView::setZoomMode( ZoomMode mode )
 }
 
 
+void PhotoView::setZoomMode()
+{
+    QAction * action = qobject_cast<QAction *>( sender() );
+
+    if ( action )
+    {
+        int zoomMode = action->data().toInt();
+        setZoomMode( static_cast<ZoomMode>( zoomMode ) );
+
+    }
+}
+
+
 void PhotoView::setZoomFactor( qreal factor )
 {
     _zoomFactor = factor;
@@ -548,44 +561,15 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	    loadImage();
 	    break;
 
-	case Qt::Key_Plus:
-	    zoomIn();
-	    break;
-
-	case Qt::Key_Minus:
-	    zoomOut();
-	    break;
-
-	case Qt::Key_1:
-	    setZoomMode( NoZoom );
-	    break;
-
-	case Qt::Key_2:	       setZoomFactor( 1/2.0 );	break;
-	case Qt::Key_3:	       setZoomFactor( 1/3.0 );	break;
-	case Qt::Key_4:	       setZoomFactor( 1/4.0 );	break;
-	case Qt::Key_5:	       setZoomFactor( 1/5.0 );	break;
-	case Qt::Key_6:	       setZoomFactor( 1/6.0 );	break;
-	case Qt::Key_7:	       setZoomFactor( 1/7.0 );	break;
-	case Qt::Key_8:	       setZoomFactor( 1/8.0 );	break;
-	case Qt::Key_9:	       setZoomFactor( 1/9.0 );	break;
-	case Qt::Key_0:	       setZoomFactor( 1/10.0 ); break;
-
-	case Qt::Key_F:
-	case Qt::Key_M:
-	    setZoomMode( ZoomFitImage );
-	    break;
-
-	case Qt::Key_B:
-	    setZoomMode( ZoomFitBest );
-	    break;
-
-	case Qt::Key_W:
-	    setZoomMode( ZoomFitWidth );
-	    break;
-
-	case Qt::Key_H:
-	    setZoomMode( ZoomFitHeight );
-	    break;
+	case Qt::Key_2:	       setZoomFactor( 2.0 );	break;
+	case Qt::Key_3:	       setZoomFactor( 3.0 );	break;
+	case Qt::Key_4:	       setZoomFactor( 4.0 );	break;
+	case Qt::Key_5:	       setZoomFactor( 5.0 );	break;
+	case Qt::Key_6:	       setZoomFactor( 6.0 );	break;
+	case Qt::Key_7:	       setZoomFactor( 7.0 );	break;
+	case Qt::Key_8:	       setZoomFactor( 8.0 );	break;
+	case Qt::Key_9:	       setZoomFactor( 9.0 );	break;
+	case Qt::Key_0:	       setZoomFactor( 10.0 );   break;
 
 	case Qt::Key_Y:
 	    {
@@ -627,13 +611,38 @@ PhotoView::Actions::Actions( PhotoView * photoView ):
     quit = createAction( tr ( "Quit" ) );
     quit->setShortcuts( QList<QKeySequence>() << Qt::Key_Q << Qt::Key_Escape );
     CONNECT_ACTION( quit, qApp, quit() );
+
+    noZoom = createAction( tr( "No Zoom (100% / &1:1)" ), Qt::Key_1, NoZoom );
+    CONNECT_ACTION( noZoom, photoView, setZoomMode() );
+
+    zoomIn = createAction( tr( "Zoom In (Enlarge)" ), Qt::Key_Plus );
+    CONNECT_ACTION( zoomIn, photoView, zoomIn() );
+
+    zoomOut = createAction( tr( "Zoom Out (Shrink)" ), Qt::Key_Minus );
+    CONNECT_ACTION( zoomOut, photoView, zoomOut() );
+
+    zoomFitImage = createAction( tr( "Zoom to &Fit Window" ), Qt::Key_F, ZoomFitImage );
+    zoomFitImage->setShortcuts( QList<QKeySequence>() << Qt::Key_F << Qt::Key_M );
+    CONNECT_ACTION( zoomFitImage, photoView, setZoomMode() );
+
+    zoomFitWidth = createAction( tr( "Zoom to Fit Window &Width" ), Qt::Key_W, ZoomFitWidth );
+    CONNECT_ACTION( zoomFitWidth, photoView, setZoomMode() );
+
+    zoomFitHeight = createAction( tr( "Zoom to Fit Window &Height" ), Qt::Key_H, ZoomFitHeight );
+    CONNECT_ACTION( zoomFitHeight, photoView, setZoomMode() );
+
+    zoomFitBest = createAction( tr( "&Best Zoom for Window Width or Height" ), Qt::Key_B, ZoomFitBest );
+    CONNECT_ACTION( zoomFitBest, photoView, setZoomMode() );
+
 }
 
 
 QAction * PhotoView::Actions::createAction( const QString & text,
-                                            QKeySequence    shortcut )
+                                            QKeySequence    shortcut,
+                                            QVariant        data )
 {
     QAction * action = new QAction( text, _photoView );
+    action->setData( data );
     _photoView->addAction( action );
 
     if ( ! shortcut.isEmpty() )
