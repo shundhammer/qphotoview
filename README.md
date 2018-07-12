@@ -8,6 +8,8 @@ Target Platforms: Linux, BSD, Unix-like systems
 
 License: GPL V2
 
+Status: **Alpha** (see below)
+
 Updated:  2018-07-12
 
 
@@ -113,6 +115,44 @@ keyboard commands listed below.
 [PDF](https://github.com/shundhammer/qphotoview/blob/master/doc/design/qphotoview-design.pdf)
 
 [OpenOffice presentation](https://github.com/shundhammer/qphotoview/blob/master/doc/design/qphotoview-design.odp)
+
+
+## Project Status
+
+**Alpha**
+
+It's a stable alpha, but still alpha - i.e. it's far from feature complete.
+
+It is usable, but it can't do much yet. It shouldn't crash, and it should not
+endanger your images or your image directories in any way.
+
+The only files it will modify are its log files in `/tmp/qphotoview-$USER`.
+
+
+### Current Limitations
+
+- Only very rudimentary GUI
+
+- No configuration of any kind yet (neither GUI nor via config file)
+
+- Uses only one CPU core for background tasks (load and pre-scale images)
+
+- Knows no limits for RAM usage yet - will happily load and pre-scale as many
+  images are found in the image directory. If that means it will consume all
+  your RAM and all your swap space, this is just what it will do.
+
+  So for the time being, simply don't start it with a single directory
+  containing 10.000+ photos.
+
+- No deleting images yet (nor any other kind of modification of your images or
+  your image directories)
+
+- No sending images to GIMP or any other image processor yet
+
+- No directory selection while the program is running; you will have to
+  terminate it and start it with another directory.
+
+- No thumbnail preview of an entire directory yet
 
 
 ## How to Build
