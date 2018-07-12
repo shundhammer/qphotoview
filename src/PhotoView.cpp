@@ -672,7 +672,10 @@ QAction * PhotoView::Actions::createAction( const QString & text,
 {
     QAction * action = new QAction( text, _photoView );
     action->setData( data );
+
+#if (QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 ))
     action->setShortcutVisibleInContextMenu( true );
+#endif
     _photoView->addAction( action );
 
     if ( ! shortcut.isEmpty() )
