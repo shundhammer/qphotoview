@@ -25,8 +25,13 @@ PrefetchCache::PrefetchCache( const QString & path )
 
 PrefetchCache::~PrefetchCache()
 {
+    int percent = 0;
+
+    if ( _sizes.size() > 0 )
+        percent = 100 * _cache.size() / _sizes.size();
+
     logDebug() << "Unused images in prefetch cache: " << _cache.size()
-               << " (" << 100*_cache.size() / _sizes.size() << "%)" << endl;
+               << " (" <<  percent << "%)" << endl;
     clear();
 
     if ( _workerThread.isRunning() )
