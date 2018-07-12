@@ -138,11 +138,11 @@ The only files it will modify are its log files in `/tmp/qphotoview-$USER`.
 - Uses only one CPU core for background tasks (load and pre-scale images)
 
 - Knows no limits for RAM usage yet - will happily load and pre-scale as many
-  images are found in the image directory. If that means it will consume all
+  images as are found in the image directory. If that means it will consume all
   your RAM and all your swap space, this is just what it will do.
 
-  So for the time being, simply don't start it with a single directory
-  containing 10.000+ photos.
+  _So for the time being, simply don't start it with a single directory
+  containing 10.000+ photos._
 
 - No deleting images yet (nor any other kind of modification of your images or
   your image directories)
