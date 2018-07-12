@@ -89,7 +89,7 @@ void Canvas::showCursor()
 
 void Canvas::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
-    logDebug() << endl;
+    // logDebug() << endl;
 
     if ( event && event->button() == Qt::LeftButton )
     {
@@ -107,7 +107,7 @@ void Canvas::mousePressEvent( QGraphicsSceneMouseEvent * event )
 void Canvas::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 {
     Q_UNUSED( event );
-    logDebug() << endl;
+    // logDebug() << endl;
 
     if ( _panning )
     {
