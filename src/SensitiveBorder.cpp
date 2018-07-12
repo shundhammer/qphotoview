@@ -14,6 +14,7 @@
 
 #include "SensitiveBorder.h"
 #include "PhotoView.h"
+#include "Logger.h"
 
 static const int EnterLeaveTimeout = 1000; // millisec
 
@@ -83,7 +84,7 @@ void SensitiveBorder::setDebugMode( bool on )
 void SensitiveBorder::hoverEnterEvent( QGraphicsSceneHoverEvent * event )
 {
     Q_UNUSED( event) ;
-    // qDebug() << __PRETTY_FUNCTION__ << objectName();
+    // logDebug() << objectName() << endl;
 
     if ( _leaveTimer.isActive() )
 	_leaveTimer.stop();
@@ -95,7 +96,7 @@ void SensitiveBorder::hoverEnterEvent( QGraphicsSceneHoverEvent * event )
 void SensitiveBorder::hoverLeaveEvent( QGraphicsSceneHoverEvent * event )
 {
     Q_UNUSED( event) ;
-    // qDebug() << __PRETTY_FUNCTION__ << objectName();
+    // logDebug() << objectName() << endl;
 
     if ( _enterTimer.isActive() )
 	_enterTimer.stop();

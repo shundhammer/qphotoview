@@ -55,7 +55,6 @@ void TextBorderPanel::recalcTextSize()
     QRectF textRect = fontMetrics.boundingRect( QRect( 0, 0, 1, 1 ),
 						Qt::AlignLeft | Qt::AlignTop,
 						_text );
-    // qDebug() << "Text rect: " << textRect;
     _textSize = textRect.size();
 }
 

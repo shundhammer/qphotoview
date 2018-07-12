@@ -27,7 +27,6 @@ GraphicsItemPosAnimation::GraphicsItemPosAnimation( QGraphicsItem * item,
 void GraphicsItemPosAnimation::updateCurrentValue( const QVariant & value )
 {
     QPointF pos = value.toPointF();
-    // qDebug() << "Setting pos " << pos;
     _graphicsItem->setPos( pos );
 }
 

@@ -24,7 +24,7 @@ Photo::Photo( const QString & fileName, PhotoDir *parentDir )
     , _lastPixmapAccess( 0 )
     , _lastThumbnailAccess( 0 )
 {
-    // qDebug() << __PRETTY_FUNCTION__ << fileName << parentDir;
+    // logDebug() << fileName << "  " << parentDir << endl;
 
     if ( _photoDir )
     {

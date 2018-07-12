@@ -13,12 +13,12 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QEasingCurve>
 #include <QGraphicsBlurEffect>
-#include <QDebug>
 
 #include "BorderPanel.h"
 #include "SensitiveBorder.h"
 #include "PhotoView.h"
 #include "GraphicsItemPosAnimation.h"
+#include "Logger.h"
 
 
 static const int   AppearAnimationDuration    =	 850; // millisec
@@ -185,7 +185,7 @@ void BorderPanel::setSticky( bool sticky )
 
 void BorderPanel::appearNow()
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     emit aboutToAppear();
     setPos( activePos() );
@@ -196,18 +196,18 @@ void BorderPanel::appearNow()
 
 void BorderPanel::appearAnimated()
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     if ( ! scene() )
     {
-	qWarning() << "ERROR: BorderPanel" << hex << (void *) this
-		   << "not added to a scene!";
+	logError() << "BorderPanel " << hex << (void *) this
+                   << " not added to a scene!" << endl;
     }
 
     if ( _borderFlags == NoBorder )
     {
-	qWarning() << "ERROR: No BorderFlags specified for BorderPanel"
-		   << hex << (void *) this;
+	logError() << "No BorderFlags specified for BorderPanel "
+                   << hex << (void *) this << endl;
     }
 
     emit aboutToAppear();
@@ -237,7 +237,7 @@ void BorderPanel::appearAnimated()
 
 void BorderPanel::disappearAnimated()
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     if ( _appearAnimation &&
 	 _appearAnimation->state() == QAbstractAnimation::Running )
@@ -264,7 +264,7 @@ void BorderPanel::maybeDisappear()
 
 QPointF BorderPanel::activePos()
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     QSizeF viewportSize = _photoView->size();
     QSizeF panelSize	= size();
@@ -288,9 +288,9 @@ QPointF BorderPanel::activePos()
 	panelY = viewportSize.height() - panelSize.height() - _borderMargin;
 
 #if 0
-    qDebug() << "viewport size: " << viewportSize;
-    qDebug() << "panel size:" << panelSize;
-    qDebug() << "panel X:" << panelX << "Y:" << panelY;
+    logDebug() << "viewport size: " << viewportSize << endl;
+    logDebug() << "panel size: " << panelSize << endl;
+    logDebug() << "panel X: " << panelX << " Y: " << panelY << endl;
 #endif
 
     return secondaryPos( QPointF( panelX, panelY ) );
@@ -299,7 +299,7 @@ QPointF BorderPanel::activePos()
 
 QPointF BorderPanel::inactivePos()
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     QSizeF viewportSize = _photoView->size();
     QSizeF panelSize	= size();
@@ -319,9 +319,9 @@ QPointF BorderPanel::inactivePos()
 	panelY = viewportSize.height() + 1;
 
 #if 0
-    qDebug() << "viewport size: " << viewportSize;
-    qDebug() << "panel size:" << panelSize;
-    qDebug() << "panel X:" << panelX << "Y:" << panelY;
+    logDebug() << "viewport size: " << viewportSize << endl;
+    logDebug() << "panel size: " << panelSize << endl;
+    logDebug() << "panel X: " << panelX << " Y: " << panelY << endl;
 #endif
 
     return secondaryPos( QPointF( panelX, panelY ) );
@@ -330,7 +330,7 @@ QPointF BorderPanel::inactivePos()
 
 QPointF BorderPanel::secondaryPos( const QPointF( primaryPos ) )
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     qreal  panelX = primaryPos.x();
     qreal  panelY = primaryPos.y();
@@ -376,9 +376,9 @@ QPointF BorderPanel::secondaryPos( const QPointF( primaryPos ) )
     }
 
 #if 0
-    qDebug() << "parent rect: " << parentRect;
-    qDebug() << "panel X:" << panelX << "Y:" << panelY;
-    qDebug() << "\n";
+    logDebug() << "parent rect: " << parentRect << endl;
+    logDebug() << "panel X: " << panelX << " Y: " << panelY << endl;
+    logDebug() << "\n" << endl;
 #endif
 
     return QPointF( panelX, panelY );
@@ -394,7 +394,7 @@ QSizeF BorderPanel::size() const
 void BorderPanel::hoverEnterEvent( QGraphicsSceneHoverEvent * event )
 {
     Q_UNUSED( event) ;
-    // qDebug() << __PRETTY_FUNCTION__ << objectName();
+    // logDebug() << endl;
 
     if ( _leaveTimer.isActive() )
 	_leaveTimer.stop();
@@ -404,24 +404,10 @@ void BorderPanel::hoverEnterEvent( QGraphicsSceneHoverEvent * event )
 void BorderPanel::hoverLeaveEvent( QGraphicsSceneHoverEvent * event )
 {
     Q_UNUSED( event) ;
-    // qDebug() << __PRETTY_FUNCTION__ << objectName();
+    // logDebug() << endl;
 
     _leaveTimer.start( EnterLeaveTimeout );
 }
-
-
-#if 0
-void BorderPanel::mousePressEvent  ( QGraphicsSceneMouseEvent * event )
-{
-
-}
-
-
-void BorderPanel::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
-{
-
-}
-#endif
 
 
 void BorderPanel::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )

@@ -301,11 +301,6 @@ protected:
     virtual void hoverLeaveEvent       ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;
     virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
 
-#if 0
-    virtual void mousePressEvent       ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
-    virtual void mouseReleaseEvent     ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
-#endif
-
 
 private slots:
 

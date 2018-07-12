@@ -14,11 +14,11 @@
 #include <QRect>
 #include <QPen>
 #include <QPainter>
-#include <QDebug>
 
 #include "Panner.h"
 #include "PhotoView.h"
 #include "Canvas.h"
+#include "Logger.h"
 
 static const int FrameThickness	  = 4;
 static const int PanRectThickness = 3;
@@ -119,7 +119,7 @@ void Panner::updatePanRect( const QRectF & visibleRect,
 {
     if ( ! visibleRect.isValid() )
     {
-	qDebug() << __PRETTY_FUNCTION__ << ": Invalid visible rect";
+	logDebug() << "Invalid visible rect" << endl;
 	return;
     }
 
@@ -139,7 +139,7 @@ void Panner::updatePanRect( const QRectF & visibleRect,
 	if ( ! panning )
 #endif
 	{
-	    // qDebug() << "Complete image visible";
+	    // logDebug() << "Complete image visible" << endl;
 	    hide();
 	    return;
 	}

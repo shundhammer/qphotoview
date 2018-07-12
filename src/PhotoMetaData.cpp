@@ -29,8 +29,6 @@ PhotoMetaData::PhotoMetaData( Photo * photo )
 
 void PhotoMetaData::readExifData( const QString & fileName )
 {
-    // qDebug() << __PRETTY_FUNCTION__ << fileName;
-
     try
     {
 	Exiv2::Image::AutoPtr image =
