@@ -44,17 +44,19 @@ or
 
 ## Keyboard Shortcuts
 
-| `Q` or `Esc`          | Quit
-| `Space` or `PgDown`   | Next image in that directory
-| `Backspace` or `PgUp` | Previous image in that directory
-| `Return`              | Toggle fullscreen or windowed mode
-| `+`                   | Zoom in (enlarge)
-| `-`                   | Zoom out (shrink)
-| `F` or `M`            | Zoom to fit into the window without scrolling
-| `W`                   | Zoom to fit window width (scroll vertically)
-| `H`                   | Zoom to fit window height (scroll horizontally)
-| `B`                   | Best zoom for window width or height (scroll in the other dimension)
-| `1`                   | 100% zoom (1:1 pixels)
+| Key                   | Action                                          |
+| --------------------- | ----------------------------------------------- |
+| `Q` or `Esc`          | Quit                                            |
+| `Space` or `PgDown`   | Next image in that directory                    |
+| `Backspace` or `PgUp` | Previous image in that directory                |
+| `Return`              | Toggle fullscreen or windowed mode              |
+| `+`                   | Zoom in (enlarge)                               |
+| `-`                   | Zoom out (shrink)                               |
+| `F` or `M`            | Zoom to fit into the window without scrolling   |
+| `W`                   | Zoom to fit window width (scroll vertically)    |
+| `H`                   | Zoom to fit window height (scroll horizontally) |
+| `B`                   | Best zoom for window width or height (scroll in the other dimension) |
+| `1`                   | 100% zoom (1:1 pixels)                          |
 
 
 
