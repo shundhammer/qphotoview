@@ -68,6 +68,18 @@ keyboard commands listed below.
 (more to come)
 
 
+## Mouse Operations
+
+| Mouse Gesture       | Action                           |
+| ------------------- | -------------------------------- |
+| Drag left           | Drag (scroll) image (if zoomed)  |
+| Double click left   | Zoom in                          |
+| Double click middle | Zoom out                         |
+| Click right         | Context menu                     |
+| Mouse wheel down    | Next     image in that directory |
+| Mouse wheel up      | Previous image in that directory |
+
+
 ## Key Features
 
 - By default, show one image cleanly without user interface clutter
