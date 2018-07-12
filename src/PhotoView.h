@@ -52,6 +52,10 @@ public:
         QAction * zoomFitWidth;
         QAction * zoomFitHeight;
         QAction * zoomFitBest;  // width or height, whichever fits best
+        QAction * loadNext;
+        QAction * loadPrevious;
+        QAction * loadFirst;
+        QAction * loadLast;
         QAction * forceReload;
         QAction * toggleFullscreen;
         QAction * quit;
@@ -85,6 +89,15 @@ public:
 	ZoomFitHeight,	// Fit height into window, scroll only left and right
 	ZoomFitBest,	// Fit width or height, whichever is better
 	UseZoomFactor	// Use arbitrary zoom factor
+    };
+
+    enum NavigationTarget
+    {
+        NavigateCurrent = 0,
+        NavigateNext,
+        NavigatePrevious,
+        NavigateFirst,
+        NavigateLast
     };
 
 
@@ -145,6 +158,18 @@ public slots:
      * Set the default zoom increment.
      */
     void setZoomIncrement( qreal increment ) { _zoomIncrement = increment; }
+
+    /**
+     * Navigate to another image in the image directory (next, previous, first,
+     * last, current).
+     */
+    void navigate( NavigationTarget where );
+
+    /**
+     * Navigate to a target that is set from the data() of a QAction if this is
+     * where the signal was sent from.
+     */
+    void navigate();
 
     /**
      * Update the panner based on the specified viewport size.

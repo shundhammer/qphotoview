@@ -11,7 +11,6 @@
 #include <QResizeEvent>
 #include <QKeyEvent>
 #include <QTime>
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QStyle>
 
@@ -417,7 +416,7 @@ void PhotoView::showBorder()
 {
     if ( sender() )
     {
-	qDebug() << "Show border" << sender()->objectName();
+	logDebug() << "Show border " << sender()->objectName() << endl;
     }
 }
 
@@ -426,7 +425,7 @@ void PhotoView::hideBorder()
 {
     if ( sender() )
     {
-	qDebug() << "Hide border" << sender()->objectName();
+	logDebug() << "Hide border " << sender()->objectName() << endl;
     }
 }
 
@@ -457,7 +456,6 @@ void PhotoView::setZoomMode()
     {
         int zoomMode = action->data().toInt();
         setZoomMode( static_cast<ZoomMode>( zoomMode ) );
-
     }
 }
 
@@ -489,7 +487,7 @@ void PhotoView::zoomOut()
 
 void PhotoView::hideCursor()
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
     _cursor = viewport()->cursor();
     viewport()->setCursor( Qt::BlankCursor );
     _canvas->hideCursor();
@@ -521,9 +519,36 @@ void PhotoView::forceReload()
 }
 
 
+void PhotoView::navigate( NavigationTarget where )
+{
+    switch ( where )
+    {
+        case NavigateCurrent:                            break;
+        case NavigateNext:      _photoDir->toNext();     break;
+        case NavigatePrevious:  _photoDir->toPrevious(); break;
+        case NavigateFirst:     _photoDir->toFirst();    break;
+        case NavigateLast:      _photoDir->toLast();     break;
+    }
+
+    loadImage();
+}
+
+
+void PhotoView::navigate()
+{
+    QAction * action = qobject_cast<QAction *>( sender() );
+
+    if ( action )
+    {
+        int where = action->data().toInt();
+        navigate( static_cast<NavigationTarget>( where ) );
+    }
+}
+
+
 void PhotoView::mouseMoveEvent ( QMouseEvent * event )
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
     _idleTimer.start( _idleTimeout );
     showCursor();
 
@@ -538,29 +563,6 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 
     switch ( event->key() )
     {
-	case Qt::Key_PageDown:
-	case Qt::Key_Space:
-	    _photoDir->toNext();
-	    loadImage();
-	    break;
-
-	case Qt::Key_PageUp:
-	case Qt::Key_Backspace:
-
-	    _photoDir->toPrevious();
-	    loadImage();
-	    break;
-
-	case Qt::Key_Home:
-	    _photoDir->toFirst();
-	    loadImage();
-	    break;
-
-	case Qt::Key_End:
-	    _photoDir->toLast();
-	    loadImage();
-	    break;
-
 	case Qt::Key_2:	       setZoomFactor( 2.0 );	break;
 	case Qt::Key_3:	       setZoomFactor( 3.0 );	break;
 	case Qt::Key_4:	       setZoomFactor( 4.0 );	break;
@@ -574,7 +576,7 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 	case Qt::Key_Y:
 	    {
 		const int max=10;
-		qDebug() << "*** Benchmark start";
+		logInfo() << "*** Benchmark start" << endl;
 		QTime time;
 		time.start();
 
@@ -583,9 +585,10 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 		    _photoDir->toNext();
 		    loadImage();
 		}
-		qDebug() << "*** Benchmark end; time:"
-			 << time.elapsed() / 1000.0 << "sec /"
-			 << max << "images";
+		logInfo() << "*** Benchmark end; time: "
+                          << time.elapsed() / 1000.0 << " sec / "
+                          << max << " images"
+                          << endl;
 	    }
 	    break;
 
@@ -602,6 +605,10 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 PhotoView::Actions::Actions( PhotoView * photoView ):
     _photoView( photoView )
 {
+    //
+    // Zoom
+    //
+
     noZoom = createAction( tr( "No Zoom (100% / &1:1)" ), Qt::Key_1, NoZoom );
     CONNECT_ACTION( noZoom, photoView, setZoomMode() );
 
@@ -624,13 +631,36 @@ PhotoView::Actions::Actions( PhotoView * photoView ):
     zoomFitBest = createAction( tr( "&Best Zoom for Window Width or Height" ), Qt::Key_B, ZoomFitBest );
     CONNECT_ACTION( zoomFitBest, photoView, setZoomMode() );
 
+    //
+    // Navigation
+    //
+
+    loadNext = createAction( tr( "Load &Next Image" ), Qt::Key_Space, NavigateNext );
+    addShortcut( loadNext, Qt::Key_PageDown );
+    CONNECT_ACTION( loadNext, photoView, navigate() );
+
+    loadPrevious = createAction( tr( "Load &Previous Image" ), Qt::Key_Backspace, NavigatePrevious );
+    addShortcut( loadPrevious, Qt::Key_PageUp );
+    CONNECT_ACTION( loadPrevious, photoView, navigate() );
+
+    loadFirst = createAction( tr( "Load &First Image" ), Qt::Key_Home, NavigateFirst );
+    CONNECT_ACTION( loadFirst, photoView, navigate() );
+
+    loadLast = createAction( tr( "Load &Last Image" ), Qt::Key_End, NavigateLast );
+    CONNECT_ACTION( loadLast, photoView, navigate() );
+
+
+    //
+    // Misc
+    //
+
     forceReload = createAction( tr( "Force &Reload" ), Qt::Key_F5 );
     CONNECT_ACTION( forceReload, photoView, forceReload() );
 
     toggleFullscreen = createAction( tr( "Toggle F&ullscreen" ), Qt::Key_Return );
     CONNECT_ACTION( toggleFullscreen, photoView, toggleFullscreen() );
 
-    quit = createAction( tr ( "Quit" ), Qt::Key_Q );
+    quit = createAction( tr ( "&Quit" ), Qt::Key_Q );
     addShortcut( quit, Qt::Key_Escape );
     CONNECT_ACTION( quit, qApp, quit() );
 }

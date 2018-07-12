@@ -181,9 +181,13 @@ void Canvas::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
     menu.addAction( _photoView->actions().zoomFitHeight    );
     menu.addAction( _photoView->actions().zoomFitBest      );
     menu.addSeparator();
-    menu.addAction( _photoView->actions().toggleFullscreen );
-    menu.addSeparator();
+    menu.addAction( _photoView->actions().loadNext         );
+    menu.addAction( _photoView->actions().loadPrevious     );
+    menu.addAction( _photoView->actions().loadFirst        );
+    menu.addAction( _photoView->actions().loadLast         );
     menu.addAction( _photoView->actions().forceReload      );
+    menu.addSeparator();
+    menu.addAction( _photoView->actions().toggleFullscreen );
     menu.addSeparator();
     menu.addAction( _photoView->actions().quit );
 
