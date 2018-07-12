@@ -104,8 +104,13 @@ protected:
 
     /**
      * Zoom in (double click left) or out (double click right)
-     **/
+     */
     virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event );
+
+    /**
+     * Context menu (click right)
+     */
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent * event );
 
 private:
 

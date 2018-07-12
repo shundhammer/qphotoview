@@ -602,16 +602,6 @@ void PhotoView::keyPressEvent( QKeyEvent * event )
 PhotoView::Actions::Actions( PhotoView * photoView ):
     _photoView( photoView )
 {
-    forceReload = createAction( tr( "Force &Reload" ), Qt::Key_F5 );
-    CONNECT_ACTION( forceReload, photoView, forceReload() );
-
-    toggleFullscreen = createAction( tr( "Toggle &Fullscreen" ), Qt::Key_Return );
-    CONNECT_ACTION( toggleFullscreen, photoView, toggleFullscreen() );
-
-    quit = createAction( tr ( "Quit" ) );
-    quit->setShortcuts( QList<QKeySequence>() << Qt::Key_Q << Qt::Key_Escape );
-    CONNECT_ACTION( quit, qApp, quit() );
-
     noZoom = createAction( tr( "No Zoom (100% / &1:1)" ), Qt::Key_1, NoZoom );
     CONNECT_ACTION( noZoom, photoView, setZoomMode() );
 
@@ -622,7 +612,7 @@ PhotoView::Actions::Actions( PhotoView * photoView ):
     CONNECT_ACTION( zoomOut, photoView, zoomOut() );
 
     zoomFitImage = createAction( tr( "Zoom to &Fit Window" ), Qt::Key_F, ZoomFitImage );
-    zoomFitImage->setShortcuts( QList<QKeySequence>() << Qt::Key_F << Qt::Key_M );
+    addShortcut( zoomFitImage, Qt::Key_M );
     CONNECT_ACTION( zoomFitImage, photoView, setZoomMode() );
 
     zoomFitWidth = createAction( tr( "Zoom to Fit Window &Width" ), Qt::Key_W, ZoomFitWidth );
@@ -634,6 +624,15 @@ PhotoView::Actions::Actions( PhotoView * photoView ):
     zoomFitBest = createAction( tr( "&Best Zoom for Window Width or Height" ), Qt::Key_B, ZoomFitBest );
     CONNECT_ACTION( zoomFitBest, photoView, setZoomMode() );
 
+    forceReload = createAction( tr( "Force &Reload" ), Qt::Key_F5 );
+    CONNECT_ACTION( forceReload, photoView, forceReload() );
+
+    toggleFullscreen = createAction( tr( "Toggle F&ullscreen" ), Qt::Key_Return );
+    CONNECT_ACTION( toggleFullscreen, photoView, toggleFullscreen() );
+
+    quit = createAction( tr ( "Quit" ), Qt::Key_Q );
+    addShortcut( quit, Qt::Key_Escape );
+    CONNECT_ACTION( quit, qApp, quit() );
 }
 
 
@@ -643,10 +642,19 @@ QAction * PhotoView::Actions::createAction( const QString & text,
 {
     QAction * action = new QAction( text, _photoView );
     action->setData( data );
+    action->setShortcutVisibleInContextMenu( true );
     _photoView->addAction( action );
 
     if ( ! shortcut.isEmpty() )
         action->setShortcut( shortcut );
 
     return action;
+}
+
+
+void PhotoView::Actions::addShortcut( QAction * action, QKeySequence newShortcut ) const
+{
+    QList<QKeySequence> shortcuts = action->shortcuts();
+    shortcuts << newShortcut;
+    action->setShortcuts( shortcuts );
 }

@@ -7,12 +7,13 @@
  */
 
 #include <QGraphicsSceneMouseEvent>
-#include <QDebug>
+#include <QMenu>
 
 #include "Canvas.h"
 #include "PhotoView.h"
 #include "Panner.h"
 #include "GraphicsItemPosAnimation.h"
+#include "Logger.h"
 
 
 static const int AnimationDuration =  850; // millisec
@@ -88,7 +89,7 @@ void Canvas::showCursor()
 
 void Canvas::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    logDebug() << endl;
 
     if ( event && event->button() == Qt::LeftButton )
     {
@@ -106,8 +107,7 @@ void Canvas::mousePressEvent( QGraphicsSceneMouseEvent * event )
 void Canvas::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 {
     Q_UNUSED( event );
-
-    // qDebug() << __PRETTY_FUNCTION__;
+    logDebug() << endl;
 
     if ( _panning )
     {
@@ -122,14 +122,14 @@ void Canvas::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 
 void Canvas::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     if ( event && _panning )
     {
 	QPointF diff   = event->pos() - event->lastPos();
 	QPointF newPos = pos() + diff;
 	setPos( newPos );
-	// qDebug() << "Mouse move diff:" << diff;
+	// logDebug() << "Mouse move diff: " << diff;
 
 	QPointF pannerPos = _photoView->panner()->pos();
 	_photoView->updatePanner();
@@ -144,7 +144,7 @@ void Canvas::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 
 void Canvas::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
 {
-    // qDebug() << __PRETTY_FUNCTION__;
+    // logDebug() << endl;
 
     if ( event )
     {
@@ -166,6 +166,28 @@ void Canvas::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
     }
 
     setCursor( _cursor );
+}
+
+
+void Canvas::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
+{
+    QMenu menu;
+
+    menu.addAction( _photoView->actions().zoomIn           );
+    menu.addAction( _photoView->actions().zoomOut          );
+    menu.addAction( _photoView->actions().noZoom           );
+    menu.addAction( _photoView->actions().zoomFitImage     );
+    menu.addAction( _photoView->actions().zoomFitWidth     );
+    menu.addAction( _photoView->actions().zoomFitHeight    );
+    menu.addAction( _photoView->actions().zoomFitBest      );
+    menu.addSeparator();
+    menu.addAction( _photoView->actions().toggleFullscreen );
+    menu.addSeparator();
+    menu.addAction( _photoView->actions().forceReload      );
+    menu.addSeparator();
+    menu.addAction( _photoView->actions().quit );
+
+    menu.exec( event->screenPos() );
 }
 
 
@@ -215,14 +237,14 @@ void Canvas::fixPosAnimated( bool animate )
     qreal manhattanLength = diff.manhattanLength();
 
 #if 0
-    qDebug() << "Canvas pos:\t"	 << canvasPos;
-    qDebug() << "Canvas size:\t" << canvasSize;
-    qDebug() << "VP size:\t" << viewportSize;
-    qDebug() << "Wanted pos:\t" << wantedPos;
+    logDebug() << "Canvas pos:\t"   << canvasPos    << endl;
+    logDebug() << "Canvas size:\t"  << canvasSize   << endl;
+    logDebug() << "VP size:\t"      << viewportSize << endl;
+    logDebug() << "Wanted pos:\t"   << wantedPos    << endl;
 
-    qDebug() << "Pos diff:\t" << diff;
-    qDebug() << "Manhattan length:\t" << manhattanLength;
-    qDebug() << "\n";
+    logDebug() << "Pos diff:\t"         << diff            << endl;
+    logDebug() << "Manhattan length:\t" << manhattanLength << endl;
+    logDebug() << "\n" << endl;
 #endif
 
     if ( manhattanLength > 0.0 )

@@ -45,21 +45,34 @@ public:
     public:
         Actions( PhotoView * photoView );
 
-        QAction * forceReload;
-        QAction * toggleFullscreen;
-        QAction * quit;
+        QAction * zoomIn;
+        QAction * zoomOut;
         QAction * noZoom;
         QAction * zoomFitImage; // fit image into window
         QAction * zoomFitWidth;
         QAction * zoomFitHeight;
         QAction * zoomFitBest;  // width or height, whichever fits best
-        QAction * zoomIn;
-        QAction * zoomOut;
+        QAction * forceReload;
+        QAction * toggleFullscreen;
+        QAction * quit;
 
     private:
+        /**
+         * Create a QAction with a text, an optional shortcut and optional
+         * data.
+         *
+         * Ownership of the action is transferred to the caller, but since it's
+         * created as a QObject child of this object's PhotoView, Qt takes care
+         * of deleting it when the PhotoView is deleted.
+         */
         QAction * createAction( const QString & text,
                                 QKeySequence    shortcut = QKeySequence(),
                                 QVariant        data     = QVariant() );
+
+        /**
+         * Add a shortcut to an action.
+         */
+        void addShortcut( QAction * action, QKeySequence newShortcut ) const;
 
         PhotoView * _photoView;
     };
