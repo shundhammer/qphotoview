@@ -22,12 +22,15 @@ PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
     , _current( -1 )
     , _jpgOnly( jpgOnly )
 {
+    while ( _path.endsWith( "/" ) && _path.size() > 1 )
+        _path.chop( 1 );
+
     QString startPhotoName;
-    QFileInfo fileInfo( path );
+    QFileInfo fileInfo( _path );
 
     if ( fileInfo.isDir() )
     {
-	_path	       = fileInfo.absolutePath() + "/" + path;
+	_path = fileInfo.absolutePath() + "/" + _path;
     }
     else
     {
