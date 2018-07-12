@@ -35,11 +35,16 @@ _Main window screenshot_
 
 ## Usage
 
+Start with the first image in a directory:
+
     qphotoview /work/photos
 
-or
+Start with one specific image:
 
     qphotoview ~/tmp/DSC_1234.jpg
+
+In any case, you can load the next or previous image in that directory with the
+keyboard commands listed below.
 
 
 ## Keyboard Shortcuts
@@ -49,6 +54,8 @@ or
 | `Q` or `Esc`          | Quit                                            |
 | `Space` or `PgDown`   | Next image in that directory                    |
 | `Backspace` or `PgUp` | Previous image in that directory                |
+| `Home`                | First image in that directory                   |
+| `End`                 | Last image in that directory                    |
 | `Return`              | Toggle fullscreen or windowed mode              |
 | `+`                   | Zoom in (enlarge)                               |
 | `-`                   | Zoom out (shrink)                               |
@@ -58,6 +65,35 @@ or
 | `B`                   | Best zoom for window width or height (scroll in the other dimension) |
 | `1`                   | 100% zoom (1:1 pixels)                          |
 
+(more to come)
+
+
+## Key Features
+
+- By default, show one image cleanly without user interface clutter
+
+- Blazingly fast
+
+- Very easy navigation through all images in a directory
+
+- Caches pre-scaled images in that directory for very fast display
+
+- By default, zoom the image to fit on the screen without the need for
+  scrolling
+
+- When zoomed in, show a navigation thumbnail of the image in the corner with a
+  colored rectangle indicating which part of the image is currently visible,
+  just like all digital cameras do (but surprisingly most image viewers don't)
+
+- Full screen by default (use `Return` to toggle to windowed mode)
+
+- Hide the mouse cursor after a short timeout for the least possible distraction
+
+- Active window borders for user interface elements
+
+- Show important (!) EXIF data (right window border)
+
+- Concentrates on what photographers need, not meaningless tech clutter
 
 
 ## Design Documentation
