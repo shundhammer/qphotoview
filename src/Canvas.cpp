@@ -156,6 +156,10 @@ void Canvas::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
 		break;
 
 	    case Qt::RightButton:
+                // Double click right doesn't since the first click will
+                // already open the context menu
+
+	    case Qt::MidButton:
 		_photoView->zoomOut();
 		// TO DO: Center on click position
 		break;
@@ -166,6 +170,19 @@ void Canvas::mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event )
     }
 
     setCursor( _cursor );
+}
+
+
+void Canvas::wheelEvent( QGraphicsSceneWheelEvent * event )
+{
+    if ( event->delta() > 0 ) // scroll up
+    {
+	_photoView->navigate( PhotoView::NavigatePrevious );
+    }
+    else if ( event->delta() < 0 ) // scroll down
+    {
+	_photoView->navigate( PhotoView::NavigateNext );
+    }
 }
 
 

@@ -90,27 +90,32 @@ protected:
     /**
      * Pan (scroll) the image with left mouse button pressed
      */
-    virtual void mouseMoveEvent	  ( QGraphicsSceneMouseEvent * event );
+    virtual void mouseMoveEvent	  ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
 
     /**
      * Prepare panning
      */
-    virtual void mousePressEvent  ( QGraphicsSceneMouseEvent * event );
+    virtual void mousePressEvent  ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
 
     /**
      * Clan up after panning
      */
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * event );
+    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
 
     /**
      * Zoom in (double click left) or out (double click right)
      */
-    virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event );
+    virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
+
+    /**
+     * Mouse wheel: load the next or the previous image
+     */
+    virtual void wheelEvent( QGraphicsSceneWheelEvent * event ) Q_DECL_OVERRIDE;
 
     /**
      * Context menu (click right)
      */
-    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent * event );
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent * event ) Q_DECL_OVERRIDE;
 
 private:
 
