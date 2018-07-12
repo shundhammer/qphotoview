@@ -79,14 +79,14 @@ public:
     /**
      * Reimplemented from BorderPanel: Return the current size.
      */
-    virtual QSizeF size() const;
+    virtual QSizeF size() const Q_DECL_OVERRIDE;
 
     /**
      * Reimplemented from BorderPanel: Paint this item.
      */
     virtual void paint( QPainter * painter,
 			const QStyleOptionGraphicsItem * option,
-			QWidget * widget = 0 );
+			QWidget * widget = 0 ) Q_DECL_OVERRIDE;
 
 private:
 

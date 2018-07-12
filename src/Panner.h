@@ -62,12 +62,12 @@ public:
      */
     virtual void paint( QPainter * painter,
 			const QStyleOptionGraphicsItem * option,
-			QWidget * widget = 0 );
+			QWidget * widget = 0 ) Q_DECL_OVERRIDE;
 
     /**
      * Reimplemented from QGraphicsItem: Return the bounding rect.
      */
-    virtual QRectF boundingRect() const;
+    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
 
     /**
      * Return the pixel size of the panner.

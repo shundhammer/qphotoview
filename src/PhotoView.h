@@ -269,19 +269,19 @@ protected:
     /**
      * Reimplemented from QGraphicsView/QWidget
      */
-    virtual void resizeEvent ( QResizeEvent * event );
+    virtual void resizeEvent ( QResizeEvent * event ) Q_DECL_OVERRIDE;
 
     /**
      * Reimplemented from QGraphicsView:
      * Handle key presses for this PhotoView.
      */
-    virtual void keyPressEvent( QKeyEvent * event );
+    virtual void keyPressEvent( QKeyEvent * event ) Q_DECL_OVERRIDE;
 
     /**
      * Reimplemented from QGraphicsView:
      * Reset idle timer.
      */
-    virtual void mouseMoveEvent ( QMouseEvent * event );
+    virtual void mouseMoveEvent ( QMouseEvent * event ) Q_DECL_OVERRIDE;
 
     /**
      * Create sensitive borders.

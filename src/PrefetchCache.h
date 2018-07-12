@@ -38,7 +38,7 @@ protected:
      * Reimplemented from QThread:
      * This is the worker function.
      */
-    virtual void run();
+    virtual void run() Q_DECL_OVERRIDE;
 
 private:
     PrefetchCache * _prefetchCache;

@@ -228,12 +228,12 @@ public:
      */
     virtual void paint( QPainter * painter,
 			const QStyleOptionGraphicsItem * option,
-			QWidget * widget = 0 );
+			QWidget * widget = 0 ) Q_DECL_OVERRIDE;
 
     /**
      * Implemented from QGraphicsItem: Return the bounding rectangle.
      */
-    virtual QRectF boundingRect() const;
+    virtual QRectF boundingRect() const  Q_DECL_OVERRIDE;
 
 signals:
 
@@ -297,13 +297,13 @@ protected:
 
     // Event handlers, all reimiplemented from QGraphicsItem
 
-    virtual void hoverEnterEvent       ( QGraphicsSceneHoverEvent * event );
-    virtual void hoverLeaveEvent       ( QGraphicsSceneHoverEvent * event );
-    virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event );
+    virtual void hoverEnterEvent       ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;
+    virtual void hoverLeaveEvent       ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;
+    virtual void mouseDoubleClickEvent ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
 
 #if 0
-    virtual void mousePressEvent       ( QGraphicsSceneMouseEvent * event );
-    virtual void mouseReleaseEvent     ( QGraphicsSceneMouseEvent * event );
+    virtual void mousePressEvent       ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
+    virtual void mouseReleaseEvent     ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
 #endif
 
 
