@@ -38,7 +38,7 @@ PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
 	startPhotoName = fileInfo.fileName();
     }
 
-    logInfo() << "New photo dir " << _path << endl;
+    logInfo() << "Using dir " << _path << endl;
     _prefetchCache = new PrefetchCache( _path );
     read( _path, startPhotoName );
 }

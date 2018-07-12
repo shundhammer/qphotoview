@@ -15,6 +15,7 @@
 #include <QThread>
 #include <QMap>
 #include <QSize>
+#include <QElapsedTimer>
 
 
 class PrefetchCache;
@@ -92,9 +93,24 @@ public:
     void clear();
 
     /**
+     * Return the size of the cache (the number of cached images).
+     */
+    int size() const { return _cache.size(); }
+
+    /**
      * Return the full path for the specified image.
      */
     QString fullPath( const QString & imageFileName );
+
+    /**
+     * Return the internal stop watch.
+     */
+    QElapsedTimer & stopWatch() { return _stopWatch; }
+
+    /**
+     * Format a millisecond resolution time.
+     */
+    static QString formatTime( qint64 millisec );
 
 
     friend class PrefetchCacheWorkerThread;
@@ -103,10 +119,11 @@ private:
 
     QMap<QString, QImage> _cache;
     QMap<QString, QSize>  _sizes;
-    QString	_path;
-    QStringList _jobQueue;
-    QMutex	_cacheMutex; // protects _cache, _sizes, _jobQueue
-    QSize	_fullScreenSize;
+    QString	          _path;
+    QStringList           _jobQueue;
+    QMutex	          _cacheMutex; // protects _cache, _sizes, _jobQueue
+    QSize	          _fullScreenSize;
+    QElapsedTimer         _stopWatch;
     PrefetchCacheWorkerThread _workerThread;
 };
 
