@@ -8,10 +8,10 @@ Target Platforms: Linux, BSD, Unix-like systems
 
 License: GPL V2
 
-Updated:  2018-07-11
+Updated:  2018-07-12
 
 
-## What is it?
+## What is It?
 
 QPhotoView is an image viewer for photographers. It first and foremost meant as
 a tool to be used by photographers -- for viewing photos, for comparing
@@ -33,14 +33,39 @@ another image viewer?).
 _Main window screenshot_
 
 
-## Design documentation
+## Usage
+
+    qphotoview /work/photos
+
+or
+
+    qphotoview ~/tmp/DSC_1234.jpg
+
+
+## Keyboard Shortcuts
+
+| `Q` or `Esc`          | Quit
+| `Space` or `PgDown`   | Next image in that directory
+| `Backspace` or `PgUp` | Previous image in that directory
+| `Return`              | Toggle fullscreen or windowed mode
+| `+`                   | Zoom in (enlarge)
+| `-`                   | Zoom out (shrink)
+| `F` or `M`            | Zoom to fit into the window without scrolling
+| `W`                   | Zoom to fit window width (scroll vertically)
+| `H`                   | Zoom to fit window height (scroll horizontally)
+| `B`                   | Best zoom for window width or height (scroll in the other dimension)
+| `1`                   | 100% zoom (1:1 pixels)
+
+
+
+## Design Documentation
 
 [PDF](https://github.com/shundhammer/qphotoview/blob/master/doc/design/qphotoview-design.pdf)
 
 [OpenOffice presentation](https://github.com/shundhammer/qphotoview/blob/master/doc/design/qphotoview-design.odp)
 
 
-## How to build
+## How to Build
 
 ### Build libexiv2
 
@@ -50,7 +75,7 @@ _Main window screenshot_
     sudo make install
     cd ../..
 
-### Build QPhotoView itself
+### Build QPhotoView Itself
 
     qmake
     make
@@ -66,9 +91,9 @@ before contacting us because of build problems.
 
 
 
-## Why yet another image viewer?
+## Why Yet Another Image Viewer?
 
-_This might be a bit outdated, but still mostly true_
+_This might be a bit outdated, but it's still mostly true_
 
 Short version: Because the other ones (at least the ones that are available on
 Linux / X11) all suck. They all suck in different ways, but they definitely all
