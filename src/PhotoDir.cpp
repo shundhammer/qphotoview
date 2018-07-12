@@ -30,7 +30,7 @@ PhotoDir::PhotoDir( const QString & path, bool jpgOnly )
 
     if ( fileInfo.isDir() )
     {
-	_path = fileInfo.absolutePath() + "/" + _path;
+	_path = fileInfo.absoluteFilePath();
     }
     else
     {
